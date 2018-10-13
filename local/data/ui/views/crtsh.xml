@@ -1,0 +1,61 @@
+<form>
+  <label>crt.sh</label>
+  <description>Discovers certificates by searching all of the publicly known Certificate Transparency (CT) logs. (Site: https://crt.sh/, Rate Limit: None)</description>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>Domain (+)</label>
+    </input>
+    <input type="dropdown" token="wildcard">
+      <label>Wildcard (%.DOMAIN)</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <initialValue>yes</initialValue>
+      <change>
+        <condition value="yes">
+          <set token="wildcard_panel"></set>
+          <unset token="no_wildcard_panel"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="wildcard_panel"></unset>
+          <set token="no_wildcard_panel"></set>
+        </condition>
+      </change>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$wildcard_panel$">
+      <title>Results - Wildcard</title>
+      <table>
+        <search>
+          <query>| crtsh wildcard $ioc$ 
+| table "Issuer CA ID", "Issuer Name", "Name Value", "Min Cert ID", "Min Entry Timestamp", "Not Before", "Not After", Invalid 
+| sort - "Min Cert ID"</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$no_wildcard_panel$">
+      <title>Results - No Wildcard</title>
+      <table>
+        <search>
+          <query>| crtsh $ioc$ 
+| table "Issuer CA ID", "Issuer Name", "Name Value", "Min Cert ID", "Min Entry Timestamp", "Not Before", "Not After", Invalid 
+| sort - "Min Cert ID"</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

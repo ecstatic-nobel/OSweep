@@ -1,0 +1,18 @@
+Metadata-Version: 1.1
+Name: HTMLParser
+Version: 0.0.2
+Summary: Backport of HTMLParser from python 2.7
+Home-page: http://github.com/PolicyStat/HTMLParser/
+Author: Jason Ward
+Author-email: jason.louard.ward@gmail.com
+License: BSD
+Description: HTMLParser
+        ==========
+        
+        A copy of HTMLParser from python2.7 for use in python2.6
+Platform: any
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent

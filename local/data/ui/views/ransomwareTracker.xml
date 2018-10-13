@@ -1,0 +1,80 @@
+<form>
+  <label>Ransomware Tracker</label>
+  <description>Distinguish threats between ransomware botnet Command &amp; Control servers (C&amp;Cs), ransomware payment sites, and ransomware distribution sites. (Site: https://ransomwaretracker.abuse.ch/tracker/, Rate Limit: None)</description>
+  <search id="ransomwareTracker_base">
+    <query>| ransomwareTracker $ioc$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>Domain, IP, Malware, Threat, URL (+)</label>
+    </input>
+    <input type="link" token="group">
+      <label>Group Results</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <default>yes</default>
+      <change>
+        <condition value="yes">
+          <set token="group_panel"></set>
+          <unset token="table_panel"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="group_panel"></unset>
+          <set token="table_panel"></set>
+        </condition>
+      </change>
+    </input>
+    <input type="dropdown" token="group_value" depends="$group_panel$">
+      <label>Group</label>
+      <choice value="Host">Domain</choice>
+      <choice value="IP Address(es)">IP</choice>
+      <choice value="Malware">Malware</choice>
+      <choice value="Status">Status</choice>
+      <choice value="Threat">Threat</choice>
+      <choice value="URL">URL</choice>
+      <initialValue>Host</initialValue>
+    </input>
+    <input type="dropdown" token="group_key" depends="$group_panel$">
+      <label>By</label>
+      <choice value="Host">Domain</choice>
+      <choice value="IP Address(es)">IP</choice>
+      <choice value="Malware">Malware</choice>
+      <choice value="Status">Status</choice>
+      <choice value="Threat">Threat</choice>
+      <choice value="URL">URL</choice>
+      <initialValue>IP Address(es)</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$group_panel$">
+      <title>Results - Group by "$group_key$"</title>
+      <table>
+        <search base="ransomwareTracker_base">
+          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$table_panel$">
+      <title>Results - Table</title>
+      <table>
+        <search base="ransomwareTracker_base">
+          <query>| table "Firstseen (UTC)" Threat Malware Host "IP Address(es)" URL Status Registrar ASN(s) Country Invalid</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

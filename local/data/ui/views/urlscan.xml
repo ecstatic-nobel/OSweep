@@ -1,0 +1,76 @@
+<form>
+  <label>urlscan.io</label>
+  <description>Analyze the resources a website requests and the domains it contacts. (Site: https://urlscan.io/, Rate Limit: None)</description>
+  <search id="urlscan_base">
+    <query>| urlscan $ioc$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>Domain, IP, SHA256 (+)</label>
+    </input>
+    <input type="link" token="group">
+      <label>Group Results</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <default>yes</default>
+      <change>
+        <condition value="yes">
+          <set token="group_panel"></set>
+          <unset token="table_panel"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="group_panel"></unset>
+          <set token="table_panel"></set>
+        </condition>
+      </change>
+    </input>
+    <input type="dropdown" token="group_key" depends="$group_panel$">
+      <label>Group</label>
+      <choice value="URL">URL</choice>
+      <choice value="IP">IP</choice>
+      <choice value="SHA256">SHA256</choice>
+      <initialValue>URL</initialValue>
+    </input>
+    <input type="dropdown" token="group_value" depends="$group_panel$">
+      <label>By</label>
+      <choice value="URL">URL</choice>
+      <choice value="IP">IP</choice>
+      <choice value="SHA256">SHA256</choice>
+      <initialValue>SHA256</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$group_panel$">
+      <title>Results - Group by "$group_key$"</title>
+      <table>
+        <search base="urlscan_base">
+          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"
+| sort "$group_key$"</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$table_panel$">
+      <title>Results - Table</title>
+      <table>
+        <search base="urlscan_base">
+          <query>| Table URL Domain IP PTR Server City Country ASN "ASN Name" Filename "File Size" "MIME Type" SHA256 Invalid
+| sort URL</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

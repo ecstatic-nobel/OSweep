@@ -1,0 +1,74 @@
+<form>
+  <label>URLhaus</label>
+  <description>Gather malicious URLs that are being used for malware distribution. (Site: https://urlhaus.abuse.ch/, Rate Limit: None)</description>
+  <search id="urlhaus_base">
+    <query>| urlhaus $ioc$ </query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>Domain, MD5, SHA256, URL (+)</label>
+    </input>
+    <input type="link" token="group">
+      <label>Group Results</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <default>yes</default>
+      <change>
+        <condition value="yes">
+          <set token="group_panel"></set>
+          <unset token="table_panel"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="group_panel"></unset>
+          <set token="table_panel"></set>
+        </condition>
+      </change>
+    </input>
+    <input type="dropdown" token="group_key" depends="$group_panel$">
+      <label>Group</label>
+      <choice value="URL">URL</choice>
+      <choice value="Payload">Payload</choice>
+      <initialValue>URL</initialValue>
+    </input>
+    <input type="dropdown" token="group_value" depends="$group_panel$">
+      <label>By</label>
+      <choice value="URL">URL</choice>
+      <choice value="Payload">Payload</choice>
+      <initialValue>Payload</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$group_panel$">
+      <title>Results - Group by "$group_key$"</title>
+      <table>
+        <title>URLs containing 'urlhaus.abuse.ch' will return invalid to prevent scrapping the entire site.</title>
+        <search base="urlhaus_base">
+          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$table_panel$">
+      <title>Results - Table</title>
+      <table>
+        <title>URLs containing 'urlhaus.abuse.ch' will return invalid to prevent scrapping the entire site.</title>
+        <search base="urlhaus_base">
+          <query>| table URL Payload "URLhaus Link" Invalid</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,177 @@
+<form>
+  <label>ThreatCrowd</label>
+  <description>Quickly identify related infrastructure and malware. (Site: https://threatcrowd.org, Rate Limit: 1 request/10s)</description>
+  <search id="threatcrowd_base">
+    <query>| threatCrowd $ioc$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>IP, Domain, or Email (+)</label>
+    </input>
+    <input type="dropdown" token="ioc_type">
+      <label>IOC Type</label>
+      <choice value="ip">IP</choice>
+      <choice value="domain">Domain</choice>
+      <choice value="email">Email</choice>
+      <initialValue>ip</initialValue>
+      <change>
+        <condition value="ip">
+          <set token="ip_panel"></set>
+          <unset token="domain_panel"></unset>
+          <unset token="email_panel"></unset>
+          <unset token="av_panel"></unset>
+        </condition>
+        <condition value="domain">
+          <unset token="ip_panel"></unset>
+          <set token="domain_panel"></set>
+          <unset token="email_panel"></unset>
+          <unset token="av_panel"></unset>
+        </condition>
+        <condition value="email">
+          <unset token="ip_panel"></unset>
+          <unset token="domain_panel"></unset>
+          <set token="email_panel"></set>
+          <unset token="av_panel"></unset>
+        </condition>
+        <condition value="av_detect">
+          <unset token="ip_panel"></unset>
+          <unset token="domain_panel"></unset>
+          <unset token="email_panel"></unset>
+          <set token="av_panel"></set>
+        </condition>
+      </change>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$ip_panel$">
+      <title>IP - Resolutions</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup domain last_resolved
+| table domain last_resolved 
+| sort - last_resolved</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel depends="$ip_panel$">
+      <title>IP - Hashes</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup hashes
+| table hashes 
+| sort hashes</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel depends="$ip_panel$">
+      <title>IP - References</title>
+      <table>
+        <search base="threatcrowd_base">&gt;<query>| dedup references
+| table references 
+| sort references</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$domain_panel$">
+      <title>Domain - Resolutions</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup ip_address last_resolved
+| table ip_address last_resolved 
+| sort - last_resolved</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel depends="$domain_panel$">
+      <title>Domain - Emails</title>
+      <table>
+        <search base="threatcrowd_base">&gt;<query>| dedup emails
+| table emails
+| sort emails</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel depends="$domain_panel$">
+      <title>Domain - Hashes</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup hashes
+| table hashes 
+| sort hashes</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$domain_panel$">
+      <title>Domain - Subdomains</title>
+      <table>
+        <search base="threatcrowd_base">&gt;<query>| dedup subdomains
+| table subdomains
+| sort subdomains</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel depends="$domain_panel$">
+      <title>Domain - References</title>
+      <table>
+        <search base="threatcrowd_base">&gt;<query>| dedup references
+| table references 
+| sort references</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$email_panel$">
+      <title>Email - Domains</title>
+      <table>
+        <search base="threatcrowd_base">&gt;<query>| dedup domains
+| table domains
+| sort domains</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+    <panel depends="$email_panel$">
+      <title>Email - References</title>
+      <table>
+        <search base="threatcrowd_base">&gt;<query>| dedup references
+| table references 
+| sort references</query>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+</form>

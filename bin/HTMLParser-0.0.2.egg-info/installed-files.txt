@@ -1,0 +1,7 @@
+../HTMLParser.py
+../HTMLParser.pyc
+SOURCES.txt
+not-zip-safe
+PKG-INFO
+top_level.txt
+dependency_links.txt

@@ -1,0 +1,68 @@
+<form>
+  <label>CyberCrime Tracker</label>
+  <description>Interact with cybercrime-tracker.net website to gather indicators of compromise. (Site: http://cybercrime-tracker.net/, Rate Limit: None)</description>
+  <search id="cybercrimeTracker_base">
+    <query>| cybercrimeTracker $ioc$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>Domain (+)</label>
+    </input>
+    <input type="link" token="group">
+      <label>Group Results</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <default>yes</default>
+      <change>
+        <condition value="yes">
+          <set token="group_panel"></set>
+          <unset token="table_panel"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="group_panel"></unset>
+          <set token="table_panel"></set>
+        </condition>
+      </change>
+    </input>
+    <input type="dropdown" token="group_value" depends="$group_panel$">
+      <label>Group</label>
+      <choice value="URL">URL</choice>
+      <choice value="Type">Type</choice>
+      <initialValue>URL</initialValue>
+    </input>
+    <input type="dropdown" token="group_key" depends="$group_panel$">
+      <label>By</label>
+      <choice value="URL">URL</choice>
+      <choice value="Type">Type</choice>
+      <initialValue>Type</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$group_panel$">
+      <title>Results - Group by "$group_key$"</title>
+      <table>
+        <search base="cybercrimeTracker_base">
+          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$table_panel$">
+      <title>Results - Table</title>
+      <table>
+        <search base="cybercrimeTracker_base">
+          <query>| table Date URL IP "VT Latest Scan" "VT IP Info" Type Invalid</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</form>

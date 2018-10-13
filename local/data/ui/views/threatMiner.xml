@@ -1,0 +1,33 @@
+<form>
+  <label>ThreatMiner</label>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>IOC(s)</label>
+    </input>
+    <input type="dropdown" token="ioc_type">
+      <label>IOC Type</label>
+      <choice value="domain">Domain</choice>
+      <choice value="ip">IP</choice>
+      <choice value="sample">Sample</choice>
+      <choice value="imphash">Imp Hash</choice>
+      <choice value="ssdeep">SSDeep</choice>
+      <choice value="ssl">SSL</choice>
+      <choice value="email">Email (Reverse Whois)</choice>
+      <choice value="av_detect">AV Detection</choice>
+      <initialValue>domain</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Results - Domain WHOIS</title>
+      <table>
+        <search>
+          <query>| threatMiner $ioc_type$ $ioc$</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+</form>

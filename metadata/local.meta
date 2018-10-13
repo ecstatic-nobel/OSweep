@@ -1,0 +1,55 @@
+[app/ui]
+version = 7.1.3
+modtime = 1538446614.754782000
+
+[app/launcher]
+version = 7.1.3
+modtime = 1538446614.755746000
+
+[nav/default]
+version = 7.1.3
+modtime = 1539316585.029240000
+
+[views/urlhaus]
+owner = admin
+version = 7.1.3
+modtime = 1539460730.335799000
+
+[views/overview]
+owner = admin
+version = 7.1.3
+modtime = 1538726024.780425000
+
+[views/crtsh]
+owner = admin
+version = 7.1.3
+modtime = 1539460477.587046000
+
+[views/urlscan]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.1.3
+modtime = 1539461230.019530000
+
+[views/cybercrimeTracker]
+owner = admin
+version = 7.1.3
+modtime = 1539460456.903980000
+
+[views/threatMiner]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.1.3
+modtime = 1538967978.288872000
+
+[views/threatCrowd]
+owner = admin
+version = 7.1.3
+modtime = 1539460378.394702000
+
+[views/ransomwareTracker]
+owner = admin
+version = 7.1.3
+modtime = 1539460425.903390000

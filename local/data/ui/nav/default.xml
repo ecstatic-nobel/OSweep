@@ -1,0 +1,12 @@
+<nav search_view="search" >
+  <view name="crtsh" default='true' />
+  <view name="cybercrimeTracker" />
+  <view name="ransomwareTracker" />
+  <view name="threatCrowd" />
+  <view name="urlhaus" />
+  <view name="urlscan" />
+  <collection label="Misc" >
+    <view name="search" />
+    <view name="dashboards" />
+  </collection>
+</nav>
