@@ -98,7 +98,7 @@ textbox.
 3. Select the IOC type.  
 4. Click 'Submit'.  
 
-![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/threatCrowd_dashboard.png)  
+![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/threatcrowd_dashboard.png)  
 
 ##### ![URLhaus](https://urlhaus.abuse.ch/ "Get insights, browse the URLhaus database and find most recent additions.") - Dashboard
 1. Add the following cron jobs to the 'splunk' user's cron schedule:  
