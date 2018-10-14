@@ -2,11 +2,11 @@
 ##### Don't Just Search OSINT. Sweep It.  
 
 #### Description  
-If you work in a IT security, then you most likely use OSINT to help understand what it is that your SIEM alerted you on and what everyone else in the world understands about it. More than likely, you are using more than one website because most of the time OSINT will only provide you with reports based on the last analysis of the IOC. For some, that's good enough. They create network and email blocks, create new rules for their IDS/IPS, update the content in the SIEM, create new alerts for monitors in Google Alerts and DomainTools, etc etc. For others, they perform deploy these same countermeasures based on provided reports from their third-party tool that the company is paying THOUSANDS of dollars for. The problem with both of these it that the analyst needs to dig a little deeper (ex. FULLY deobfuscate a PowerShell command found in a malicious macro) to gather all of the IOCs. And what if the additional IOC(s) you are basing your on has nothing to do with what is true today? And then you get pwned? Then other questions arise...  
+If you work in a IT security, then you most likely use OSINT to help understand what it is that your SIEM alerted you on and what everyone else in the world understands about it. More than likely, you are using more than one website because most of the time OSINT will only provide you with reports based on the last analysis of the IOC. For some, that's good enough. They create network and email blocks, create new rules for their IDS/IPS, update the content in the SIEM, create new alerts for monitors in Google Alerts and DomainTools, etc etc. For others, they perform deploy these same countermeasures based on provided reports from their third-party tool that the company is paying THOUSANDS of dollars for. The problem with both of these it that the analyst needs to dig a little deeper (ex. FULLY deobfuscate a PowerShell command found in a malicious macro) to gather all of the IOCs. And what if the additional IOC(s) you are basing your analysis on has nothing to do with what is true today? And then you get pwned? Then other questions arise...  
 
 See where this is headed? You're about to get a pink slip and walked out of the building so you can start looking for another job in a different line of work.  
 
-So why did you get pwned? Because if wasted time gathering all the IOCs for that one alert manually, it would have taken you half of your shift to complete and you would've got pwned regardless.  
+So why did you get pwned? Because if you wasted time gathering all the IOCs for that one alert manually, it would have taken you half of your shift to complete and you would've got pwned regardless.  
 
 The fix? **OSweep™**.  
 
