@@ -50,8 +50,7 @@ def process_master(results):
     else:
         provided_iocs = sys.argv[1:]
 
-    ioc_strs = ransomware_tracker.process_iocs(provided_iocs)
-    return ransomware_tracker.create_dict(ioc_strs)
+    return ransomware_tracker.process_iocs(provided_iocs)
 
 def main():
     """ """

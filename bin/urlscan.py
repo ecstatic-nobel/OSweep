@@ -32,34 +32,22 @@ import sys
 import traceback
 
 import splunk.Intersplunk as InterSplunk
-import validators
 
 import urlscan_api as urlscan
 
 
 def process_master(results):
     """Return dictionary containing data returned from urlscan.io API."""
-    splunk_dict = []
-
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
     else:
         provided_iocs = sys.argv[1:]
 
-    for provided_ioc in set(provided_iocs):
-        if validators.domain(provided_ioc) or validators.ipv4(provided_ioc) or \
-           validators.md5(provided_ioc) or validators.sha256(provided_ioc):
-            resp_dicts = urlscan.search_urlscan(provided_ioc)
-            
-            for resp_dict in resp_dicts:
-                splunk_dict.append(resp_dict)
-        else:
-            invalid_ioc = urlscan.invalid_dict(provided_ioc)
-            splunk_dict.append(invalid_ioc)
-    return splunk_dict
+    return urlscan.process_iocs(provided_iocs)
 
 def main():
     """ """
+    
     try:
         results, dummy_results, settings = InterSplunk.getOrganizedResults()
 

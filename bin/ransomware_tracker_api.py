@@ -30,13 +30,11 @@ def write_file(data_feed, file_path):
 
 def process_iocs(provided_iocs):
     """Return a list of matching strings."""
-    lookup_path = '/opt/splunk/etc/apps/osweep/lookups'
-    open_file   = open('{}/ransomware_tracker_feed.csv'.format(lookup_path), 'r')
-    global data_feed
-    data_feed   = open_file.read().splitlines()
+    splunk_table = []
+    lookup_path  = '/opt/splunk/etc/apps/osweep/lookups'
+    open_file    = open('{}/ransomware_tracker_feed.csv'.format(lookup_path), 'r')
+    data_feed    = open_file.read().splitlines()
     open_file.close()
-
-    ioc_list = []
 
     for provided_ioc in set(provided_iocs):
         provided_ioc = provided_ioc.replace('hxxp', 'http')
@@ -46,33 +44,50 @@ def process_iocs(provided_iocs):
         provided_ioc = provided_ioc.replace('[D]', '.')
 
         if len(provided_ioc) < 2:
-            ioc_list.append('N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,{}'.format(provided_ioc))
+            splunk_table.append(invalid_dict(provided_ioc))
             continue
 
+        line_found = False
         for line in data_feed:
             if provided_ioc.lower() in line.lower():
-                ioc_list.append(line)
-    return ioc_list
+                line_found = True
+                splunk_table.append(create_dict(line))
+        
+        if line_found == False:
+            splunk_table.append(invalid_dict(provided_ioc))
+    return splunk_table
 
-def create_dict(ioc_strs):
+def create_dict(line):
     """Return dictionary to feed to Splunk."""
-    splunk_dicts   = []
     splunk_headers = [
-        'Firstseen (UTC)',
-        'Threat',
-        'Malware',
-        'Host',
-        'URL',
-        'Status',
-        'Registrar',
-        'IP Address(es)',
-        'ASN(s)',
-        'Country',
-        'Invalid'
+        "Firstseen (UTC)",
+        "Threat",
+        "Malware",
+        "Host",
+        "URL",
+        "Status",
+        "Registrar",
+        "IP Address(es)",
+        "ASN(s)",
+        "Country",
+        "Invalid"
     ]
+    splunk_values = line.replace('","', '^^').replace('"', '').split('^^')
+    splunk_values.append(None)
+    return OrderedDict(zip(splunk_headers, splunk_values))
 
-    for ioc_str in ioc_strs:
-        splunk_values = ioc_str.replace('","', '^^').replace('"', '').split('^^')
-        splunk_values.append('N/A')
-        splunk_dicts.append(OrderedDict(zip(splunk_headers, splunk_values)))
-    return splunk_dicts
+def invalid_dict(provided_ioc):
+    """Return a dictionary for the invalid IOC."""
+    invalid_ioc = {}
+    invalid_ioc["Firstseen (UTC)"] = None
+    invalid_ioc["Threat"]          = None
+    invalid_ioc["Malware"]         = None
+    invalid_ioc["Host"]            = None
+    invalid_ioc["URL"]             = None
+    invalid_ioc["Status"]          = None
+    invalid_ioc["Registrar"]       = None
+    invalid_ioc["IP Address(es)"]  = None
+    invalid_ioc["ASN(s)"]          = None
+    invalid_ioc["Country"]         = None
+    invalid_ioc["Invalid"]         = provided_ioc
+    return invalid_ioc
