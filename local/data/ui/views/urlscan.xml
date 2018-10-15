@@ -26,14 +26,14 @@
         </condition>
       </change>
     </input>
-    <input type="dropdown" token="group_key" depends="$group_panel$">
+    <input type="dropdown" token="group_value" depends="$group_panel$">
       <label>Group</label>
       <choice value="URL">URL</choice>
       <choice value="IP">IP</choice>
       <choice value="SHA256">SHA256</choice>
       <initialValue>URL</initialValue>
     </input>
-    <input type="dropdown" token="group_value" depends="$group_panel$">
+    <input type="dropdown" token="group_key" depends="$group_panel$">
       <label>By</label>
       <choice value="URL">URL</choice>
       <choice value="IP">IP</choice>
