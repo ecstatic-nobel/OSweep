@@ -29,46 +29,23 @@ Notes: Search for subdomains by passing 'wildcard' as the first argument:
 Debugger: open("/tmp/splunk_script.txt", "a").write('{}: <MSG>\n'.format(<VAR>))
 """
 
-import re
 import sys
 import traceback
 
 import splunk.Intersplunk as InterSplunk
-import validators
 
 import crtsh_api as crtsh
 
 def process_master(results):
     """Return dictionary containing data returned from the (unofficial) crt.sh 
     API."""
-    splunk_dict = []
-
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
     elif sys.argv[1] == 'wildcard' and len(sys.argv) > 2:
         provided_iocs = sys.argv[2:]
     elif sys.argv[1] != 'wildcard' and len(sys.argv) > 1:
         provided_iocs = sys.argv[1:]
-
-    for provided_ioc in set(provided_iocs):
-        if validators.domain(provided_ioc) and sys.argv[1] == 'wildcard':
-            crt_dicts = crtsh.search(provided_ioc, wildcard=True)
-        elif validators.domain(provided_ioc) and sys.argv[1] != 'wildcard':
-            crt_dicts = crtsh.search(provided_ioc, wildcard=False)
-        else:
-            invalid_ioc = crtsh.invalid_dict(provided_ioc)
-            splunk_dict.append(invalid_ioc)
-            continue
-
-        if len(crt_dicts) == 0:
-            invalid_ioc = crtsh.invalid_dict(provided_ioc)
-            splunk_dict.append(invalid_ioc)
-            continue
-
-        for crt_dict in crt_dicts:
-            crt_dict["Invalid"] = "N/A"
-            splunk_dict.append(crt_dict)
-    return splunk_dict
+    return crtsh.process_iocs(provided_iocs)
 
 def main():
     """ """
