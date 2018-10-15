@@ -40,6 +40,8 @@
         <option name="wrap">true</option>
       </table>
     </panel>
+  </row>
+  <row>
     <panel depends="$no_wildcard_panel$">
       <title>Results - No Wildcard</title>
       <table>
