@@ -19,7 +19,7 @@ Instructions:
 1. Add the following cron jobs to the 'splunk' user's cron schedule:
     */5 * * * * /opt/splunk/etc/apps/osweep/bin/ransomware_tracker.py feed
 2. Manually download URL dump
-    | ransomware_tracker feed
+    | ransomwareTracker feed
 3. Switch to the Ransomware Tracker dashboard in the OSweep app.
 4. Add the list of IOCs to the 'Domain, IP, Malware, Status, Threat, URL (+)' 
 textbox.
