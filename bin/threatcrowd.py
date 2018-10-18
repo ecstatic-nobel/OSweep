@@ -33,48 +33,22 @@ Debugger: open("/tmp/splunk_script.txt", "a").write('{}: <MSG>\n'.format(<VAR>))
 """
 
 import sys
-from time import sleep
 import traceback
 
 import splunk.Intersplunk as InterSplunk
-import validators
 
 import threatcrowd_api as threatcrowd
 
 
 def process_master(results):
-    """Return dictionary containing data returned from the (unofficial) 
-    CryberCrime Tracker API."""
-    splunk_dict = []
-
+    """Process input (results or arguments) from Splunk."""
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
     else:
-        provided_iocs = sys.argv[1:]
-
-    for provided_ioc in set(provided_iocs):
-        if validators.ipv4(provided_ioc) or validators.domain(provided_ioc):
-            threatcrowd_dicts = threatcrowd.process_host(provided_ioc)
-        elif validators.email(provided_ioc):
-            threatcrowd_dicts = threatcrowd.process_email(provided_ioc)
-        else:
-            splunk_dict.append({"Invalid": provided_ioc})
-            continue
-
-        if len(threatcrowd_dicts) == 0:
-            splunk_dict.append({"Invalid": provided_ioc})
-            continue
-
-        for threatcrowd_dict in threatcrowd_dicts:
-            splunk_dict.append(threatcrowd_dict)
-
-        if len(provided_iocs) > 1:
-            sleep(10)
-            
-    return splunk_dict
+        provided_iocs = sys.argv[1:]            
+    return threatcrowd.process_iocs(provided_iocs)
 
 def main():
-    """ """
     try:
         results, dummy_results, settings = InterSplunk.getOrganizedResults()
 

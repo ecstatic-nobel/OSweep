@@ -37,7 +37,7 @@ import urlscan_api as urlscan
 
 
 def process_master(results):
-    """Return dictionary containing data returned from urlscan.io API."""
+    """Process input (results or arguments) from Splunk."""
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
     else:
@@ -46,8 +46,6 @@ def process_master(results):
     return urlscan.process_iocs(provided_iocs)
 
 def main():
-    """ """
-    
     try:
         results, dummy_results, settings = InterSplunk.getOrganizedResults()
 

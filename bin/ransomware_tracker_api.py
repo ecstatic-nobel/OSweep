@@ -29,7 +29,7 @@ def write_file(data_feed, file_path):
     return
 
 def process_iocs(provided_iocs):
-    """Return a list of matching strings."""
+    """Return data formatted for Splunk from Ransomware Tracker."""
     splunk_table = []
     lookup_path  = '/opt/splunk/etc/apps/osweep/lookups'
     open_file    = open('{}/ransomware_tracker_feed.csv'.format(lookup_path), 'r')
@@ -37,8 +37,9 @@ def process_iocs(provided_iocs):
     open_file.close()
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace('hxxp', 'http')
+        provided_ioc = provided_ioc.replace('htxp', 'http')
         provided_ioc = provided_ioc.replace('hxtp', 'http')
+        provided_ioc = provided_ioc.replace('hxxp', 'http')
         provided_ioc = provided_ioc.replace('[.]', '.')
         provided_ioc = provided_ioc.replace('[d]', '.')
         provided_ioc = provided_ioc.replace('[D]', '.')
@@ -58,7 +59,7 @@ def process_iocs(provided_iocs):
     return splunk_table
 
 def create_dict(line):
-    """Return dictionary to feed to Splunk."""
+    """Return an ordered dictionary."""
     splunk_headers = [
         "Firstseen (UTC)",
         "Threat",

@@ -37,8 +37,7 @@ import splunk.Intersplunk as InterSplunk
 import crtsh_api as crtsh
 
 def process_master(results):
-    """Return dictionary containing data returned from the (unofficial) crt.sh 
-    API."""
+    """Process input (results or arguments) from Splunk."""
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
     elif sys.argv[1] == 'wildcard' and len(sys.argv) > 2:
@@ -48,7 +47,6 @@ def process_master(results):
     return crtsh.process_iocs(provided_iocs)
 
 def main():
-    """ """
     try:
         results, dummy_results, settings = InterSplunk.getOrganizedResults()
 

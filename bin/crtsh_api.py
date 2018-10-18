@@ -12,7 +12,7 @@ import validators
 
 
 def process_iocs(provided_iocs):
-    """Search crt.sh for the given domain."""
+    """Return data formatted for Splunk from crt.sh."""
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
@@ -34,7 +34,7 @@ def process_iocs(provided_iocs):
     return splunk_table
 
 def search_crtsh(provided_ioc):
-    """ """
+    """Search crt.sh for the given domain."""
     if sys.argv[1] == "wildcard":
         provided_ioc = "%25.{}".format(provided_ioc) # provided_ioc -> domain
 

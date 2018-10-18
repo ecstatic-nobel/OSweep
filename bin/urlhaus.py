@@ -41,17 +41,14 @@ import urlhaus_api as urlhaus
 
 
 def process_master(results):
-    """Return dictionary containing data pulled from the URLHaus website."""
-    if not results == None:
-        provided_iocs = [x.values()[0] for x in results]
+    """Process input (results or arguments) from Splunk."""
+    if results != None:
+        provided_iocs = [y for x in results for y in x.values()]
     else:
         provided_iocs = sys.argv[1:]
-
-    ioc_list = urlhaus.process_iocs(provided_iocs)
-    return urlhaus.create_dict(ioc_list)
+    return urlhaus.process_iocs(provided_iocs)
 
 def main():
-    """ """
     lookup_path = '/opt/splunk/etc/apps/osweep/lookups'
     file_path   = '{}/urlhaus_url_feed.csv'.format(lookup_path)
 

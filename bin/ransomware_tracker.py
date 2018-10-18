@@ -44,16 +44,14 @@ import ransomware_tracker_api as ransomware_tracker
 
 
 def process_master(results):
-    """Return dictionary containing data pulled from the URLHaus website."""
-    if not results == None:
-        provided_iocs = [x.values()[0] for x in results]
+    """Process input (results or arguments) from Splunk."""
+    if results != None:
+        provided_iocs = [y for x in results for y in x.values()]
     else:
         provided_iocs = sys.argv[1:]
-
     return ransomware_tracker.process_iocs(provided_iocs)
 
 def main():
-    """ """
     lookup_path = '/opt/splunk/etc/apps/osweep/lookups'
     file_path   = '{}/ransomware_tracker_feed.csv'.format(lookup_path)
 

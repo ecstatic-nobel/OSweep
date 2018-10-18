@@ -5,18 +5,49 @@ hosting.
 """
 
 import re
+
 from bs4 import BeautifulSoup
 import requests
+import validators
 
 
-def search(query, offset=0, limit=10000):
+def process_iocs(provided_iocs):
+    """Return data formatted for Splunk from CyberCrime Tracker."""
+    splunk_table = []
+
+    for provided_ioc in set(provided_iocs):
+        provided_ioc = provided_ioc.replace('htxp', 'http')
+        provided_ioc = provided_ioc.replace('hxtp', 'http')
+        provided_ioc = provided_ioc.replace('hxxp', 'http')
+        provided_ioc = provided_ioc.replace('[.]', '.')
+        provided_ioc = provided_ioc.replace('[d]', '.')
+        provided_ioc = provided_ioc.replace('[D]', '.')
+
+        if validators.domain(provided_ioc):
+            cct_dicts = query_cct(provided_ioc)
+        else:
+            invalid_ioc = invalid_dict(provided_ioc)
+            splunk_table.append(invalid_ioc)
+            continue
+
+        if len(cct_dicts) == 0:
+            invalid_ioc = invalid_dict(provided_ioc)
+            splunk_table.append(invalid_ioc)
+            continue
+
+        for cct_dict in cct_dicts:
+            cct_dict["Invalid"] = None
+            splunk_table.append(cct_dict)
+    return splunk_table
+
+def query_cct(provided_ioc, offset=0, limit=10000):
     """Search cybercrime-tracker.net for specific information about panels."""
     results   = []
     api       = "http://cybercrime-tracker.net/index.php?search={}&s={}&m={}"
     vt_latest = 'https://www.virustotal.com/latest-scan/http://{}'
     vt_ip     = 'https://www.virustotal.com/en/ip-address/{}/information/'
     useragent = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
-    base_url  = api.format(query, offset, limit)
+    base_url  = api.format(provided_ioc, offset, limit)
     resp      = requests.get(url=base_url, headers={'User-Agent': useragent})
 
     if resp.status_code == 200:
@@ -46,11 +77,11 @@ def search(query, offset=0, limit=10000):
 def invalid_dict(provided_ioc):
     """Return a dictionary for the invalid IOC."""
     invalid_ioc = {}
-    invalid_ioc["URL"]            = "N/A"
-    invalid_ioc["IP"]             = "N/A"
-    invalid_ioc["VT Latest Scan"] = "N/A"
-    invalid_ioc["VT IP Info"]     = "N/A"
-    invalid_ioc["Date"]           = "N/A"
-    invalid_ioc["Type"]           = "N/A"
+    invalid_ioc["URL"]            = None
+    invalid_ioc["IP"]             = None
+    invalid_ioc["VT Latest Scan"] = None
+    invalid_ioc["VT IP Info"]     = None
+    invalid_ioc["Date"]           = None
+    invalid_ioc["Type"]           = None
     invalid_ioc["Invalid"]        = provided_ioc
     return invalid_ioc

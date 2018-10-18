@@ -31,47 +31,19 @@ import sys
 import traceback
 
 import splunk.Intersplunk as InterSplunk
-import validators
 
 import cybercrime_tracker_api as cybercrime_tracker
 
 
 def process_master(results):
-    """Return dictionary containing data returned from the (unofficial) 
-    CryberCrime Tracker API."""
-    splunk_dict = []
-
+    """Process input (results or arguments) from Splunk."""
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
-    elif len(sys.argv) > 1:
+    else:
         provided_iocs = sys.argv[1:]
-
-    for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace('hxxp', 'http')
-        provided_ioc = provided_ioc.replace('hxtp', 'http')
-        provided_ioc = provided_ioc.replace('[.]', '.')
-        provided_ioc = provided_ioc.replace('[d]', '.')
-        provided_ioc = provided_ioc.replace('[D]', '.')
-
-        if validators.domain(provided_ioc):
-            cct_dicts = cybercrime_tracker.search(provided_ioc)
-        else:
-            invalid_ioc = cybercrime_tracker.invalid_dict(provided_ioc)
-            splunk_dict.append(invalid_ioc)
-            continue
-
-        if len(cct_dicts) == 0:
-            invalid_ioc = cybercrime_tracker.invalid_dict(provided_ioc)
-            splunk_dict.append(invalid_ioc)
-            continue
-
-        for cct_dict in cct_dicts:
-            cct_dict["Invalid"] = "N/A"
-            splunk_dict.append(cct_dict)
-    return splunk_dict
+    return cybercrime_tracker.process_iocs(provided_iocs)
 
 def main():
-    """ """
     try:
         results, dummy_results, settings = InterSplunk.getOrganizedResults()
 

@@ -8,7 +8,7 @@ import validators
 
 
 def process_iocs(provided_iocs):
-    """Return data from urlscan.io API."""
+    """Return data formatted for Splunk from urlscan.io."""
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
@@ -28,7 +28,7 @@ def process_iocs(provided_iocs):
     return splunk_table
 
 def rename_dicts(results):
-    """Return string containing page and download data from urlscan.io API."""
+    """Rename the keys in of the returned dictionaries from urlscan.io API."""
     ioc_dicts = []
 
     for result in results:

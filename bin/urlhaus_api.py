@@ -29,7 +29,7 @@ def write_file(data_feed, file_path):
     return
 
 def process_iocs(provided_iocs):
-    """Return a list of strings ('URL, Payload, URLHaus Link')."""
+    """Return data formatted for Splunk from URLhaus."""
     lookup_path = '/opt/splunk/etc/apps/osweep/lookups'
     open_file   = open('{}/urlhaus_url_feed.csv'.format(lookup_path), 'r')
     global data_feed
@@ -45,8 +45,9 @@ def process_iocs(provided_iocs):
     parser = ParserHTML()
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace('hxxp', 'http')
+        provided_ioc = provided_ioc.replace('htxp', 'http')
         provided_ioc = provided_ioc.replace('hxtp', 'http')
+        provided_ioc = provided_ioc.replace('hxxp', 'http')
         provided_ioc = provided_ioc.replace('[.]', '.')
         provided_ioc = provided_ioc.replace('[d]', '.')
         provided_ioc = provided_ioc.replace('[D]', '.')
@@ -68,7 +69,9 @@ def process_iocs(provided_iocs):
         
         for ioc_str in ioc_strs:
             ioc_list.append(ioc_str)
-    return ioc_list
+
+    splunk_table = create_dict(ioc_list)
+    return splunk_table
 
 def get_analysis(provided_ioc):
     """Return a list of strings ('URL, URLHaus Link') from the URL dump."""
@@ -203,13 +206,12 @@ class ParserHTML(HTMLParser):
             self.parsed_payloads.append(data)
         return
 
-def create_dict(raw_list):
+def create_dict(ioc_list):
     """Return dictionary to feed to Splunk."""
-
     splunk_dicts   = []
     splunk_headers = ['URL', 'Payload', 'URLhaus Link', 'Invalid']
 
-    for data in raw_list:
+    for data in ioc_list:
         splunk_values = []
         url     = data.split(',')[0]
         urlhaus = data.split(',')[1]
