@@ -2,7 +2,6 @@
 
 #
 # OSweep Configurations
-# Sweeping OSINT the Right Way!
 #
 
 # GreyNoise API Key
