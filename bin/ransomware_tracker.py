@@ -52,12 +52,28 @@ def process_master(results):
     return ransomware_tracker.process_iocs(provided_iocs)
 
 def main():
-    lookup_path = '/opt/splunk/etc/apps/osweep/lookups'
-    file_path   = '{}/ransomware_tracker_feed.csv'.format(lookup_path)
-
     if sys.argv[1].lower() == 'feed':
-        data_feed = ransomware_tracker.get_feed()
+        lookup_path  = '/opt/splunk/etc/apps/osweep/lookups'
+        file_path    = '{}/ransomware_tracker_feed.csv'.format(lookup_path)
+        malware_list = '{}/ransomware_tracker_malware.csv'.format(lookup_path)
+        threat_list  = '{}/ransomware_tracker_threats.csv'.format(lookup_path)
+        data_feed    = ransomware_tracker.get_feed()
+
         ransomware_tracker.write_file(data_feed, file_path)
+
+        open_file = open(file_path, 'r')
+        data_feed = open_file.read().splitlines()
+        open_file.close()
+
+        with open(malware_list, 'w') as mfile, open(threat_list, 'w') as tfile:
+            mfile.write('Malware\n')
+            tfile.write('Threat\n')
+
+            for data in data_feed[1:]:
+                malware = data.split(',')[2]
+                threat  = data.split(',')[1]
+                mfile.write('{}\n'.format(malware.encode("UTF-8")))
+                tfile.write('{}\n'.format(threat.encode("UTF-8")))
         exit(0)
 
     try:

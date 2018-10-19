@@ -49,11 +49,10 @@ def process_master(results):
     return urlhaus.process_iocs(provided_iocs)
 
 def main():
-    lookup_path = '/opt/splunk/etc/apps/osweep/lookups'
-    file_path   = '{}/urlhaus_url_feed.csv'.format(lookup_path)
-
     if sys.argv[1].lower() == 'feed':
-        data_feed = urlhaus.get_feed()
+        lookup_path = '/opt/splunk/etc/apps/osweep/lookups'
+        file_path   = '{}/urlhaus_url_feed.csv'.format(lookup_path)
+        data_feed   = urlhaus.get_feed()
         urlhaus.write_file(data_feed, file_path)
         exit(0)
 

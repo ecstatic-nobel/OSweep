@@ -24,7 +24,16 @@ def get_feed():
 def write_file(data_feed, file_path):
     """Write data to a file."""
     with open(file_path, 'w') as open_file:
-        for line in data_feed:
+        data_feed    = data_feed[8:-1]
+        data_feed[0] = data_feed[0][2:]
+
+        open_file.write('{}\n'.format(data_feed[0]))
+
+        for line in data_feed[1:]:
+            line = line.replace('","', '^^')
+            line = line.replace(',', ' ')
+            line = line.replace('^^', ',')
+            line = line.replace('"', '')
             open_file.write('{}\n'.format(line))
     return
 
@@ -36,6 +45,16 @@ def process_iocs(provided_iocs):
     data_feed    = open_file.read().splitlines()
     open_file.close()
 
+    open_file = open('{}/ransomware_tracker_malware.csv'.format(lookup_path), 'r')
+    malware   = set(open_file.read().splitlines()[1:])
+    malware   = [x.lower() for x in malware]
+    open_file.close()
+
+    open_file = open('{}/ransomware_tracker_threats.csv'.format(lookup_path), 'r')
+    threats   = set(open_file.read().splitlines()[1:])
+    threats   = [x.lower() for x in threats]
+    open_file.close()
+
     for provided_ioc in set(provided_iocs):
         provided_ioc = provided_ioc.replace('htxp', 'http')
         provided_ioc = provided_ioc.replace('hxtp', 'http')
@@ -44,9 +63,13 @@ def process_iocs(provided_iocs):
         provided_ioc = provided_ioc.replace('[d]', '.')
         provided_ioc = provided_ioc.replace('[D]', '.')
 
-        if len(provided_ioc) < 2:
-            splunk_table.append(invalid_dict(provided_ioc))
-            continue
+        if not validators.domain(provided_ioc) and \
+           not validators.ipv4(provided_ioc) and \
+           not validators.url(provided_ioc) and \
+           provided_ioc.lower() not in malware and \
+           provided_ioc.lower() not in threats:
+           splunk_table.append(invalid_dict(provided_ioc))
+           continue
 
         line_found = False
         for line in data_feed:
@@ -73,7 +96,7 @@ def create_dict(line):
         "Country",
         "Invalid"
     ]
-    splunk_values = line.replace('","', '^^').replace('"', '').split('^^')
+    splunk_values = line.split(',')
     splunk_values.append(None)
     return OrderedDict(zip(splunk_headers, splunk_values))
 

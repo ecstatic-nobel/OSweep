@@ -29,7 +29,7 @@ def process_iocs(provided_iocs):
             continue
 
         for crt_dict in crt_dicts:
-            crt_dict["Invalid"] = None
+            crt_dict["Invalid"] = ""
             splunk_table.append(crt_dict)
     return splunk_table
 
@@ -50,26 +50,26 @@ def search_crtsh(provided_ioc):
 
         for cert in cert_history:
             ncert = {}
-            ncert["Issuer CA ID"]        = cert.get("issuer_ca_id", None)
-            ncert["Issuer Name"]         = cert.get("issuer_name", None)
-            ncert["Name Value"]          = cert.get("name_value", None)
-            ncert["Min Cert ID"]         = cert.get("min_cert_id", None)
-            ncert["Min Entry Timestamp"] = cert.get("min_entry_timestamp", None)
-            ncert["Not Before"]          = cert.get("not_before", None)
-            ncert["Not After"]           = cert.get("not_after", None)
-            ncert["Invalid"]             = None
+            ncert["Issuer CA ID"]        = cert.get("issuer_ca_id", "")
+            ncert["Issuer Name"]         = cert.get("issuer_name", "")
+            ncert["Name Value"]          = cert.get("name_value", "")
+            ncert["Min Cert ID"]         = cert.get("min_cert_id", "")
+            ncert["Min Entry Timestamp"] = cert.get("min_entry_timestamp", "")
+            ncert["Not Before"]          = cert.get("not_before", "")
+            ncert["Not After"]           = cert.get("not_after", "")
+            ncert["Invalid"]             = ""
             crt_dicts.append(ncert)
     return crt_dicts
 
 def invalid_dict(provided_ioc):
     """Return a dictionary for the invalid IOC."""
     invalid_ioc = {}
-    invalid_ioc["Issuer CA ID"]        = None
-    invalid_ioc["Issuer Name"]         = None
-    invalid_ioc["Name Value"]          = None
-    invalid_ioc["Min Cert ID"]         = None
-    invalid_ioc["Min Entry Timestamp"] = None
-    invalid_ioc["Not Before"]          = None
-    invalid_ioc["Not After"]           = None
+    invalid_ioc["Issuer CA ID"]        = ""
+    invalid_ioc["Issuer Name"]         = ""
+    invalid_ioc["Name Value"]          = ""
+    invalid_ioc["Min Cert ID"]         = ""
+    invalid_ioc["Min Entry Timestamp"] = ""
+    invalid_ioc["Not Before"]          = ""
+    invalid_ioc["Not After"]           = ""
     invalid_ioc["Invalid"]             = provided_ioc
     return invalid_ioc

@@ -24,6 +24,8 @@ def get_feed():
 def write_file(data_feed, file_path):
     """Write data to a file."""
     with open(file_path, 'w') as open_file:
+        data_feed    = data_feed[8:]
+        data_feed[0] = data_feed[0][2:]
         for line in data_feed:
             open_file.write('{}\n'.format(line))
     return
@@ -53,7 +55,7 @@ def process_iocs(provided_iocs):
         provided_ioc = provided_ioc.replace('[D]', '.')
 
         if provided_ioc in empty_files:
-            invalid_str = 'N/A,N/A,{},{}'.format(provided_ioc, provided_ioc)
+            invalid_str = ',,{},{}'.format(provided_ioc, provided_ioc)
             ioc_list.append(invalid_str)
             continue
 
@@ -63,7 +65,7 @@ def process_iocs(provided_iocs):
         elif validators.md5(provided_ioc) or validators.sha256(provided_ioc):
             ioc_strs = get_urls(provided_ioc)
         else:
-            invalid_str = 'N/A,N/A,N/A,{}'.format(provided_ioc)
+            invalid_str = ',,,{}'.format(provided_ioc)
             ioc_list.append(invalid_str)
             continue
         
@@ -88,19 +90,19 @@ def get_analysis(provided_ioc):
         provided_ioc = provided_ioc[:-1]
 
     if urlhaus_match.match(provided_ioc):
-        return ['{},N/A'.format(provided_ioc)]
+        return ['{},'.format(provided_ioc)]
 
     # if amazon_bmatch.match(provided_ioc) and \
     #    not amazon_gmatch.match(provided_ioc):
-    #     return ['{},N/A'.format(provided_ioc)]
+    #     return ['{},'.format(provided_ioc)]
 
     # if google_bmatch.match(provided_ioc) and \
     #    not google_gmatch.match(provided_ioc):
-    #     return ['{},N/A'.format(provided_ioc)]
+    #     return ['{},'.format(provided_ioc)]
 
     # if onedrive_bmatch.match(provided_ioc) and \
     #    not onedrive_gmatch.match(provided_ioc):
-    #     return ['{},N/A'.format(provided_ioc)]
+    #     return ['{},'.format(provided_ioc)]
     
     line_found = False
 
@@ -113,7 +115,7 @@ def get_analysis(provided_ioc):
             analysis_strs.append(analysis_str)
 
     if line_found == False:
-        analysis_strs.append('{},N/A'.format(provided_ioc))
+        analysis_strs.append('{},'.format(provided_ioc))
     return analysis_strs
 
 def get_payloads(analysis_strs):
@@ -126,8 +128,8 @@ def get_payloads(analysis_strs):
         url          = analysis_str.split(',')[0]
         urlhaus_link = analysis_str.split(',')[1]
 
-        if analysis_str.endswith(',N/A'):
-            ioc_strs.append('N/A,N/A,N/A,{}'.format(url))
+        if analysis_str.endswith(','):
+            ioc_strs.append(',,,{}'.format(url))
             continue
 
         if urlhaus_gmatch.match(analysis_str):
@@ -140,11 +142,11 @@ def get_payloads(analysis_strs):
             
             if len(parser.parsed_payloads) > 0:
                 for payload in parser.parsed_payloads:
-                    ioc_strs.append('{},{},N/A'.format(analysis_str, payload))
+                    ioc_strs.append('{},{},'.format(analysis_str, payload))
             else:
-                ioc_strs.append('{},N/A,No Payloads,N/A'.format(url))
+                ioc_strs.append('{},,No Payloads,'.format(url))
         else:
-            ioc_strs.append('N/A,N/A,N/A,{}'.format(url))
+            ioc_strs.append(',,,{}'.format(url))
     return ioc_strs
 
 def get_urls(provided_payload):
@@ -161,11 +163,11 @@ def get_urls(provided_payload):
             break
 
         if len(parser.parsed_urls) == 0 and page == 0:
-            url_list.append('N/A,N/A,N/A,{}'.format(provided_payload))
+            url_list.append(',,,{}'.format(provided_payload))
             break
 
         for parsed_url in parser.parsed_urls:
-            url_list.append('{},{}{},{},N/A'.format(parsed_url,
+            url_list.append('{},{}{},{},'.format(parsed_url,
                                                     uh_browser,
                                                     provided_payload,
                                                     provided_payload))
