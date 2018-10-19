@@ -1,0 +1,74 @@
+<form>
+  <label>GreyNoise</label>
+  <description>Analyze data on Internet-wide scanners (benign scanners such as Shodan.io and malicious actors like SSH and telnet worms). (Site: https://viz.greynoise.io/table, Rate Limit: None)</description>
+  <search id="greynoise_base">
+    <query>| greyNoise $ioc$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <fieldset submitButton="true" autoRun="false">
+    <input type="text" token="ioc">
+      <label>Domain, IP, Scanner Name (+)</label>
+      <default></default>
+    </input>
+    <input type="link" token="group">
+      <label>Group Results</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <change>
+        <condition value="yes">
+          <set token="group_panel"></set>
+          <unset token="table_panel"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="group_panel"></unset>
+          <set token="table_panel"></set>
+        </condition>
+      </change>
+      <initialValue>no</initialValue>
+    </input>
+    <input type="dropdown" token="group_value" depends="$group_panel$">
+      <label>Group</label>
+      <choice value="Category">Category</choice>
+      <choice value="Name">Name</choice>
+      <choice value="Intention">Intention</choice>
+      <choice value="RDNS Parent">RDNS Parent</choice>
+      <initialValue>RDNS Parent</initialValue>
+    </input>
+    <input type="dropdown" token="group_key" depends="$group_panel$">
+      <label>By</label>
+      <choice value="Category">Category</choice>
+      <choice value="Name">Name</choice>
+      <choice value="Intention">Intention</choice>
+      <choice value="RDNS Parent">RDNS Parent</choice>
+      <initialValue>Name</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$group_panel$">
+      <title>Results - Group by "$group_key$"</title>
+      <table>
+        <search base="greynoise_base">
+          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"</query>
+        </search>
+        <option name="count">25</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$table_panel$">
+      <title>Results - Table</title>
+      <table>
+        <search base="greynoise_base">
+          <query>| table "Category" "Confidence" "Last Updated" "Name" "IP" "Intention" "First Seen" "Datacenter" "Tor" "RDNS Parent" "Link" "Org" "OS" "ASN" "RDNS" "Invalid"
+| sort - "Last Updated"</query>
+        </search>
+        <option name="count">25</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</form>
