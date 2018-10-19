@@ -2,12 +2,11 @@
 """
 Description: Use GreyNoise to analyze data on Internet-wide scanners (benign 
 scanners such as Shodan.io and malicious actors like SSH and telnet worms). The 
-script accepts a list of strings (domain and/or IP):
+script accepts a list of strings (domain, IP, and/or scanner name):
     | greyNoise <IOCs>
 
-or input from the pipeline (any field where the value is a domain, IP, malware
-family, site status, threat type, and/or URL). The first argument is the name of 
-one field:
+or input from the pipeline (any field where the value is a domain, IP, scanner 
+name). The first argument is the name of one field:
     <search>
     | fields <FIELD>
     | greyNoise <FIELD>
@@ -24,7 +23,7 @@ Instructions:
 | greyNoise feed
 ```
 3. Switch to the **GreyNoise** dashboard in the OSweep app.  
-4. Add the list of IOCs to the 'Domain, IP (+)' textbox.  
+4. Add the list of IOCs to the 'Domain, IP, Scanner Name (+)' textbox.  
 5. Select whether the results will be grouped and how from the dropdowns.  
 6. Click 'Submit'. 
 
