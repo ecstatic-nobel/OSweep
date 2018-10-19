@@ -83,7 +83,7 @@ or to search for subdomains,
 | greyNoise feed
 ```
 3. Switch to the **GreyNoise** dashboard in the OSweep™ app.  
-4. Add the list of IOCs to the 'Domain, IP (+)' textbox.  
+4. Add the list of IOCs to the 'Domain, IP, Scanner Name (+)' textbox.  
 5. Select whether the results will be grouped and how from the dropdowns.  
 6. Click 'Submit'.  
 
