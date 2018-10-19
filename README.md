@@ -34,7 +34,7 @@ sudo -H -u $SPLUNK_USER /opt/splunk/bin/splunk restart # $SPLUNK_USER = User run
 **Feed Overview - Dashboard**
 Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the last seven (7) days. The sparkline on the single value panels span one (1) week.  
 
-![crtsh Wildcard Search](https://github.com/leunammejii/osweep/blob/master/static/assets/feed_overview_dashboard.png)      
+![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feed_overview_dashboard.png)      
 
 **<span>crt</span>.sh - Dashboard**
 1. Switch to the **<span>crt</span>.sh** dashboard in the OSweep™ app.  
@@ -42,7 +42,7 @@ Three of the dashboards below use lookup tables to store the data feed from the 
 3. Select 'Yes' or 'No' from the 'Wildcard' dropdown to search for subdomains.  
 4. Click 'Submit'.  
 
-![crtsh Wildcard Search](https://github.com/leunammejii/osweep/blob/master/static/assets/crtsh_dashboard.png)  
+![crtsh - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/crtsh_dashboard.png)  
 
 **<span>crt</span>.sh - Adhoc**
 ```
@@ -65,7 +65,7 @@ or to search for subdomains,
 3. Select whether the results will be grouped and how from the dropdowns.  
 4. Click 'Submit'.  
 
-![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/cybercrimeTracker_dashboard.png)  
+![CyberCrime Tracker - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/cybercrimeTracker_dashboard.png)  
 
 **CyberCrime Tracker - Adhoc**
 ```
@@ -87,7 +87,7 @@ or to search for subdomains,
 5. Select whether the results will be grouped and how from the dropdowns.  
 6. Click 'Submit'.  
 
-![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/greynoise_dashboard.png)  
+![GreyNoise - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/greynoise_dashboard.png)  
 
 **GreyNoise - Adhoc**  
 ```
@@ -109,7 +109,7 @@ or to search for subdomains,
 5. Select whether the results will be grouped and how from the dropdowns.  
 6. Click 'Submit'.  
 
-![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/ransomwareTracker_dashboard.png)  
+![Ransomare Tracker - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/ransomwareTracker_dashboard.png)  
 
 **Ransomare Tracker - Adhoc**
 ```
@@ -123,7 +123,7 @@ or to search for subdomains,
 3. Select the IOC type.  
 4. Click 'Submit'.  
 
-![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/threatcrowd_dashboard.png)  
+![ThreatCrowd - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/threatcrowd_dashboard.png)  
 
 **URLhaus - Dashboard**
 1. Add the following cron job to the crontab of the user running Splunk:  
@@ -139,7 +139,7 @@ or to search for subdomains,
 5. Select whether the results will be grouped and how from the dropdowns.  
 6. Click 'Submit'.  
 
-![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/urlhaus_dashboard.png) 
+![URLhaus - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlhaus_dashboard.png) 
 
 **URLhaus - Adhoc**
 ```
@@ -153,7 +153,7 @@ or to search for subdomains,
 3. Select whether the results will be grouped and how from the dropdowns.  
 4. Click 'Submit'.  
 
-![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/urlscan_dashboard.png) 
+![urlscanio - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlscan_dashboard.png) 
 
 **<span>urlscan</span>.io - Adhoc**
 ```
