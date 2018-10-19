@@ -193,7 +193,6 @@ You can also pipe the results of one command into a totally different command to
 - Alienvault  
 - Censys  
 - Cymon  
-- Grey Noise  
 - Hybrid-Analysis  
 - Malshare  
 
