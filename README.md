@@ -14,22 +14,28 @@ The fix? **OSweep™**.
 - Splunk  
 
 #### Setup  
-Open a terminal and run the following commands:  
+Open a terminal and run the following commands as the user running Splunk:  
 ```bash
 cd /opt/splunk/etc/apps
 git clone https://github.com/leunammejii/osweep.git
-/opt/splunk/bin/splunk restart
+sudo -H -u $SPLUNK_USER /opt/splunk/bin/splunk restart # $SPLUNK_USER = User running Splunk
 ```
 
 #### Commands  
 - crtsh - https://crt.sh/  
 - cybercrimeTracker - http://cybercrime-tracker.net/index.php  
+- greyNoise - https://greynoise.io/  
 - ransomwareTracker - https://ransomwaretracker.abuse.ch/  
 - threatcrowd - https://www.threatcrowd.org/  
 - urlhaus - https://urlhaus.abuse.ch/  
 - urlscan - https://urlscan.io/  
 
 #### Usage    
+**Feed Overview - Dashboard**
+Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the last seven (7) days. The sparkline on the single value panels span one (1) week.  
+
+![crtsh Wildcard Search](https://github.com/leunammejii/osweep/blob/master/static/assets/feed_overview_dashboard.png)      
+
 **<span>crt</span>.sh - Dashboard**
 1. Switch to the **<span>crt</span>.sh** dashboard in the OSweep™ app.  
 2. Add the list of domains to the 'Domain (+)' textbox.  
@@ -67,18 +73,39 @@ or to search for subdomains,
 | table Date URL IP "VT Latest Scan" "VT IP Info" Type Invalid
 ```
 
-**Ransomare Tracker - Dashboard**
-1. Add the following cron jobs to the 'splunk' user's cron schedule:  
+**GreyNoise - Dashboard**  
+1. Add the following cron job to the crontab of the user running Splunk:  
 ```bash
-*/5 * * * * /opt/splunk/etc/apps/osweep/bin/ransomware_tracker.py feed
+*/5 * * * * /opt/splunk/bin/python /opt/splunk/etc/apps/osweep/bin/greynoise.py feed
 ```
-2. Manually download URL dump  
+2. Manually download the data feed  
+```
+| greyNoise feed
+```
+3. Switch to the **GreyNoise** dashboard in the OSweep™ app.  
+4. Add the list of IOCs to the 'Domain, IP (+)' textbox.  
+5. Select whether the results will be grouped and how from the dropdowns.  
+6. Click 'Submit'.  
+
+![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/greynoise_dashboard.png)  
+
+**GreyNoise - Adhoc**  
+```
+| greynoise <IOCs>
+| table "Category" "Confidence" "Last Updated" "Name" "IP" "Intention" "First Seen" "Datacenter" "Tor" "RDNS Parent" "Link" "Org" "OS" "ASN" "RDNS" "Invalid"
+```
+
+**Ransomare Tracker - Dashboard**
+1. Add the following cron job to the crontab of the user running Splunk:  
+```bash
+*/5 * * * * /opt/splunk/bin/python /opt/splunk/etc/apps/osweep/bin/ransomware_tracker.py feed
+```
+2. Manually download data feed  
 ```
 | ransomwareTracker feed
 ```
 3. Switch to the **Ransomare Tracker** dashboard in the OSweep™ app.  
-4. Add the list of IOCs to the 'Domain, IP, Malware, Status, Threat, URL (+)' 
-textbox.  
+4. Add the list of IOCs to the 'Domain, IP, Malware, Status, Threat, URL (+)' textbox.  
 5. Select whether the results will be grouped and how from the dropdowns.  
 6. Click 'Submit'.  
 
@@ -99,11 +126,11 @@ textbox.
 ![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/threatcrowd_dashboard.png)  
 
 **URLhaus - Dashboard**
-1. Add the following cron jobs to the 'splunk' user's cron schedule:  
+1. Add the following cron job to the crontab of the user running Splunk:  
 ```bash
-*/5 * * * * /opt/splunk/etc/apps/osweep/bin/urlhaus.py feed
+*/5 * * * * /opt/splunk/bin/python /opt/splunk/etc/apps/osweep/bin/urlhaus.py feed
 ```
-2. Manually download URL dump:  
+2. Manually download data feed:  
 ```
 | urlhaus feed
 ```
