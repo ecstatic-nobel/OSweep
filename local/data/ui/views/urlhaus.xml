@@ -14,7 +14,6 @@
       <label>Group Results</label>
       <choice value="yes">Yes</choice>
       <choice value="no">No</choice>
-      <default>yes</default>
       <change>
         <condition value="yes">
           <set token="group_panel"></set>
@@ -25,6 +24,7 @@
           <set token="table_panel"></set>
         </condition>
       </change>
+      <initialValue>no</initialValue>
     </input>
     <input type="dropdown" token="group_value" depends="$group_panel$">
       <label>Group</label>
