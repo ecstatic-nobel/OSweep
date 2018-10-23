@@ -31,8 +31,8 @@ sudo -H -u $SPLUNK_USER /opt/splunk/bin/splunk restart # $SPLUNK_USER = User run
 - urlscan - https://urlscan.io/  
 
 #### Usage    
-**Feed Overview - Dashboard**
-Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the last seven (7) days. The sparkline on the single value panels span one (1) week.  
+**Feed Overview - Dashboard**  
+Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the last seven (7) days.  
 
 ![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feed_overview_dashboard.png)      
 
@@ -74,18 +74,14 @@ or to search for subdomains,
 ```
 
 **GreyNoise - Dashboard**  
-1. Add the following cron job to the crontab of the user running Splunk:  
-```bash
-*/5 * * * * /opt/splunk/bin/python /opt/splunk/etc/apps/osweep/bin/greynoise.py feed
-```
-2. Manually download the data feed  
+1. Manually download data feed (one-time only)  
 ```
 | greyNoise feed
 ```
-3. Switch to the **GreyNoise** dashboard in the OSweep™ app.  
-4. Add the list of IOCs to the 'Domain, IP, Scanner Name (+)' textbox.  
-5. Select whether the results will be grouped and how from the dropdowns.  
-6. Click 'Submit'.  
+2. Switch to the **GreyNoise** dashboard in the OSweep™ app.  
+3. Add the list of IOCs to the 'Domain, IP, Scanner Name (+)' textbox.  
+4. Select whether the results will be grouped and how from the dropdowns.  
+5. Click 'Submit'.  
 
 ![GreyNoise - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/greynoise_dashboard.png)  
 
@@ -96,18 +92,14 @@ or to search for subdomains,
 ```
 
 **Ransomare Tracker - Dashboard**
-1. Add the following cron job to the crontab of the user running Splunk:  
-```bash
-*/5 * * * * /opt/splunk/bin/python /opt/splunk/etc/apps/osweep/bin/ransomware_tracker.py feed
-```
-2. Manually download data feed  
+1. Manually download data feed (one-time only)  
 ```
 | ransomwareTracker feed
 ```
-3. Switch to the **Ransomare Tracker** dashboard in the OSweep™ app.  
-4. Add the list of IOCs to the 'Domain, IP, Malware, Status, Threat, URL (+)' textbox.  
-5. Select whether the results will be grouped and how from the dropdowns.  
-6. Click 'Submit'.  
+2. Switch to the **Ransomare Tracker** dashboard in the OSweep™ app.  
+3. Add the list of IOCs to the 'Domain, IP, Malware, Status, Threat, URL (+)' textbox.  
+4. Select whether the results will be grouped and how from the dropdowns.  
+5. Click 'Submit'.  
 
 ![Ransomare Tracker - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/ransomwareTracker_dashboard.png)  
 
@@ -126,18 +118,14 @@ or to search for subdomains,
 ![ThreatCrowd - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/threatcrowd_dashboard.png)  
 
 **URLhaus - Dashboard**
-1. Add the following cron job to the crontab of the user running Splunk:  
-```bash
-*/5 * * * * /opt/splunk/bin/python /opt/splunk/etc/apps/osweep/bin/urlhaus.py feed
-```
-2. Manually download data feed:  
+1. Manually download data feed (one-time only)  
 ```
 | urlhaus feed
 ```
-3. Switch to the **URLhaus** dashboard in the OSweep™ app.  
-4. Add the list of IOCs to the 'Domain, MD5, SHA256, URL (+)' textbox.  
-5. Select whether the results will be grouped and how from the dropdowns.  
-6. Click 'Submit'.  
+2. Switch to the **URLhaus** dashboard in the OSweep™ app.  
+3. Add the list of IOCs to the 'Domain, MD5, SHA256, URL (+)' textbox.  
+4. Select whether the results will be grouped and how from the dropdowns.  
+5. Click 'Submit'.  
 
 ![URLhaus - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlhaus_dashboard.png) 
 
