@@ -12,6 +12,7 @@ The fix? **OSweep™**.
 
 #### Prerequisites  
 - Splunk  
+- Python 2.7.14 ($SPLUNK_HOME/bin/python)  
 
 #### Setup  
 Open a terminal and run the following commands as the user running Splunk:  
