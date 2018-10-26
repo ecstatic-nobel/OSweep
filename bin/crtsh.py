@@ -15,18 +15,18 @@ Source: https://github.com/PaulSec/crt.sh
 
 Instructions:
 1. Switch to the crt.sh dashboard in the OSweep app.
-2. Add the list of domains to the 'Domain (+)' textbox.
-3. Select 'Yes' or 'No' from the 'Wildcard' dropdown to search for subdomains.
-4. Click 'Submit'.
+2. Add the list of domains to the "Domain (+)" textbox.
+3. Select "Yes" or "No" from the "Wildcard" dropdown to search for subdomains.
+4. Click "Submit".
 
 Rate Limit: None
 
 Results Limit: None
 
-Notes: Search for subdomains by passing 'wildcard' as the first argument:
+Notes: Search for subdomains by passing "wildcard" as the first argument:
     | crtsh wildcard $domain$
 
-Debugger: open("/tmp/splunk_script.txt", "a").write('{}: <MSG>\n'.format(<VAR>))
+Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
 import sys
@@ -36,14 +36,15 @@ import splunk.Intersplunk as InterSplunk
 
 import crtsh_api as crtsh
 
+
 def process_master(results):
     """Process input (results or arguments) from Splunk."""
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
-    elif sys.argv[1] == 'wildcard' and len(sys.argv) > 2:
-        provided_iocs = sys.argv[2:]
-    elif sys.argv[1] != 'wildcard' and len(sys.argv) > 1:
+    elif sys.argv[1] != "wildcard" and len(sys.argv) > 1:
         provided_iocs = sys.argv[1:]
+    elif sys.argv[1] == "wildcard" and len(sys.argv) > 2:
+        provided_iocs = sys.argv[2:]
     return crtsh.process_iocs(provided_iocs)
 
 def main():
@@ -61,5 +62,5 @@ def main():
     InterSplunk.outputResults(new_results)
     return
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

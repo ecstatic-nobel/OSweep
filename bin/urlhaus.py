@@ -14,14 +14,14 @@ and/or URL). The first argument is the name of one field:
 Source: https://urlhaus.abuse.ch/api/
 
 Instructions:
-1. Add the following cron jobs to the 'splunk' user's cron schedule:
-    */5 * * * * /opt/splunk/etc/apps/osweep/bin/urlhaus.py feed
-2. Manually download URL dump
-    | urlhaus feed
-3. Switch to the URLHaus dashboard in the OSweep app.
-4. Add the list of IOCs to the 'Domain, MD5, SHA256, URL (+)' textbox.
-5. Select whether the results will be grouped and how from the dropdowns.
-6. Click 'Submit'.
+1. Manually download URL dump (one-time)  
+```
+| urlhaus feed
+```
+2. Switch to the URLHaus dashboard in the OSweep app.
+3. Add the list of IOCs to the "Domain, MD5, SHA256, URL (+)" textbox.
+4. Select whether the results will be grouped and how from the dropdowns.
+5. Click "Submit".
 
 Rate Limit: None
 
@@ -29,7 +29,7 @@ Results Limit: None
 
 Notes: None
 
-Debugger: open("/tmp/splunk_script.txt", "a").write('{}: <MSG>\n'.format(<VAR>))
+Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
 import sys
@@ -49,10 +49,14 @@ def process_master(results):
     return urlhaus.process_iocs(provided_iocs)
 
 def main():
-    if sys.argv[1].lower() == 'feed':
-        lookup_path = '/opt/splunk/etc/apps/osweep/lookups'
-        file_path   = '{}/urlhaus_url_feed.csv'.format(lookup_path)
+    if sys.argv[1].lower() == "feed":
+        lookup_path = "/opt/splunk/etc/apps/osweep/lookups"
+        file_path   = "{}/urlhaus_url_feed.csv".format(lookup_path)
         data_feed   = urlhaus.get_feed()
+        
+        if data_feed == None:
+            exit(0)
+
         urlhaus.write_file(data_feed, file_path)
         exit(0)
 
@@ -70,5 +74,5 @@ def main():
     InterSplunk.outputResults(new_results)
     return
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

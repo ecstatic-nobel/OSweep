@@ -5,150 +5,127 @@ Shodan.io and malicious actors like SSH and telnet worms).
 """
 
 from collections import OrderedDict
+import os
+import sys
 
+script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
+sys.path.insert(0, script_path)
 import requests
 import validators
 
 
-api         = 'http://api.greynoise.io:8888/v1/query'
-uagent      = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
-lookup_path = '/opt/splunk/etc/apps/osweep/lookups'
-file_path   = '{}/greynoise_feed.csv'.format(lookup_path)
+api         = "https://api.greynoise.io/v1/query"
+uagent      = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"
 
 def get_feed():
     """Return the latest report summaries from the feed."""
-    tag_list  = query_list()
-    return query_tags(tag_list)
+    tags = query_list()
+
+    if len(tags) == 0:
+        return
+    return query_tags(tags)
 
 def query_list():
-    """ """
-    resp = requests.get('{}/list'.format(api), headers={"User-Agent": uagent})
+    """Return a list of tags."""
+    resp = requests.get("{}/list".format(api), headers={"User-Agent": uagent})
 
-    if resp.status_code == 200:
+    if resp.status_code == 200 and "tags" in resp.json().keys():
         return resp.json()["tags"]
+    return []
 
 def query_tags(tags):
-    """ """
+    """Return dictionaries containing information about a tag."""
     session = requests.Session()
     session.headers.update({"User-Agent": uagent})
     data_feed = []
 
     for tag in tags:
-        resp = session.post('{}/tag'.format(api), data={"tag": tag})
+        resp = session.post("{}/tag".format(api), data={"tag": tag})
 
-        if resp.status_code == 200:
+        if resp.status_code == 200 and "records" in resp.json().keys() and \
+           len(resp.json()["records"]):
             records = resp.json()["records"]
 
             for record in records:
-                tag_info = OrderedDict()
-                tag_info["Category"]     = record.get("category", "")
-                tag_info["Confidence"]   = record.get("confidence", "")
-                tag_info["Last Updated"] = record.get("last_updated", "")
-                tag_info["Name"]         = record.get("name", "")
-                tag_info["IP"]           = record.get("ip", "")
-                tag_info["Intention"]    = record.get("intention", "")
-                tag_info["First Seen"]   = record.get("first_seen", "")
-                tag_info["Datacenter"]   = record["metadata"].get("datacenter", "")
-                tag_info["Tor"]          = str(record["metadata"].get("tor", ""))
-                tag_info["RDNS Parent"]  = record["metadata"].get("rdns_parent", "")
-                tag_info["Link"]         = record["metadata"].get("link", "")
-                tag_info["Org"]          = record["metadata"].get("org", "")
-                tag_info["OS"]           = record["metadata"].get("os", "")
-                tag_info["ASN"]          = record["metadata"].get("asn", "")
-                tag_info["RDNS"]         = record["metadata"].get("rdns", "")
-                tag_info["Invalid"]      = ""
-                data_feed.append(tag_info)
+                record["datacenter"]  = record["metadata"].get("datacenter", "")
+                record["tor"]         = str(record["metadata"].get("tor", ""))
+                record["rdns_parent"] = record["metadata"].get("rdns_parent", "")
+                record["link"]        = record["metadata"].get("link", "")
+                record["org"]         = record["metadata"].get("org", "")
+                record["os"]          = record["metadata"].get("os", "")
+                record["asn"]         = record["metadata"].get("asn", "")
+                record["rdns"]        = record["metadata"].get("rdns", "")
+                record.pop("metadata")
+                data_feed.append(record)
 
     session.close()
     return data_feed
 
 def write_file(data_feed, file_path):
     """Write data to a file."""
-    with open(file_path, 'w') as open_file:
+    with open(file_path, "w") as open_file:
         keys   = data_feed[0].keys()
-        header = ','.join(keys)
+        header = ",".join(keys)
 
-        open_file.write('{}\n'.format(header))
+        open_file.write("{}\n".format(header))
 
         for data in data_feed:
-            data_string = '^^'.join(data.values())
-            data_string = data_string.replace(',', '')
-            data_string = data_string.replace('^^', ',')
-            data_string = data_string.replace('"', '')
-            open_file.write('{}\n'.format(data_string.encode("UTF-8")))
+            data_string = "^^".join(data.values())
+            data_string = data_string.replace(",", "")
+            data_string = data_string.replace("^^", ",")
+            data_string = data_string.replace('"', "")
+            open_file.write("{}\n".format(data_string.encode("UTF-8")))
     return
 
 def process_iocs(provided_iocs):
     """Return data formatted for Splunk from GreyNoise."""
     splunk_table = []
-    lookup_path  = '/opt/splunk/etc/apps/osweep/lookups'
-    open_file    = open('{}/greynoise_feed.csv'.format(lookup_path), 'r')
+    lookup_path  = "/opt/splunk/etc/apps/osweep/lookups"
+    open_file    = open("{}/greynoise_feed.csv".format(lookup_path), "r")
     data_feed    = open_file.read().splitlines()
+    header       = data_feed[0].split(",")
     open_file.close()
 
-    open_file = open('{}/greynoise_scanners.csv'.format(lookup_path), 'r')
+    open_file = open("{}/greynoise_scanners.csv".format(lookup_path), "r")
     scanners  = set(open_file.read().splitlines()[1:])
     scanners  = [x.lower() for x in scanners]
     open_file.close()
 
     for provided_ioc in set(provided_iocs):
+        provided_ioc = provided_ioc.replace("[.]", ".")
+        provided_ioc = provided_ioc.replace("[d]", ".")
+        provided_ioc = provided_ioc.replace("[D]", ".")
+
         if not validators.ipv4(provided_ioc) and \
            not validators.domain(provided_ioc) and \
            provided_ioc.lower() not in scanners:
-           splunk_table.append(invalid_dict(provided_ioc))
+           splunk_table.append({"invalid": provided_ioc})
            continue
 
         line_found = False
+
         for line in data_feed:
             if provided_ioc.lower() in line.lower():
-                line_found = True
-                splunk_table.append(create_dict(line))
+                line_found   = True
+                scanner_data = line.split(",")
+                scanner_dict = OrderedDict(zip(header, scanner_data))
+                scanner_dict = lower_keys(scanner_dict)
+                splunk_table.append(scanner_dict)
         
         if line_found == False:
-            splunk_table.append(invalid_dict(provided_ioc))
+            splunk_table.append({"no data": provided_ioc})
     return splunk_table
 
-def create_dict(line):
-    """Return an ordered dictionary."""
-    splunk_headers = [
-        "Category",
-        "Confidence",
-        "Last Updated",
-        "Name",
-        "IP",
-        "Intention",
-        "First Seen",
-        "Datacenter",
-        "Tor",
-        "RDNS Parent",
-        "Link",
-        "Org",
-        "OS",
-        "ASN",
-        "RDNS",
-        "Invalid"
-    ]
-    splunk_values = line.split(',')
-    splunk_values.append(None)
-    return OrderedDict(zip(splunk_headers, splunk_values))
+def lower_keys(target):
+    """Return a string or dictionary with the first character capitalized."""
+    if isinstance(target, str) or isinstance(target, unicode):
+        words = target.encode("UTF-8").split("_")
+        return " ".join(words).lower()
 
-def invalid_dict(provided_ioc):
-    """Return a dictionary for the invalid IOC."""
-    invalid_ioc = {}
-    invalid_ioc["Category"]     = ""
-    invalid_ioc["Confidence"]   = ""
-    invalid_ioc["Last Updated"] = ""
-    invalid_ioc["Name"]         = ""
-    invalid_ioc["IP"]           = ""
-    invalid_ioc["Intention"]    = ""
-    invalid_ioc["First Seen"]   = ""
-    invalid_ioc["Datacenter"]   = ""
-    invalid_ioc["Tor"]          = ""
-    invalid_ioc["RDNS Parent"]  = ""
-    invalid_ioc["Link"]         = ""
-    invalid_ioc["Org"]          = ""
-    invalid_ioc["OS"]           = ""
-    invalid_ioc["ASN"]          = ""
-    invalid_ioc["RDNS"]         = ""
-    invalid_ioc["Invalid"]      = provided_ioc
-    return invalid_ioc
+    if isinstance(target, dict):
+        dictionary = {}
+        for key, value in target.iteritems():
+            words = key.encode("UTF-8").split("_")
+            key   = " ".join(words).lower()
+            dictionary[key] = value
+        return dictionary

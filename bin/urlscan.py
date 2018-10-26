@@ -15,9 +15,9 @@ Source: https://urlscan.io/about-api/
 
 Instructions:
 1. Switch to the urlscan.io dashboard in the OSweep app.
-2. Add the list of IOCs to the 'Domain, IP, SHA256 (+)' textbox.
+2. Add the list of IOCs to the "Domain, IP, SHA256 (+)" textbox.
 3. Select whether the results will be grouped and how from the dropdowns.
-4. Click 'Submit'.
+4. Click "Submit".
 
 Rate Limit: None
 
@@ -25,7 +25,7 @@ Results Limit: 10k
 
 Notes: None
 
-Debugger: open("/tmp/splunk_script.txt", "a").write('{}: <MSG>\n'.format(<VAR>))
+Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
 import sys
@@ -60,5 +60,5 @@ def main():
     InterSplunk.outputResults(new_results)
     return
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

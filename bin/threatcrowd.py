@@ -16,20 +16,17 @@ Source: https://www.threatcrowd.org/index.php
 
 Instructions:
 1. Switch to the ThreatCrowd dashboard in the OSweep app.
-2. Add the list of IOCs to the 'IP, Domain, or Email (+)' textbox.
+2. Add the list of IOCs to the "IP, Domain, or Email (+)" textbox.
 3. Select the IOC type.
-4. Click 'Submit'.
+4. Click "Submit".
 
 Rate Limit: 1 request/10s
 
 Results Limit: None
 
-Notes:
-1. Keys need to be renamed to uppercase
-2. "Invalid" key needs to be added to the objects
-3. Initial IOC needs to be added to the objects
+Notes: None
 
-Debugger: open("/tmp/splunk_script.txt", "a").write('{}: <MSG>\n'.format(<VAR>))
+Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
 import sys
@@ -63,5 +60,5 @@ def main():
     InterSplunk.outputResults(new_results)
     return
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -5,8 +5,11 @@ Certificate Transparency (CT) logs.
 """
 
 import json
+import os
 import sys
 
+script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
+sys.path.insert(0, script_path)
 import requests
 import validators
 
@@ -16,60 +19,53 @@ def process_iocs(provided_iocs):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        if validators.domain(provided_ioc):
-            crt_dicts = search_crtsh(provided_ioc)
-        else:
-            invalid_ioc = invalid_dict(provided_ioc)
-            splunk_table.append(invalid_ioc)
-            continue
+        provided_ioc = provided_ioc.replace("[.]", ".")
+        provided_ioc = provided_ioc.replace("[d]", ".")
+        provided_ioc = provided_ioc.replace("[D]", ".")
 
-        if len(crt_dicts) == 0:
-            invalid_ioc = invalid_dict(provided_ioc)
-            splunk_table.append(invalid_ioc)
+        if validators.domain(provided_ioc):
+            crt_dicts = query_crtsh(provided_ioc)
+        else:
+            splunk_table.append({"invalid": provided_ioc})
             continue
 
         for crt_dict in crt_dicts:
-            crt_dict["Invalid"] = ""
             splunk_table.append(crt_dict)
     return splunk_table
 
-def search_crtsh(provided_ioc):
+def query_crtsh(provided_ioc):
     """Search crt.sh for the given domain."""
     if sys.argv[1] == "wildcard":
-        provided_ioc = "%25.{}".format(provided_ioc) # provided_ioc -> domain
+        provided_ioc = "%25.{}".format(provided_ioc)
 
     base_url  = "https://crt.sh/?q={}&output=json"
     url       = base_url.format(provided_ioc)
-    uagent    = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
-    resp      = requests.get(url, headers={'User-Agent': uagent})
+    uagent    = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"
+    resp      = requests.get(url, headers={"User-Agent": uagent})
     crt_dicts = []
 
-    if resp.status_code == 200:
-        content      = resp.content.decode('UTF-8')
-        cert_history = json.loads("[{}]".format(content.replace('}{', '},{')))
+    if resp.status_code == 200 and resp.content != "":
+        content      = resp.content.decode("UTF-8")
+        cert_history = json.loads("[{}]".format(content.replace("}{", "},{")))
 
         for cert in cert_history:
-            ncert = {}
-            ncert["Issuer CA ID"]        = cert.get("issuer_ca_id", "")
-            ncert["Issuer Name"]         = cert.get("issuer_name", "")
-            ncert["Name Value"]          = cert.get("name_value", "")
-            ncert["Min Cert ID"]         = cert.get("min_cert_id", "")
-            ncert["Min Entry Timestamp"] = cert.get("min_entry_timestamp", "")
-            ncert["Not Before"]          = cert.get("not_before", "")
-            ncert["Not After"]           = cert.get("not_after", "")
-            ncert["Invalid"]             = ""
-            crt_dicts.append(ncert)
+            cert = lower_keys(cert)
+            crt_dicts.append(cert)
+    else:
+        provided_ioc = provided_ioc.replace("%25.", "")
+        crt_dicts.append({"no data": provided_ioc})
     return crt_dicts
 
-def invalid_dict(provided_ioc):
-    """Return a dictionary for the invalid IOC."""
-    invalid_ioc = {}
-    invalid_ioc["Issuer CA ID"]        = ""
-    invalid_ioc["Issuer Name"]         = ""
-    invalid_ioc["Name Value"]          = ""
-    invalid_ioc["Min Cert ID"]         = ""
-    invalid_ioc["Min Entry Timestamp"] = ""
-    invalid_ioc["Not Before"]          = ""
-    invalid_ioc["Not After"]           = ""
-    invalid_ioc["Invalid"]             = provided_ioc
-    return invalid_ioc
+def lower_keys(target):
+    """Return a string or dictionary with the first character capitalized."""
+    if isinstance(target, str) or isinstance(target, unicode):
+        words = target.encode("UTF-8").split("_")
+        return " ".join(words).lower()
+
+    if isinstance(target, dict):
+        dictionary = {}
+        for key, value in target.iteritems():
+            words = key.encode("UTF-8").split("_")
+            key   = " ".join(words).lower()
+            dictionary[key] = value
+        return dictionary

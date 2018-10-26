@@ -16,15 +16,15 @@ one field:
 Source: https://ransomwaretracker.abuse.ch/tracker/
 
 Instructions:
-1. Add the following cron jobs to the 'splunk' user's cron schedule:
-    */5 * * * * /opt/splunk/etc/apps/osweep/bin/ransomware_tracker.py feed
-2. Manually download URL dump
-    | ransomwareTracker feed
-3. Switch to the Ransomware Tracker dashboard in the OSweep app.
-4. Add the list of IOCs to the 'Domain, IP, Malware, Status, Threat, URL (+)' 
+1. Manually download URL dump (one-time)  
+```
+| ransomwareTracker feed
+```
+2. Switch to the Ransomware Tracker dashboard in the OSweep app.
+3. Add the list of IOCs to the "Domain, IP, Malware, Status, Threat, URL (+)" 
 textbox.
-5. Select whether the results will be grouped and how from the dropdowns.
-6. Click 'Submit'.
+4. Select whether the results will be grouped and how from the dropdowns.
+5. Click "Submit".
 
 Rate Limit: None
 
@@ -32,7 +32,7 @@ Results Limit: None
 
 Notes: None
 
-Debugger: open("/tmp/splunk_script.txt", "a").write('{}: <MSG>\n'.format(<VAR>))
+Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
 import sys
@@ -52,28 +52,42 @@ def process_master(results):
     return ransomware_tracker.process_iocs(provided_iocs)
 
 def main():
-    if sys.argv[1].lower() == 'feed':
-        lookup_path  = '/opt/splunk/etc/apps/osweep/lookups'
-        file_path    = '{}/ransomware_tracker_feed.csv'.format(lookup_path)
-        malware_list = '{}/ransomware_tracker_malware.csv'.format(lookup_path)
-        threat_list  = '{}/ransomware_tracker_threats.csv'.format(lookup_path)
+    if sys.argv[1].lower() == "feed":
+        lookup_path  = "/opt/splunk/etc/apps/osweep/lookups"
+        file_path    = "{}/ransomware_tracker_feed.csv".format(lookup_path)
+        malware_list = "{}/ransomware_tracker_malware.csv".format(lookup_path)
+        threat_list  = "{}/ransomware_tracker_threats.csv".format(lookup_path)
         data_feed    = ransomware_tracker.get_feed()
+        
+        if data_feed == None:
+            exit(0)
+
+        with open(malware_list, "w") as mfile, open(threat_list, "w") as tfile:
+            malwares = []
+            threats  = []
+
+            for data in data_feed:
+                mname = data["Malware"]
+                mname = mname.encode("UTF-8")
+                tname = data["Threat"]
+                tname = tname.encode("UTF-8")
+
+                if mname not in malwares:
+                    malwares.append(mname)
+
+                if tname not in threats:
+                    threats.append(tname)
+
+            mfile.write("Malware\n")
+            tfile.write("Threat\n")
+
+            for malware in malwares:
+                mfile.write("{}\n".format(malware))
+
+            for threat in threats:
+                tfile.write("{}\n".format(threat))
 
         ransomware_tracker.write_file(data_feed, file_path)
-
-        open_file = open(file_path, 'r')
-        data_feed = open_file.read().splitlines()
-        open_file.close()
-
-        with open(malware_list, 'w') as mfile, open(threat_list, 'w') as tfile:
-            mfile.write('Malware\n')
-            tfile.write('Threat\n')
-
-            for data in data_feed[1:]:
-                malware = data.split(',')[2]
-                threat  = data.split(',')[1]
-                mfile.write('{}\n'.format(malware.encode("UTF-8")))
-                tfile.write('{}\n'.format(threat.encode("UTF-8")))
         exit(0)
 
     try:
@@ -90,5 +104,5 @@ def main():
     InterSplunk.outputResults(new_results)
     return
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

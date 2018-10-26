@@ -4,8 +4,12 @@ Use cybercrime-tracker.net to better understand the type of malware a site is
 hosting.
 """
 
+import os
 import re
+import sys
 
+script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
+sys.path.insert(0, script_path)
 from bs4 import BeautifulSoup
 import requests
 import validators
@@ -16,72 +20,55 @@ def process_iocs(provided_iocs):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace('htxp', 'http')
-        provided_ioc = provided_ioc.replace('hxtp', 'http')
-        provided_ioc = provided_ioc.replace('hxxp', 'http')
-        provided_ioc = provided_ioc.replace('[.]', '.')
-        provided_ioc = provided_ioc.replace('[d]', '.')
-        provided_ioc = provided_ioc.replace('[D]', '.')
+        provided_ioc = provided_ioc.replace("[.]", ".")
+        provided_ioc = provided_ioc.replace("[d]", ".")
+        provided_ioc = provided_ioc.replace("[D]", ".")
 
         if validators.domain(provided_ioc):
             cct_dicts = query_cct(provided_ioc)
         else:
-            invalid_ioc = invalid_dict(provided_ioc)
-            splunk_table.append(invalid_ioc)
-            continue
-
-        if len(cct_dicts) == 0:
-            invalid_ioc = invalid_dict(provided_ioc)
-            splunk_table.append(invalid_ioc)
+            splunk_table.append({"invalid": provided_ioc})
             continue
 
         for cct_dict in cct_dicts:
-            cct_dict["Invalid"] = None
             splunk_table.append(cct_dict)
     return splunk_table
 
 def query_cct(provided_ioc, offset=0, limit=10000):
     """Search cybercrime-tracker.net for specific information about panels."""
-    results   = []
     api       = "http://cybercrime-tracker.net/index.php?search={}&s={}&m={}"
-    vt_latest = 'https://www.virustotal.com/latest-scan/http://{}'
-    vt_ip     = 'https://www.virustotal.com/en/ip-address/{}/information/'
-    useragent = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
+    vt_latest = "https://www.virustotal.com/latest-scan/http://{}"
+    vt_ip     = "https://www.virustotal.com/en/ip-address/{}/information/"
+    useragent = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"
     base_url  = api.format(provided_ioc, offset, limit)
-    resp      = requests.get(url=base_url, headers={'User-Agent': useragent})
+    resp      = requests.get(url=base_url, headers={"User-Agent": useragent})
+    cct_dicts = []
 
     if resp.status_code == 200:
-        soup  = BeautifulSoup(resp.content, 'html.parser')
-        table = soup.findAll('table', attrs={'class': 'ExploitTable'})[0]
-        rows  = table.find_all(['tr'])[1:]
+        soup  = BeautifulSoup(resp.content, "html.parser")
+        table = soup.findAll("table", attrs={"class": "ExploitTable"})[0]
+        rows  = table.find_all(["tr"])[1:]
+
+        if len(rows) == 0:
+            cct_dicts.append({"no data": provided_ioc})
 
         for row in rows:
-            cells = row.find_all('td', limit=5)
+            cells = row.find_all("td", limit=5)
 
             if len(cells) > 0:
                 tmp = {
-                    'Date': cells[0].text,
-                    'URL': cells[1].text,
-                    'IP': cells[2].text,
-                    'Type': cells[3].text,
-                    'VT Latest Scan': vt_latest.format(cells[1].text)
+                    "date": cells[0].text,
+                    "url": cells[1].text,
+                    "ip": cells[2].text,
+                    "type": cells[3].text,
+                    "vt latest scan": vt_latest.format(cells[1].text)
                 }
 
-                if tmp['IP'] != '':
-                    tmp['VT IP Info'] = vt_ip.format(tmp['IP'])
+                if tmp["ip"] != "":
+                    tmp["vt ip info"] = vt_ip.format(tmp["ip"])
 
-                if tmp not in results:
-                    results.append(tmp)
-    return results
-
-def invalid_dict(provided_ioc):
-    """Return a dictionary for the invalid IOC."""
-    invalid_ioc = {}
-    invalid_ioc["URL"]            = None
-    invalid_ioc["IP"]             = None
-    invalid_ioc["VT Latest Scan"] = None
-    invalid_ioc["VT IP Info"]     = None
-    invalid_ioc["Date"]           = None
-    invalid_ioc["Type"]           = None
-    invalid_ioc["Invalid"]        = provided_ioc
-    return invalid_ioc
+                if tmp not in cct_dicts:
+                    cct_dicts.append(tmp)
+    else:
+        cct_dicts.append({"no data": provided_ioc})
+    return cct_dicts
