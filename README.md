@@ -2,7 +2,9 @@
 ##### Don't Just Search OSINT. Sweep It.  
 
 #### Description  
-If you work in IT security, then you most likely use OSINT to help you understand what it is that your SIEM alerted you on and what everyone else in the world understands about it. More than likely you are using more than one OSINT service because most of the time OSINT will only provide you with reports based on the last analysis of the IOC. For some, that's good enough. They create network and email blocks, create new rules for their IDS/IPS, update the content in the SIEM, create new alerts for monitors in Google Alerts and DomainTools, etc etc. For others, they deploy these same countermeasures based on provided reports from their third-party tools that the company is paying THOUSANDS of dollars for. The problem with both of these is that the analyst needs to dig a little deeper (ex. FULLY deobfuscate a PowerShell command found in a malicious macro) to gather all of the IOCs. And what if the additional IOC(s) you are basing your analysis on has nothing to do with what is true about that site today? And then you get pwned? And then other questions from management arise...  
+If you work in IT security, then you most likely use OSINT to help you understand what it is that your SIEM alerted you on and what everyone else in the world understands about it. More than likely you are using more than one OSINT service because most of the time OSINT will only provide you with reports based on the last analysis of the IOC. For some, that's good enough. They create network and email blocks, create new rules for their IDS/IPS, update the content in the SIEM, create new alerts for monitors in Google Alerts and DomainTools, etc etc. For others, they deploy these same countermeasures based on provided reports from their third-party tools that the company is paying THOUSANDS of dollars for.  
+
+The problem with both of these is that the analyst needs to dig a little deeper (ex. FULLY deobfuscate a PowerShell command found in a malicious macro) to gather all of the IOCs. And what if the additional IOC(s) you are basing your analysis on has nothing to do with what is true about that site today? And then you get pwned? And then other questions from management arise...  
 
 See where this is headed? You're about to get a pink slip and walked out of the building so you can start looking for another job in a different line of work.  
 
@@ -11,8 +13,8 @@ So why did you get pwned? You know that if you wasted time gathering all the IOC
 The fix? **OSweep™**.  
 
 #### Prerequisites  
-- Splunk  
-- Python 2.7.14 ($SPLUNK_HOME/bin/python)  
+- Splunk 7.1.3 >  
+- Python 2.7.14 > ($SPLUNK_HOME/bin/python)  
 
 #### Setup  
 Open a terminal and run the following commands as the user running Splunk:  
@@ -48,16 +50,22 @@ Three of the dashboards below use lookup tables to store the data feed from the 
 **<span>crt</span>.sh - Adhoc**
 ```
 | crtsh <DOMAINS>
-| table "Issuer CA ID", "Issuer Name", "Name Value", "Min Cert ID", "Min Entry Timestamp", "Not Before", "Not After", Invalid 
-| sort - "Min Cert ID"
-``` 
+| fillnull value="-"
+| search NOT "issuer ca id"="-"
+| dedup "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| table "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| sort - "min cert id"
+```
 
 or to search for subdomains,  
 
 ```
 | crtsh wildcard <DOMAINS>
-| table "Issuer CA ID", "Issuer Name", "Name Value", "Min Cert ID", "Min Entry Timestamp", "Not Before", "Not After", Invalid 
-| sort - "Min Cert ID"
+| fillnull value="-"
+| search NOT "issuer ca id"="-"
+| dedup "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| table "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| sort - "min cert id"
 ```  
 
 **CyberCrime Tracker - Dashboard**
@@ -71,7 +79,10 @@ or to search for subdomains,
 **CyberCrime Tracker - Adhoc**
 ```
 | cybercrimeTracker <DOMAINS>
-| table Date URL IP "VT Latest Scan" "VT IP Info" Type Invalid
+| fillnull value="-"
+| search NOT date="-"
+| dedup date url ip "vt latest scan" "vt ip info" type
+| table date url ip "vt latest scan" "vt ip info" type
 ```
 
 **GreyNoise - Dashboard**  
@@ -89,7 +100,11 @@ or to search for subdomains,
 **GreyNoise - Adhoc**  
 ```
 | greynoise <IOCs>
-| table "Category" "Confidence" "Last Updated" "Name" "IP" "Intention" "First Seen" "Datacenter" "Tor" "RDNS Parent" "Link" "Org" "OS" "ASN" "RDNS" "Invalid"
+| fillnull value="-" 
+| search NOT "last updated"="-" 
+| dedup category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
+| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
+| sort - "Last Updated"
 ```
 
 **Ransomare Tracker - Dashboard**
@@ -107,7 +122,11 @@ or to search for subdomains,
 **Ransomare Tracker - Adhoc**
 ```
 | ransomwareTracker <DOMAINS>
-| table "Firstseen (UTC)" Threat Malware Host "IP Address(es)" URL Status Registrar ASN(s) Country Invalid
+| fillnull value="-" 
+| search NOT "firstseen (utc)"="-"
+| dedup "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country
+| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country
+| sort "firstseen (utc)"
 ```
 
 **ThreatCrowd - Dashboard**
@@ -133,7 +152,7 @@ or to search for subdomains,
 **URLhaus - Adhoc**
 ```
 | urlhaus <IOCs>
-| table URL Payload "URLhaus Link" Invalid
+| table URL Payload "URLhaus Link"
 ```  
 
 **<span>urlscan</span>.io - Dashboard**
@@ -147,7 +166,11 @@ or to search for subdomains,
 **<span>urlscan</span>.io - Adhoc**
 ```
 | urlscan <IOCs>
-| Table URL Domain IP PTR Server City Country ASN "ASN Name" Filename "File Size" "MIME Type" SHA256 Invalid
+| fillnull value="-" 
+| search NOT url="-"
+| dedup url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| sort sha256
 ```  
 
 #### Destroy  
@@ -164,12 +187,12 @@ All commands accept input from the pipeline. Either use the `fields` or `table` 
 | <OSWEEP COMMAND> <FIELD NAME>
 ```
 
-ex. The following will allow a user to find other URLs analyzed by URLhaus that are hosting the same Lokibot malware as mytour[d]pk and group it by the payload:  
+ex. The following will allow a user to find other URLs analyzed by URLhaus that are hosting the same Emotet malware as ahsweater[d]com and group it by the payload:  
 ```
-| urlhaus mytour.pk 
-| fields Payload 
-| urlhaus Payload 
-| stats values("URL") AS "URL" values(Invalid) AS Invalid BY "Payload"
+| urlhaus ahsweater.com
+| fields payload
+| urlhaus payload
+| stats values(url) AS url BY payload
 ```
 
 ![alt text](https://github.com/leunammejii/osweep/blob/master/static/assets/input_from_pipeline.png)  
