@@ -152,7 +152,10 @@ or to search for subdomains,
 **URLhaus - Adhoc**
 ```
 | urlhaus <IOCs>
-| table URL Payload "URLhaus Link"
+| fillnull value="-"
+| search NOT "provided ioc"="-"
+| dedup id dateadded url payload "url status" threat tags "urlhaus link"
+| table id dateadded url payload "url status" threat tags "urlhaus link"
 ```  
 
 **<span>urlscan</span>.io - Dashboard**
