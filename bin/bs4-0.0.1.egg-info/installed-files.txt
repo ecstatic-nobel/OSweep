@@ -1,5 +1,0 @@
-SOURCES.txt
-PKG-INFO
-top_level.txt
-requires.txt
-dependency_links.txt
