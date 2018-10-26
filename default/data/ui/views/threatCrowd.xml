@@ -13,31 +13,31 @@
     <input type="dropdown" token="ioc_type">
       <label>IOC Type</label>
       <choice value="ip">IP</choice>
-      <choice value="domain">Domain</choice>
+      <choice value="Domain">Domain</choice>
       <choice value="email">Email</choice>
       <initialValue>ip</initialValue>
       <change>
         <condition value="ip">
           <set token="ip_panel"></set>
-          <unset token="domain_panel"></unset>
+          <unset token="Domain_panel"></unset>
           <unset token="email_panel"></unset>
           <unset token="av_panel"></unset>
         </condition>
-        <condition value="domain">
+        <condition value="Domain">
           <unset token="ip_panel"></unset>
-          <set token="domain_panel"></set>
+          <set token="Domain_panel"></set>
           <unset token="email_panel"></unset>
           <unset token="av_panel"></unset>
         </condition>
         <condition value="email">
           <unset token="ip_panel"></unset>
-          <unset token="domain_panel"></unset>
+          <unset token="Domain_panel"></unset>
           <set token="email_panel"></set>
           <unset token="av_panel"></unset>
         </condition>
         <condition value="av_detect">
           <unset token="ip_panel"></unset>
-          <unset token="domain_panel"></unset>
+          <unset token="Domain_panel"></unset>
           <unset token="email_panel"></unset>
           <set token="av_panel"></set>
         </condition>
@@ -49,13 +49,15 @@
       <title>IP - Resolutions</title>
       <table>
         <search base="threatcrowd_base">
-          <query>| dedup domain last_resolved
-| table domain last_resolved 
-| sort - last_resolved</query>
+          <query>| dedup domain "last resolved"
+| table domain "last resolved" 
+| sort - "last resolved"</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
     <panel depends="$ip_panel$">
@@ -66,9 +68,11 @@
 | table hashes 
 | sort hashes</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
     <panel depends="$ip_panel$">
@@ -78,39 +82,46 @@
 | table references 
 | sort references</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
   </row>
   <row>
-    <panel depends="$domain_panel$">
+    <panel depends="$Domain_panel$">
       <title>Domain - Resolutions</title>
       <table>
         <search base="threatcrowd_base">
-          <query>| dedup ip_address last_resolved
-| table ip_address last_resolved 
-| sort - last_resolved</query>
+          <query>| dedup "ip address" "last resolved"
+| table "ip address" "last resolved" 
+| sort - "last resolved"</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
-    <panel depends="$domain_panel$">
+    <panel depends="$Domain_panel$">
       <title>Domain - Emails</title>
       <table>
-        <search base="threatcrowd_base">&gt;<query>| dedup emails
+        <search base="threatcrowd_base">
+          <query>| dedup emails
 | table emails
 | sort emails</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
-    <panel depends="$domain_panel$">
+    <panel depends="$Domain_panel$">
       <title>Domain - Hashes</title>
       <table>
         <search base="threatcrowd_base">
@@ -118,35 +129,43 @@
 | table hashes 
 | sort hashes</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
   </row>
   <row>
-    <panel depends="$domain_panel$">
+    <panel depends="$Domain_panel$">
       <title>Domain - Subdomains</title>
       <table>
-        <search base="threatcrowd_base">&gt;<query>| dedup subdomains
+        <search base="threatcrowd_base">
+          <query>| dedup subdomains
 | table subdomains
 | sort subdomains</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
-    <panel depends="$domain_panel$">
+    <panel depends="$Domain_panel$">
       <title>Domain - References</title>
       <table>
-        <search base="threatcrowd_base">&gt;<query>| dedup references
+        <search base="threatcrowd_base">
+          <query>| dedup references
 | table references 
 | sort references</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
   </row>
@@ -154,23 +173,61 @@
     <panel depends="$email_panel$">
       <title>Email - Domains</title>
       <table>
-        <search base="threatcrowd_base">&gt;<query>| dedup domains
+        <search base="threatcrowd_base">
+          <query>| dedup domains
 | table domains
 | sort domains</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
     <panel depends="$email_panel$">
       <title>Email - References</title>
       <table>
-        <search base="threatcrowd_base">&gt;<query>| dedup references
+        <search base="threatcrowd_base">
+          <query>| dedup references
 | table references 
 | sort references</query>
         </search>
-        <option name="count">50</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup invalid 
+| table invalid</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup "no data"
+| table "no data"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
   </row>

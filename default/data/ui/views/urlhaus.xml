@@ -28,24 +28,27 @@
     </input>
     <input type="dropdown" token="group_value" depends="$group_panel$">
       <label>Group</label>
-      <choice value="URL">URL</choice>
-      <choice value="Payload">Payload</choice>
-      <initialValue>URL</initialValue>
+      <choice value="url">URL</choice>
+      <choice value="payload">Payload</choice>
+      <initialValue>url</initialValue>
     </input>
     <input type="dropdown" token="group_key" depends="$group_panel$">
       <label>By</label>
-      <choice value="URL">URL</choice>
-      <choice value="Payload">Payload</choice>
-      <initialValue>Payload</initialValue>
+      <choice value="url">URL</choice>
+      <choice value="payload">Payload</choice>
+      <initialValue>payload</initialValue>
     </input>
   </fieldset>
   <row>
     <panel depends="$group_panel$">
       <title>Results - Group by "$group_key$"</title>
       <table>
-        <title>URLs containing 'urlhaus.abuse.ch' will return invalid to prevent scrapping the entire site.</title>
+        <title>URLs containing 'urlhaus.abuse.ch' will return "Invalid/No Data" to prevent scrapping the entire site.</title>
         <search base="urlhaus_base">
-          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"</query>
+          <query>| fillnull value="-" 
+| search NOT "provided ioc"="-" 
+| dedup id dateadded url payload "url status" threat tags "urlhaus link"
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
         </search>
         <option name="count">20</option>
         <option name="drilldown">none</option>
@@ -59,11 +62,46 @@
     <panel depends="$table_panel$">
       <title>Results - Table</title>
       <table>
-        <title>URLs containing 'urlhaus.abuse.ch' will return invalid to prevent scrapping the entire site.</title>
+        <title>URLs containing 'urlhaus.abuse.ch' will return "Invalid/No Data" to prevent scrapping the entire site.</title>
         <search base="urlhaus_base">
-          <query>| table URL Payload "URLhaus Link" Invalid</query>
+          <query>| fillnull value="-" 
+| search NOT "provided ioc"="-" 
+| dedup id dateadded url payload "url status" threat tags "urlhaus link"
+| table id dateadded url payload "url status" threat tags "urlhaus link"</query>
         </search>
         <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="urlhaus_base">
+          <query>| dedup invalid 
+| table invalid
+| sort invaild</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="urlhaus_base">
+          <query>| dedup "no data" 
+| table "no data" 
+| sort "no data"</query>
+        </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>

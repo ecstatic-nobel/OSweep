@@ -1,6 +1,16 @@
 <form>
   <label>crt.sh</label>
   <description>Discovers certificates by searching all of the publicly known Certificate Transparency (CT) logs. (Site: https://crt.sh/, Rate Limit: None)</description>
+  <search id="crtsh_no_wildcard_base" depends="$no_wildcard_panel$">
+    <query>| crtsh $ioc$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <search id="crtsh_wildcard_base" depends="$wildcard_panel$">
+    <query>| crtsh wildcard $ioc$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
   <fieldset submitButton="true">
     <input type="text" token="ioc">
       <label>Domain (+)</label>
@@ -9,7 +19,7 @@
       <label>Wildcard (%.DOMAIN)</label>
       <choice value="yes">Yes</choice>
       <choice value="no">No</choice>
-      <initialValue>yes</initialValue>
+      <initialValue>no</initialValue>
       <change>
         <condition value="yes">
           <set token="wildcard_panel"></set>
@@ -26,14 +36,46 @@
     <panel depends="$wildcard_panel$">
       <title>Results - Wildcard</title>
       <table>
-        <search>
-          <query>| crtsh wildcard $ioc$ 
-| table "Issuer CA ID", "Issuer Name", "Name Value", "Min Cert ID", "Min Entry Timestamp", "Not Before", "Not After", Invalid 
-| sort - "Min Cert ID"</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+        <search base="crtsh_wildcard_base">
+          <query>| fillnull value="-" 
+| search NOT "issuer ca id"="-" 
+| dedup "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| table "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after" 
+| sort - "min cert id"</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$wildcard_panel$">
+      <title>Results - Invalid</title>
+      <table>
+        <search base="crtsh_wildcard_base">
+          <query>| dedup invalid 
+| table invalid
+| sort invalid</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$wildcard_panel$">
+      <title>Results - No Data</title>
+      <table>
+        <search base="crtsh_wildcard_base">
+          <query>| dedup "no data"
+| table "no data"
+| sort "no data"</query>
+        </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>
@@ -45,14 +87,46 @@
     <panel depends="$no_wildcard_panel$">
       <title>Results - No Wildcard</title>
       <table>
-        <search>
-          <query>| crtsh $ioc$ 
-| table "Issuer CA ID", "Issuer Name", "Name Value", "Min Cert ID", "Min Entry Timestamp", "Not Before", "Not After", Invalid 
-| sort - "Min Cert ID"</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+        <search base="crtsh_no_wildcard_base">
+          <query>| fillnull value="-" 
+| search NOT "issuer ca id"="-" 
+| dedup "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| table "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after" 
+| sort - "min cert id"</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$no_wildcard_panel$">
+      <title>Results - Invalid</title>
+      <table>
+        <search base="crtsh_no_wildcard_base">
+          <query>| dedup invalid 
+| table invalid
+| sort invalid</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$no_wildcard_panel$">
+      <title>Results - No Data</title>
+      <table>
+        <search base="crtsh_no_wildcard_base">
+          <query>| dedup "no data"
+| table "no data"
+| sort "no data"</query>
+        </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>

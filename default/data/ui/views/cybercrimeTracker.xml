@@ -28,15 +28,15 @@
     </input>
     <input type="dropdown" token="group_value" depends="$group_panel$">
       <label>Group</label>
-      <choice value="URL">URL</choice>
-      <choice value="Type">Type</choice>
-      <initialValue>URL</initialValue>
+      <choice value="url">URL</choice>
+      <choice value="type">Type</choice>
+      <initialValue>url</initialValue>
     </input>
     <input type="dropdown" token="group_key" depends="$group_panel$">
       <label>By</label>
-      <choice value="URL">URL</choice>
-      <choice value="Type">Type</choice>
-      <initialValue>Type</initialValue>
+      <choice value="url">URL</choice>
+      <choice value="type">Type</choice>
+      <initialValue>type</initialValue>
     </input>
   </fieldset>
   <row>
@@ -44,11 +44,16 @@
       <title>Results - Group by "$group_key$"</title>
       <table>
         <search base="cybercrimeTracker_base">
-          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"</query>
+          <query>| fillnull value="-" 
+| search NOT date="-" 
+| dedup date url ip "vt latest scan" "vt ip info" type 
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
   </row>
@@ -57,11 +62,48 @@
       <title>Results - Table</title>
       <table>
         <search base="cybercrimeTracker_base">
-          <query>| table Date URL IP "VT Latest Scan" "VT IP Info" Type Invalid</query>
+          <query>| fillnull value="-" 
+| search NOT date="-" 
+| dedup date url ip "vt latest scan" "vt ip info" type
+| table date url ip "vt latest scan" "vt ip info" type</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="cybercrimeTracker_base">
+          <query>| dedup invalid 
+| table invalid
+| sort invalid</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="cybercrimeTracker_base">
+          <query>| dedup "no data"
+| table "no data"
+| sort "no data"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
   </row>

@@ -6,10 +6,10 @@
       <single>
         <search>
           <query>| inputlookup greynoise_feed.csv 
-| rex field="First Seen" "(?&lt;dd&gt;.+)T" 
-| rex field="First Seen" "T(?&lt;tt&gt;.+)Z" 
-| eval first_seen=dd." ".tt 
-| eval NewTime=strptime(first_seen,"%Y-%m-%d %H:%M:%S") 
+| rex field="first_seen" "(?&lt;dd&gt;.+)T" 
+| rex field="first_seen" "T(?&lt;tt&gt;.+)Z" 
+| eval fs=dd." ".tt 
+| eval NewTime=strptime(fs,"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
 | timechart count span=7d</query>
           <earliest>-15m</earliest>
@@ -69,10 +69,10 @@
       <chart>
         <search>
           <query>| inputlookup greynoise_feed.csv 
-| rex field="First Seen" "(?&lt;dd&gt;.+)T" 
-| rex field="First Seen" "T(?&lt;tt&gt;.+)Z" 
-| eval first_seen=dd." ".tt 
-| eval NewTime=strptime(first_seen,"%Y-%m-%d %H:%M:%S") 
+| rex field="first_seen" "(?&lt;dd&gt;.+)T" 
+| rex field="first_seen" "T(?&lt;tt&gt;.+)Z" 
+| eval fs=dd." ".tt 
+| eval NewTime=strptime(fs,"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
 | timechart count span=7d</query>
           <earliest>-15m</earliest>

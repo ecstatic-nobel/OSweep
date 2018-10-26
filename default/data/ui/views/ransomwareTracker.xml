@@ -28,23 +28,23 @@
     </input>
     <input type="dropdown" token="group_value" depends="$group_panel$">
       <label>Group</label>
-      <choice value="Host">Domain</choice>
-      <choice value="IP Address(es)">IP</choice>
-      <choice value="Malware">Malware</choice>
-      <choice value="Status">Status</choice>
-      <choice value="Threat">Threat</choice>
-      <choice value="URL">URL</choice>
-      <initialValue>Host</initialValue>
+      <choice value="host">Domain</choice>
+      <choice value="ip address(es)">IP</choice>
+      <choice value="malware">Malware</choice>
+      <choice value="status">Status</choice>
+      <choice value="threat">Threat</choice>
+      <choice value="url">URL</choice>
+      <initialValue>host</initialValue>
     </input>
     <input type="dropdown" token="group_key" depends="$group_panel$">
       <label>By</label>
-      <choice value="Host">Domain</choice>
-      <choice value="IP Address(es)">IP</choice>
-      <choice value="Malware">Malware</choice>
-      <choice value="Status">Status</choice>
-      <choice value="Threat">Threat</choice>
-      <choice value="URL">URL</choice>
-      <initialValue>IP Address(es)</initialValue>
+      <choice value="host">Domain</choice>
+      <choice value="ip address(es)">IP</choice>
+      <choice value="malware">Malware</choice>
+      <choice value="status">Status</choice>
+      <choice value="threat">Threat</choice>
+      <choice value="url">URL</choice>
+      <initialValue>ip address(es)</initialValue>
     </input>
   </fieldset>
   <row>
@@ -52,9 +52,12 @@
       <title>Results - Group by "$group_key$"</title>
       <table>
         <search base="ransomwareTracker_base">
-          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"</query>
+          <query>| fillnull value="-" 
+| search NOT "firstseen (utc)"="-"
+| dedup "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country 
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>
@@ -67,9 +70,45 @@
       <title>Results - Table</title>
       <table>
         <search base="ransomwareTracker_base">
-          <query>| table "Firstseen (UTC)" Threat Malware Host "IP Address(es)" URL Status Registrar ASN(s) Country Invalid</query>
+          <query>| fillnull value="-" 
+| search NOT "firstseen (utc)"="-"
+| dedup "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country
+| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country
+| sort "firstseen (utc)"</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="ransomwareTracker_base">
+          <query>| dedup invalid 
+| table invalid
+| sort invaild</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="ransomwareTracker_base">
+          <query>| dedup "no data" 
+| table "no data" 
+| sort "no data"</query>
+        </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>

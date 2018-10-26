@@ -29,19 +29,19 @@
     </input>
     <input type="dropdown" token="group_value" depends="$group_panel$">
       <label>Group</label>
-      <choice value="Category">Category</choice>
-      <choice value="Name">Name</choice>
-      <choice value="Intention">Intention</choice>
-      <choice value="RDNS Parent">RDNS Parent</choice>
-      <initialValue>RDNS Parent</initialValue>
+      <choice value="category">Category</choice>
+      <choice value="name">Name</choice>
+      <choice value="intention">Intention</choice>
+      <choice value="rdns parent">RDNS Parent</choice>
+      <initialValue>rdns parent</initialValue>
     </input>
     <input type="dropdown" token="group_key" depends="$group_panel$">
       <label>By</label>
-      <choice value="Category">Category</choice>
-      <choice value="Name">Name</choice>
-      <choice value="Intention">Intention</choice>
-      <choice value="RDNS Parent">RDNS Parent</choice>
-      <initialValue>Name</initialValue>
+      <choice value="category">Category</choice>
+      <choice value="name">Name</choice>
+      <choice value="intention">Intention</choice>
+      <choice value="rdns parent">RDNS Parent</choice>
+      <initialValue>name</initialValue>
     </input>
   </fieldset>
   <row>
@@ -49,11 +49,16 @@
       <title>Results - Group by "$group_key$"</title>
       <table>
         <search base="greynoise_base">
-          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"</query>
+          <query>| fillnull value="-" 
+| search NOT "last updated"="-" 
+| dedup category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
         </search>
-        <option name="count">25</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
   </row>
@@ -62,12 +67,49 @@
       <title>Results - Table</title>
       <table>
         <search base="greynoise_base">
-          <query>| table "Category" "Confidence" "Last Updated" "Name" "IP" "Intention" "First Seen" "Datacenter" "Tor" "RDNS Parent" "Link" "Org" "OS" "ASN" "RDNS" "Invalid"
+          <query>| fillnull value="-" 
+| search NOT "last updated"="-" 
+| dedup category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
+| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
 | sort - "Last Updated"</query>
         </search>
-        <option name="count">25</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="greynoise_base">
+          <query>| dedup invalid 
+| table invalid
+| sort invalid</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="greynoise_base">
+          <query>| dedup "no data" 
+| table "no data" 
+| sort "no data"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
       </table>
     </panel>
   </row>

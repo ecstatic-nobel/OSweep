@@ -28,17 +28,17 @@
     </input>
     <input type="dropdown" token="group_value" depends="$group_panel$">
       <label>Group</label>
-      <choice value="URL">URL</choice>
-      <choice value="IP">IP</choice>
-      <choice value="SHA256">SHA256</choice>
-      <initialValue>URL</initialValue>
+      <choice value="url">URL</choice>
+      <choice value="ip">IP</choice>
+      <choice value="sha256">SHA256</choice>
+      <initialValue>url</initialValue>
     </input>
     <input type="dropdown" token="group_key" depends="$group_panel$">
       <label>By</label>
-      <choice value="URL">URL</choice>
-      <choice value="IP">IP</choice>
-      <choice value="SHA256">SHA256</choice>
-      <initialValue>SHA256</initialValue>
+      <choice value="url">URL</choice>
+      <choice value="ip">IP</choice>
+      <choice value="sha256">SHA256</choice>
+      <initialValue>ip</initialValue>
     </input>
   </fieldset>
   <row>
@@ -46,10 +46,13 @@
       <title>Results - Group by "$group_key$"</title>
       <table>
         <search base="urlscan_base">
-          <query>| stats values("$group_value$") AS "$group_value$" values(Invalid) AS Invalid BY "$group_key$"
+          <query>| fillnull value="-" 
+| search NOT url="-"
+| dedup url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$" 
 | sort "$group_key$"</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>
@@ -62,10 +65,45 @@
       <title>Results - Table</title>
       <table>
         <search base="urlscan_base">
-          <query>| Table URL Domain IP PTR Server City Country ASN "ASN Name" Filename "File Size" "MIME Type" SHA256 Invalid
-| sort URL</query>
+          <query>| fillnull value="-" 
+| search NOT url="-"
+| dedup url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| sort sha256</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="urlscan_base">
+          <query>| dedup invalid 
+| table invalid
+| sort invalid</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="urlscan_base">
+          <query>| dedup "no data"
+| table "no data"
+| sort "no data"</query>
+        </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>
