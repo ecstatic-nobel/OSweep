@@ -1,0 +1,143 @@
+<form>
+  <label>Cymon</label>
+  <description>Search open-source security reports about phishing, malware, botnets and other malicious activities.</description>
+  <search id="cymon_base">
+    <query>| cymon $ioc$ </query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>Domain, IP, MD5, SHA256 (+)</label>
+    </input>
+    <input type="link" token="group">
+      <label>Group Results</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <change>
+        <condition value="yes">
+          <set token="group_panel"></set>
+          <unset token="table_panel"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="group_panel"></unset>
+          <set token="table_panel"></set>
+        </condition>
+      </change>
+      <initialValue>no</initialValue>
+    </input>
+    <input type="dropdown" token="group_value" depends="$group_panel$">
+      <label>Group</label>
+      <choice value="url">URL</choice>
+      <choice value="payload">Payload</choice>
+      <initialValue>url</initialValue>
+    </input>
+    <input type="dropdown" token="group_key" depends="$group_panel$">
+      <label>By</label>
+      <choice value="url">URL</choice>
+      <choice value="payload">Payload</choice>
+      <initialValue>payload</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Stats - Feeds</title>
+      <chart>
+        <search base="cymon_base">
+          <query>| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon 
+| stats count BY feed</query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Tags</title>
+      <chart>
+        <search base="cymon_base">
+          <query>| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon
+| eval tags=split(tags, "|") 
+| stats count BY tags</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Country</title>
+      <chart>
+        <search base="cymon_base">
+          <query>| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon
+| stats count BY country</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$group_panel$">
+      <title>Results - Group by "$group_key$"</title>
+      <table>
+        <search base="cymon_base">
+          <query>| stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$table_panel$">
+      <title>Results - Table</title>
+      <table>
+        <search base="cymon_base">
+          <query>| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="cymon_base">
+          <query>| dedup invalid 
+| table invalid
+| sort invaild</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="cymon_base">
+          <query>| dedup "no data" 
+| table "no data" 
+| sort "no data"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>
