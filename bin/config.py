@@ -4,6 +4,9 @@
 # OSweep Configurations
 #
 
+# Cymon API Key
+cymon_api_key = None
+
 # GreyNoise API Key
 gn_api_key = None
 
