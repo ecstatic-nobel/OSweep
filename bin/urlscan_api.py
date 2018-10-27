@@ -1,6 +1,7 @@
 #!/opt/splunk/bin/python
 """
-Use urlscan.io to pivot off an IOC and present in Splunk.
+Use urlscan.io to get a look at what a particular website is requesting in the 
+background.
 """
 
 import os
@@ -25,7 +26,7 @@ def process_iocs(provided_iocs):
             splunk_table.append({"no data": provided_ioc})
 
         if validators.domain(provided_ioc) or validators.ipv4(provided_ioc) or \
-           validators.md5(provided_ioc) or validators.sha256(provided_ioc):
+           validators.sha256(provided_ioc):
             ioc_dicts = query_urlscan(provided_ioc)
         else:
             splunk_table.append({"invalid": provided_ioc})
@@ -46,7 +47,7 @@ def query_urlscan(provided_ioc):
        len(resp.json()["results"]) > 0:
         results = resp.json()["results"]
         return rename_dicts(results)
-    return {"no data": provided_ioc}
+    return [{"no data": provided_ioc}]
 
 def rename_dicts(results):
     """Rename the keys in of the returned dictionaries from urlscan.io API."""
