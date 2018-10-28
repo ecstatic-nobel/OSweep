@@ -2,6 +2,26 @@
   <label>Feed Overview</label>
   <row>
     <panel>
+      <title>CyberCrime Tracker - Total</title>
+      <single>
+        <search>
+          <query>| inputlookup cybercrime_tracker_feed.csv 
+| stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">preview</option>
+        <option name="underLabel">Total Sites</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
       <title>GreyNoise - Total Scanners Identified (Last 7 Days)</title>
       <single>
         <search>
