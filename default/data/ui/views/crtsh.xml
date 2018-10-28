@@ -13,7 +13,7 @@
   </search>
   <fieldset submitButton="true">
     <input type="text" token="ioc">
-      <label>Domain (+)</label>
+      <label>Domain, IP (+)</label>
     </input>
     <input type="dropdown" token="wildcard">
       <label>Wildcard (%.DOMAIN)</label>
