@@ -1,8 +1,8 @@
 #!/opt/splunk/bin/python
 """
 Description: Use cybercrime-tracker.net to better understand the type of malware 
-a site is hosting. The script accepts a list of strings (domains):
-    | cybercrimeTracker <DOMAINS>
+a site is hosting. The script accepts a list of strings (domain or IP):
+    | cybercrimeTracker <IOCs>
 
 or input from the pipeline (any field where the value is a domain). The first 
 argument is the name of one field:
@@ -14,7 +14,7 @@ Source: https://github.com/PaulSec/cybercrime-tracker.net
 
 Instructions:
 1. Switch to the CyberCrime Tracker dashboard in the OSweep app.
-2. Add the list of domains to the "Domain (+)" textbox.
+2. Add the list of IOCs to the "Domain, IP (+)" textbox.
 3. Select whether the results will be grouped and how from the dropdowns.
 4. Click "Submit".
 
@@ -44,6 +44,17 @@ def process_master(results):
     return cybercrime_tracker.process_iocs(provided_iocs)
 
 def main():
+    if sys.argv[1].lower() == "feed":
+        lookup_path = "/opt/splunk/etc/apps/osweep/lookups"
+        file_path   = "{}/cybercrime_tracker_feed.csv".format(lookup_path)
+        data_feed   = cybercrime_tracker.get_feed()
+
+        if data_feed == None:
+            exit(0)
+
+        cybercrime_tracker.write_file(data_feed, file_path)
+        exit(0)
+
     try:
         results, dummy_results, settings = InterSplunk.getOrganizedResults()
 
