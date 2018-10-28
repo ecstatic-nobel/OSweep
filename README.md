@@ -41,9 +41,9 @@ Three of the dashboards below use lookup tables to store the data feed from the 
 
 **<span>crt</span>.sh - Dashboard**
 1. Switch to the **<span>crt</span>.sh** dashboard in the OSweep™ app.  
-2. Add the list of domains to the 'Domain (+)' textbox.  
-3. Select 'Yes' or 'No' from the 'Wildcard' dropdown to search for subdomains.  
-4. Click 'Submit'.  
+2. Add the list of IOCs to the "Domain, IP (+)" textbox.  
+3. Select "Yes" or "No" from the "Wildcard" dropdown to search for subdomains.  
+4. Click "Submit".  
 
 ![crtsh - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/crtsh_dashboard.png)  
 
@@ -70,7 +70,7 @@ or to search for subdomains,
 
 **CyberCrime Tracker - Dashboard**
 1. Switch to the **CyberCrime Tracker** dashboard in the OSweep™ app.
-2. Add the list of domains to the 'Domain (+)' textbox.  
+2. Add the list of IOCs to the 'Domain, IP (+)' textbox.  
 3. Select whether the results will be grouped and how from the dropdowns.  
 4. Click 'Submit'.  
 
@@ -78,11 +78,25 @@ or to search for subdomains,
 
 **CyberCrime Tracker - Adhoc**
 ```
-| cybercrimeTracker <DOMAINS>
+| cybercrimeTracker <IOCs>
 | fillnull value="-"
 | search NOT date="-"
 | dedup date url ip "vt latest scan" "vt ip info" type
 | table date url ip "vt latest scan" "vt ip info" type
+```  
+
+**Cymon - Dashboard**
+1. Switch to the **Cymon** dashboard in the OSweep™ app.  
+2. Add the list of IOCs to the "Domain, IP, MD5, SHA256 (+)" textbox.  
+3. Select whether the results will be grouped and how from the dropdowns.  
+4. Click "Submit".  
+
+![Cymon - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/cymon_dashboard.png)  
+
+**Cymon - Adhoc**
+```
+| cymon <IOCs>
+| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon
 ```
 
 **GreyNoise - Dashboard**  
@@ -143,7 +157,7 @@ or to search for subdomains,
 | urlhaus feed
 ```
 2. Switch to the **URLhaus** dashboard in the OSweep™ app.  
-3. Add the list of IOCs to the 'Domain, MD5, SHA256, URL (+)' textbox.  
+3. Add the list of IOCs to the 'Domain, IP, MD5, SHA256, URL (+)' textbox.  
 4. Select whether the results will be grouped and how from the dropdowns.  
 5. Click 'Submit'.  
 
