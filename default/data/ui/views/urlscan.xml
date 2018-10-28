@@ -42,6 +42,56 @@
     </input>
   </fieldset>
   <row>
+    <panel>
+      <title>Stats - Domain</title>
+      <chart>
+        <search base="urlscan_base">
+          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| stats count BY domain</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - IP</title>
+      <chart>
+        <search base="urlscan_base">
+          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| stats count BY ip</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Country</title>
+      <chart>
+        <search base="urlscan_base">
+          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| stats count BY country</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - SHA256</title>
+      <chart>
+        <search base="urlscan_base">
+          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| stats count BY sha256</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
     <panel depends="$group_panel$">
       <title>Results - Group by "$group_key$"</title>
       <table>

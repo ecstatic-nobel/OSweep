@@ -40,6 +40,33 @@
     </input>
   </fieldset>
   <row>
+    <panel>
+      <title>Stats - Tags</title>
+      <chart>
+        <search base="urlhaus_base">
+          <query>| table id dateadded url payload "url status" threat tags "urlhaus link" 
+| eval tags=split(tags, " ")
+| stats count BY tags</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - URL Status</title>
+      <chart>
+        <search base="urlhaus_base">
+          <query>| table id dateadded url payload "url status" threat tags "urlhaus link"
+| stats count BY "url status"</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
     <panel depends="$group_panel$">
       <title>Results - Group by "$group_key$"</title>
       <table>
@@ -50,7 +77,7 @@
 | dedup id dateadded url payload "url status" threat tags "urlhaus link"
 | stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>
@@ -69,7 +96,7 @@
 | dedup id dateadded url payload "url status" threat tags "urlhaus link"
 | table id dateadded url payload "url status" threat tags "urlhaus link"</query>
         </search>
-        <option name="count">20</option>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>

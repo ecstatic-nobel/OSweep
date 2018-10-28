@@ -48,6 +48,56 @@
     </input>
   </fieldset>
   <row>
+    <panel>
+      <title>Stats - Threat</title>
+      <chart>
+        <search base="ransomwareTracker_base">
+          <query>| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country
+| stats count BY threat</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Malware</title>
+      <chart>
+        <search base="ransomwareTracker_base">
+          <query>| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country
+| stats count BY malware</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Status</title>
+      <chart>
+        <search base="ransomwareTracker_base">
+          <query>| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country
+| stats count BY status</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Country</title>
+      <chart>
+        <search base="ransomwareTracker_base">
+          <query>| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country
+| stats count BY country</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
     <panel depends="$group_panel$">
       <title>Results - Group by "$group_key$"</title>
       <table>

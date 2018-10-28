@@ -45,6 +45,56 @@
     </input>
   </fieldset>
   <row>
+    <panel>
+      <title>Stats - Category</title>
+      <chart>
+        <search base="greynoise_base">
+          <query>| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
+| stats count BY category</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Name</title>
+      <chart>
+        <search base="greynoise_base">
+          <query>| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
+| stats count BY name</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Intention</title>
+      <chart>
+        <search base="greynoise_base">
+          <query>| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
+| stats count BY intention</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - ASN</title>
+      <chart>
+        <search base="greynoise_base">
+          <query>| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
+| stats count BY asn</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
     <panel depends="$group_panel$">
       <title>Results - Group by "$group_key$"</title>
       <table>
