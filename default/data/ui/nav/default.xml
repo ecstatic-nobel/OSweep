@@ -2,6 +2,7 @@
   <view name="feed_overview" default='true' />
   <view name="crtsh" />
   <view name="cybercrimeTracker" />
+  <view name="cymon" />
   <view name="greyNoise" />
   <view name="ransomwareTracker" />
   <view name="threatCrowd" />
