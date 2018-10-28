@@ -8,7 +8,7 @@
   </search>
   <fieldset submitButton="true">
     <input type="text" token="ioc">
-      <label>Domain (+)</label>
+      <label>Domain, IP (+)</label>
     </input>
     <input type="link" token="group">
       <label>Group Results</label>
