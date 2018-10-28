@@ -126,7 +126,7 @@ def get_analysis(provided_ioc):
         ioc_csv = ",".join(ioc_dict.values())
 
         if provided_ioc.lower() in ioc_csv.lower():
-            ioc_found    = True
+            ioc_found = True
             ioc_dict["provided_ioc"] = provided_ioc
             analysis_dicts.append(ioc_dict)
 
