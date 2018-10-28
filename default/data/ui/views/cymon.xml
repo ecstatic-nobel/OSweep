@@ -1,6 +1,6 @@
 <form>
   <label>Cymon</label>
-  <description>Search open-source security reports about phishing, malware, botnets and other malicious activities.</description>
+  <description>Search open-source security reports about phishing, malware, botnets and other malicious activities. (Site: https://cymon.io/, Result Limit: 10)</description>
   <search id="cymon_base">
     <query>| cymon $ioc$ </query>
     <earliest>-15m</earliest>
@@ -28,15 +28,23 @@
     </input>
     <input type="dropdown" token="group_value" depends="$group_panel$">
       <label>Group</label>
+      <choice value="country">Country</choice>
+      <choice value="feed">Feed</choice>
+      <choice value="hostname">Hostname</choice>
+      <choice value="ip">IP</choice>
+      <choice value="md5">MD5</choice>
       <choice value="url">URL</choice>
-      <choice value="payload">Payload</choice>
       <initialValue>url</initialValue>
     </input>
     <input type="dropdown" token="group_key" depends="$group_panel$">
       <label>By</label>
+      <choice value="country">Country</choice>
+      <choice value="feed">Feed</choice>
+      <choice value="hostname">Hostname</choice>
+      <choice value="ip">IP</choice>
+      <choice value="md5">MD5</choice>
       <choice value="url">URL</choice>
-      <choice value="payload">Payload</choice>
-      <initialValue>payload</initialValue>
+      <initialValue>md5</initialValue>
     </input>
   </fieldset>
   <row>
