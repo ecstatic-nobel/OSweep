@@ -90,7 +90,8 @@ def process_iocs(provided_iocs):
             splunk_table.append({"invalid": provided_ioc})
             continue
 
-        if validators.url(provided_ioc) or validators.domain(provided_ioc):
+        if validators.url(provided_ioc) or validators.domain(provided_ioc) or \
+           validators.ipv4(provided_ioc):
             analysis_dicts = get_analysis(provided_ioc)
 
             if isinstance(analysis_dicts, dict) or analysis_dicts == None:

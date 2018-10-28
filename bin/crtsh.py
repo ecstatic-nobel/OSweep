@@ -2,11 +2,11 @@
 """
 Description: Use crt.sh to discover certificates by searching all of the publicly 
 known Certificate Transparency (CT) logs. The script accepts a list of strings 
-(domains):
-    | crtsh $domain$
+(domains or IPs):
+    | crtsh $ioc$
 
-or input from the pipeline (any field where the value is a domain). The first 
-argument is the name of one field:
+or input from the pipeline (any field where the value is a domain or IP). The 
+first argument is the name of one field:
     <search>
     | fields <IOC_FIELD>
     | crtsh <IOC_FIELD>
@@ -15,7 +15,7 @@ Source: https://github.com/PaulSec/crt.sh
 
 Instructions:
 1. Switch to the crt.sh dashboard in the OSweep app.
-2. Add the list of domains to the "Domain (+)" textbox.
+2. Add the list of IOCs to the "Domain, IP (+)" textbox.
 3. Select "Yes" or "No" from the "Wildcard" dropdown to search for subdomains.
 4. Click "Submit".
 

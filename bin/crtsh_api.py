@@ -23,7 +23,7 @@ def process_iocs(provided_iocs):
         provided_ioc = provided_ioc.replace("[d]", ".")
         provided_ioc = provided_ioc.replace("[D]", ".")
 
-        if validators.domain(provided_ioc):
+        if validators.domain(provided_ioc) and validators.ipv4(provided_ioc):
             crt_dicts = query_crtsh(provided_ioc)
         else:
             splunk_table.append({"invalid": provided_ioc})

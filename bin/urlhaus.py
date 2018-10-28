@@ -1,8 +1,8 @@
 #!/opt/splunk/bin/python
 """
 Description: Use URLHaus to get insights, browse the URLhaus database and find 
-most recent additions. The script accepts a list of strings (domain, MD5, SHA256, 
-and/or URL):
+most recent additions. The script accepts a list of strings (domain, IP, MD5, 
+SHA256, and/or URL):
     | urlhaus <IOCs>
 
 or input from the pipeline (any field where the value is a domain, MD5, SHA256, 
@@ -19,7 +19,7 @@ Instructions:
 | urlhaus feed
 ```
 2. Switch to the URLHaus dashboard in the OSweep app.
-3. Add the list of IOCs to the "Domain, MD5, SHA256, URL (+)" textbox.
+3. Add the list of IOCs to the "Domain, IP, MD5, SHA256, URL (+)" textbox.
 4. Select whether the results will be grouped and how from the dropdowns.
 5. Click "Submit".
 
