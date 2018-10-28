@@ -221,7 +221,6 @@ You can also pipe the results of one command into a totally different command to
 #### Dashboards Coming Soon  
 - Alienvault  
 - Censys  
-- Cymon  
 - Hybrid-Analysis  
 - Malshare  
 
