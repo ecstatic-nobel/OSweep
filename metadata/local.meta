@@ -13,12 +13,12 @@ modtime = 1539962360.682569000
 [views/urlhaus]
 owner = admin
 version = 7.1.3
-modtime = 1540680353.089707000
+modtime = 1540686865.741440000
 
 [views/crtsh]
 owner = admin
 version = 7.1.3
-modtime = 1540538775.771949000
+modtime = 1540686755.687112000
 
 [views/urlscan]
 access = read : [ * ], write : [ admin, power ]
