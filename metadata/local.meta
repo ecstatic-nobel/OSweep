@@ -13,7 +13,7 @@ modtime = 1539962360.682569000
 [views/urlhaus]
 owner = admin
 version = 7.1.3
-modtime = 1540575370.496388000
+modtime = 1540680353.089707000
 
 [views/crtsh]
 owner = admin
@@ -25,12 +25,12 @@ access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 7.1.3
-modtime = 1540534788.796164000
+modtime = 1540680842.521591000
 
 [views/cybercrimeTracker]
 owner = admin
 version = 7.1.3
-modtime = 1540538254.396184000
+modtime = 1540678445.898384000
 
 [views/threatMiner]
 access = read : [ * ], write : [ admin, power ]
@@ -47,16 +47,21 @@ modtime = 1540533670.080020000
 [views/ransomwareTracker]
 owner = admin
 version = 7.1.3
-modtime = 1540534960.352193000
+modtime = 1540679782.489448000
 
 [views/greyNoise]
 owner = admin
 version = 7.1.3
-modtime = 1540537873.492044000
+modtime = 1540679457.786001000
 
 [views/feed_overview]
 access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 7.1.3
-modtime = 1540539125.388075000
+modtime = 1540682036.445902000
+
+[views/cymon]
+owner = admin
+version = 7.1.3
+modtime = 1540678125.321773000
