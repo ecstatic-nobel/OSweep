@@ -82,11 +82,12 @@
       </chart>
     </panel>
     <panel>
-      <title>Stats - ASN</title>
+      <title>Stats - Country</title>
       <chart>
         <search base="greynoise_base">
           <query>| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
-| stats count BY asn</query>
+| iplocation ip
+| stats count BY Country</query>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
@@ -102,7 +103,8 @@
           <query>| fillnull value="-" 
 | search NOT "last updated"="-" 
 | dedup category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
-| stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"
+| search NOT "$group_key$"="-"</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>
