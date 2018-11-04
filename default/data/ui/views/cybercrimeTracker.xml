@@ -40,6 +40,36 @@
     </input>
   </fieldset>
   <row>
+    <panel>
+      <title>Stats - IP</title>
+      <chart>
+        <search base="cybercrimeTracker_base">
+          <query>| fillnull value="-" 
+| search NOT date="-" 
+| dedup date url ip "vt latest scan" "vt ip info" type
+| stats count BY ip</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Type</title>
+      <chart>
+        <search base="cybercrimeTracker_base">
+          <query>| fillnull value="-" 
+| search NOT date="-" 
+| dedup date url ip "vt latest scan" "vt ip info" type
+| stats count BY type</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
     <panel depends="$group_panel$">
       <title>Results - Group by "$group_key$"</title>
       <table>
@@ -47,7 +77,8 @@
           <query>| fillnull value="-" 
 | search NOT date="-" 
 | dedup date url ip "vt latest scan" "vt ip info" type 
-| stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"
+| search NOT "$group_key$"="-"</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>
