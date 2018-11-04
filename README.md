@@ -30,6 +30,7 @@ sudo -H -u $SPLUNK_USER /opt/splunk/bin/splunk restart # $SPLUNK_USER = User run
 - greyNoise - https://greynoise.io/  
 - ransomwareTracker - https://ransomwaretracker.abuse.ch/  
 - threatcrowd - https://www.threatcrowd.org/  
+- twitter - https://twitter.com/  
 - urlhaus - https://urlhaus.abuse.ch/  
 - urlscan - https://urlscan.io/  
 
