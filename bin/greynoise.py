@@ -32,62 +32,144 @@ Notes: None
 Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
+from collections import OrderedDict
+import os
 import sys
-import traceback
 
-import splunk.Intersplunk as InterSplunk
+script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
+sys.path.insert(0, script_path)
+import validators
 
-import greynoise_api as greynoise
+import commons
 
 
-def process_master(results):
-    """Process input (results or arguments) from Splunk."""
+api = "https://api.greynoise.io/v1/query"
+
+def get_feed():
+    """Return the latest report summaries from the feed."""
+    session = commons.create_session()
+    tags    = query_list(session)
+
+    if tags == None:
+        return
+    return query_tags(tags, session)
+
+def query_list(session):
+    """Return a list of tags."""
+    resp = session.get("{}/list".format(api))
+
+    if resp.status_code == 200 and "tags" in resp.json().keys():
+        return resp.json()["tags"]
+    return
+
+def query_tags(tags, session):
+    """Return dictionaries containing information about a tag."""
+    data_feed = []
+
+    for tag in tags:
+        resp = session.post("{}/tag".format(api), data={"tag": tag})
+
+        if resp.status_code == 200 and "records" in resp.json().keys() and \
+           len(resp.json()["records"]):
+            records = resp.json()["records"]
+
+            for record in records:
+                record["datacenter"]  = record["metadata"].get("datacenter", "")
+                record["tor"]         = str(record["metadata"].get("tor", ""))
+                record["rdns_parent"] = record["metadata"].get("rdns_parent", "")
+                record["link"]        = record["metadata"].get("link", "")
+                record["org"]         = record["metadata"].get("org", "")
+                record["os"]          = record["metadata"].get("os", "")
+                record["asn"]         = record["metadata"].get("asn", "")
+                record["rdns"]        = record["metadata"].get("rdns", "")
+                record.pop("metadata")
+                data_feed.append(record)
+
+    session.close()
+    return data_feed
+
+def write_file(data_feed, file_path):
+    """Write data to a file."""
+    if data_feed == None:
+        return
+
+    with open(file_path, "w") as open_file:
+        keys   = data_feed[0].keys()
+        header = ",".join(keys)
+
+        open_file.write("{}\n".format(header))
+
+        for data in data_feed:
+            data_string = "^^".join(data.values())
+            data_string = data_string.replace(",", "")
+            data_string = data_string.replace("^^", ",")
+            data_string = data_string.replace('"', "")
+            open_file.write("{}\n".format(data_string.encode("UTF-8")))
+    return
+
+def process_iocs(results):
+    """Return data formatted for Splunk from GreyNoise."""
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
     else:
         provided_iocs = sys.argv[1:]
-    return greynoise.process_iocs(provided_iocs)
 
-def main():
+    splunk_table = []
+    lookup_path  = "/opt/splunk/etc/apps/osweep/lookups"
+    open_file    = open("{}/greynoise_feed.csv".format(lookup_path), "r")
+    data_feed    = open_file.read().splitlines()
+    header       = data_feed[0].split(",")
+    open_file.close()
+
+    open_file = open("{}/greynoise_scanners.csv".format(lookup_path), "r")
+    scanners  = set(open_file.read().splitlines()[1:])
+    scanners  = [x.lower() for x in scanners]
+    open_file.close()
+
+    for provided_ioc in set(provided_iocs):
+        provided_ioc = provided_ioc.replace("[.]", ".")
+        provided_ioc = provided_ioc.replace("[d]", ".")
+        provided_ioc = provided_ioc.replace("[D]", ".")
+
+        if not validators.ipv4(provided_ioc) and \
+           not validators.domain(provided_ioc) and \
+           provided_ioc.lower() not in scanners:
+           splunk_table.append({"invalid": provided_ioc})
+           continue
+
+        line_found = False
+
+        for line in data_feed:
+            if provided_ioc.lower() in line.lower():
+                line_found   = True
+                scanner_data = line.split(",")
+                scanner_dict = OrderedDict(zip(header, scanner_data))
+                scanner_dict = commons.lower_keys(scanner_dict)
+                splunk_table.append(scanner_dict)
+
+        if line_found == False:
+            splunk_table.append({"no data": provided_ioc})
+    return splunk_table
+
+if __name__ == "__main__":
     if sys.argv[1].lower() == "feed":
+        data_feed    = get_feed()
         lookup_path  = "/opt/splunk/etc/apps/osweep/lookups"
         scanner_list = "{}/greynoise_scanners.csv".format(lookup_path)
         file_path    = "{}/greynoise_feed.csv".format(lookup_path)
-        data_feed    = greynoise.get_feed()
-        
-        if data_feed == None:
-            exit(0)
 
         with open(scanner_list, "w") as sfile:
-            scanners = []
+            sfile.write("scanner\n")
 
+            scanners = []
             for data in data_feed:
                 scanner = data["name"].encode("UTF-8")
 
                 if scanner not in scanners:
-                    scanners.append(scanner)
+                    sfile.write("{}\n".format(scanner.lower()))
 
-            sfile.write("scanner\n")
-
-            for scanner in scanners:
-                sfile.write("{}\n".format(scanner.lower()))
-
-        greynoise.write_file(data_feed, file_path)
+        write_file(data_feed, file_path)
         exit(0)
 
-    try:
-        results, dummy_results, settings = InterSplunk.getOrganizedResults()
-        
-        if isinstance(results, list) and len(results) > 0:
-            new_results = process_master(results)
-        elif len(sys.argv) > 1:
-            new_results = process_master(None)
-    except:
-        stack = traceback.format_exc()
-        new_results = InterSplunk.generateErrorResults("Error: " + str(stack))
-
-    InterSplunk.outputResults(new_results)
-    return
-
-if __name__ == "__main__":
-    main()
+    current_module = sys.modules[__name__]
+    commons.return_results(current_module)

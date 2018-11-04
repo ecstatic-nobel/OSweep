@@ -28,37 +28,88 @@ Notes: None
 Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
+import os
 import sys
-import traceback
 
-import splunk.Intersplunk as InterSplunk
+script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
+sys.path.insert(0, script_path)
+import validators
 
-import cymon_api as cymon
+import commons
 
 
-def process_master(results):
-    """Process input (results or arguments) from Splunk."""
+def process_iocs(results):
+    """Return data formatted for Splunk from Cymon."""
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
     else:
         provided_iocs = sys.argv[1:]
 
-    return cymon.process_iocs(provided_iocs)
+    session      = commons.create_session()
+    splunk_table = []
 
-def main():
-    try:
-        results, dummy_results, settings = InterSplunk.getOrganizedResults()
+    for provided_ioc in provided_iocs:
+        provided_ioc = provided_ioc.replace("[.]", ".")
+        provided_ioc = provided_ioc.replace("[d]", ".")
+        provided_ioc = provided_ioc.replace("[D]", ".")
 
-        if isinstance(results, list) and len(results) > 0:
-            new_results = process_master(results)
-        elif len(sys.argv) > 1:
-            new_results = process_master(None)
-    except:
-        stack = traceback.format_exc()
-        new_results = InterSplunk.generateErrorResults("Error: " + str(stack))
+        if validators.ipv4(provided_ioc):
+            ioc_type = "ip"
+        elif validators.domain(provided_ioc):
+            ioc_type = "domain"
+        elif validators.md5(provided_ioc):
+            ioc_type = "md5"
+        elif validators.sha256(provided_ioc):
+            ioc_type = "sha256"
+        else:
+            splunk_table.append({"invalid": provided_ioc})
+            continue
 
-    InterSplunk.outputResults(new_results)
-    return
+        ioc_dicts = query_cymon(ioc_type, session, provided_ioc)
+
+        if isinstance(ioc_dicts, dict):
+            splunk_table.append(ioc_dicts)
+            continue
+
+        for ioc_dict in ioc_dicts:
+            ioc_dict = commons.lower_keys(ioc_dict)
+            splunk_table.append(ioc_dict)
+
+    session.close()
+    return splunk_table
+
+def query_cymon(ioc_type, session, provided_ioc):
+    """ """
+    ioc_list = []
+    base_url = "https://api.cymon.io/v2/ioc/search/{}/{}"
+    resp     = session.get(base_url.format(ioc_type, provided_ioc))
+
+    if resp.status_code == 200 and len(resp.json()["hits"]) > 0:
+        hits = resp.json()["hits"]
+    else:
+        return {"no data": provided_ioc}
+
+    for hit in hits:
+        ioc_list.append(build_dict(hit))
+    return ioc_list
+
+def build_dict(hit):
+    """Return a dictionary without nested parts."""
+    ioc_dict = {}
+
+    for key, value in hit.iteritems():
+        if isinstance(value, list):
+            ioc_dict[key] = "|".join(value)
+        elif isinstance(value, str) or isinstance(value, unicode):
+            ioc_dict[key] = value
+        elif isinstance(value, dict):
+            for k, v in value.iteritems():
+                if isinstance(v, dict):
+                    ioc_dict.update(v)
+                else:
+                    ioc_dict[k] = v
+    return ioc_dict
 
 if __name__ == "__main__":
-    main()
+    current_module = sys.modules[__name__]
+    commons.return_results(current_module)
