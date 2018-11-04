@@ -1,0 +1,87 @@
+<form>
+  <label>Twitter</label>
+  <description>Analyze tweets to understand what others already know about particular IOCs. (Site: https://twitter.com/, Rate Limit: 180 requests/15 min)</description>
+  <search id="twitter_base">
+    <query>| twitter $search_term$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="text" token="search_term">
+      <label>Search Term (+)</label>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Results - Timechart</title>
+      <chart>
+        <search base="twitter_base">
+          <query>| search NOT (invalid=* OR "error"=*) 
+| eval timestamp=strptime(timestamp, "%a %b %d %H:%M:%S %z %Y") 
+| eval _time=timestamp 
+| timechart count BY "search term" span=5m</query>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Table</title>
+      <table>
+        <search base="twitter_base">
+          <query>| eval epoch=strptime(timestamp, "%+")
+| fillnull value="-" 
+| search NOT timestamp="-" 
+| dedup timestamp tweet url 
+| sort - epoch
+| table timestamp tweet url hashtags "search term"</query>
+        </search>
+        <option name="count">15</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="twitter_base">
+          <query>| dedup invalid 
+| table invalid
+| sort invaild</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - Error</title>
+      <table>
+        <search base="twitter_base">
+          <query>| dedup error
+| table error
+| sort error</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>
