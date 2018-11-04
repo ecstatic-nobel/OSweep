@@ -6,6 +6,7 @@
   <view name="greyNoise" />
   <view name="ransomwareTracker" />
   <view name="threatCrowd" />
+  <view name="twitter" />
   <view name="urlhaus" />
   <view name="urlscan" />
   <collection label="Misc" >
