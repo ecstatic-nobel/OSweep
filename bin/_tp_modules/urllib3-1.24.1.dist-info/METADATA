@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: urllib3
-Version: 1.24
+Version: 1.24.1
 Summary: HTTP library with thread-safe connection pooling, file post, and more.
 Home-page: https://urllib3.readthedocs.io/
 Author: Andrey Petrov
@@ -24,8 +24,8 @@ Classifier: Programming Language :: Python :: Implementation :: PyPy
 Classifier: Topic :: Internet :: WWW/HTTP
 Classifier: Topic :: Software Development :: Libraries
 Requires-Python: >=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4
-Provides-Extra: secure
 Provides-Extra: socks
+Provides-Extra: secure
 Provides-Extra: secure
 Requires-Dist: pyOpenSSL (>=0.14); extra == 'secure'
 Requires-Dist: cryptography (>=1.3.4); extra == 'secure'
@@ -147,6 +147,14 @@ Sponsors include:
 
 Changes
 =======
+
+1.24.1 (2018-11-02)
+-------------------
+
+* Remove quadratic behavior within ``GzipDecoder.decompress()`` (Issue #1467)
+
+* Restored functionality of `ciphers` parameter for `create_urllib3_context()`. (Issue #1462)
+
 
 1.24 (2018-10-16)
 -----------------
