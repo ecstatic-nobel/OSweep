@@ -39,15 +39,15 @@ Three of the dashboards below use lookup tables to store the data feed from the 
 
 ![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feed_overview_dashboard.png)      
 
-**<span>crt</span>.sh - Dashboard**
-1. Switch to the **<span>crt</span>.sh** dashboard in the OSweep™ app.  
+**Certificate Search - Dashboard**
+1. Switch to the **Certificate Search** dashboard in the OSweep™ app.  
 2. Add the list of IOCs to the "Domain, IP (+)" textbox.  
 3. Select "Yes" or "No" from the "Wildcard" dropdown to search for subdomains.  
 4. Click "Submit".  
 
 ![crtsh - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/crtsh_dashboard.png)  
 
-**<span>crt</span>.sh - Adhoc**
+**Certificate Search - Adhoc**
 ```
 | crtsh <DOMAINS>
 | fillnull value="-"
@@ -150,6 +150,21 @@ or to search for subdomains,
 4. Click 'Submit'.  
 
 ![ThreatCrowd - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/threatcrowd_dashboard.png)  
+
+**Twitter - Dashboard**
+1. Open the terminal
+2. Navigate to "/opt/splunk/etc/apps/osweep/etc/".
+3. Edit "config.py" and add the following values as strings to the config file:
+- twitter_consumer_key        -> Consumer Key
+- twitter_consumer_secret     -> Consumer Secret
+- twitter_access_token        -> Access Token
+- twitter_access_token_secret -> Access Token Secret
+4. Save "config.py" and close the terminal.
+5. Switch to the **Twitter** dashboard in the OSweep app.
+6. Add the list of IOCs to the "Search Term (+)" textbox.
+7. Click "Submit".
+
+![Twitter - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/twitter_dashboard.png)  
 
 **URLhaus - Dashboard**
 1. Manually download data feed (one-time only)  
