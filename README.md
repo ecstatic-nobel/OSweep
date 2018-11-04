@@ -36,7 +36,7 @@ sudo -H -u $SPLUNK_USER /opt/splunk/bin/splunk restart # $SPLUNK_USER = User run
 
 #### Usage    
 **Feed Overview - Dashboard**  
-Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the last seven (7) days.  
+Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the previous day.  
 
 ![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feed_overview_dashboard.png)      
 
