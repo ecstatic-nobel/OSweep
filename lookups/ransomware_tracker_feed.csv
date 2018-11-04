@@ -222,7 +222,7 @@ Firstseen (UTC),Threat,Malware,Host,URL,Status,Registrar,IP address(es),ASN(s),C
  2017-10-24 11:20:06,Distribution Site,Locky,video.rb-webdev.de,http://video.rb-webdev.de/kjhgFG,offline,,85.214.28.187,6724,DE 
  2017-10-20 00:03:33,C2,Locky,lvanwwbyabcfevyi.pw,http://lvanwwbyabcfevyi.pw/userinfo.php,offline,Namecheap,,, 
  2017-10-20 00:03:33,C2,Locky,88.214.236.11,http://88.214.236.11/userinfo.php,offline,,88.214.236.11,46636,RU 
- 2017-10-18 06:21:44,C2,Sage,mbfce24rgn65bx3g.is0hvt1.com,http://mbfce24rgn65bx3g.is0hvt1.com,offline,Trunkoz Technologies Pvt Ltd. d/b/a OwnRegistrar.com,,, 
+ 2017-10-18 06:21:44,C2,Sage,mbfce24rgn65bx3g.is0hvt1.com,http://mbfce24rgn65bx3g.is0hvt1.com,offline,Trunkoz Technologies Pvt Ltd. d/b/a OwnRegistrar.com,208.91.197.84,40034,VG 
  2017-10-14 12:52:14,C2,Locky,vpuroeit.pw,http://vpuroeit.pw/upload/_dispatch.php,offline,Namecheap,,, 
  2017-10-13 14:52:51,C2,Sage,mbfce24rgn65bx3g.0ny42p.com,http://mbfce24rgn65bx3g.0ny42p.com,offline,Web Commerce Communications Limited dba WebNic.cc,199.59.242.150,395082,US 
  2017-10-13 14:52:51,C2,Sage,mbfce24rgn65bx3g.hp8ewo.net,http://mbfce24rgn65bx3g.hp8ewo.net,offline,PakNIC (Private) Limited,,, 
