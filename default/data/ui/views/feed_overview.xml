@@ -22,7 +22,7 @@
   </row>
   <row>
     <panel>
-      <title>GreyNoise - Total Scanners Identified (Last 7 Days)</title>
+      <title>GreyNoise - Total Scanners Identified Compared to Previous Day</title>
       <single>
         <search>
           <query>| inputlookup greynoise_feed.csv 
@@ -31,7 +31,7 @@
 | eval fs=dd." ".tt 
 | eval NewTime=strptime(fs,"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
-| timechart count span=7d</query>
+| timechart count span=1d</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
@@ -46,7 +46,7 @@
         <option name="showTrendIndicator">1</option>
         <option name="trendColorInterpretation">inverse</option>
         <option name="trendDisplayMode">absolute</option>
-        <option name="trendInterval">-7d</option>
+        <option name="trendInterval">-1d</option>
         <option name="underLabel">New Scanners</option>
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
@@ -54,13 +54,13 @@
       </single>
     </panel>
     <panel>
-      <title>Ransomware Tracker - Total Sites Identified (Last 7 Days)</title>
+      <title>Ransomware Tracker - Total Sites Identified Compared to Previous Day</title>
       <single>
         <search>
           <query>| inputlookup ransomware_tracker_feed.csv
 | eval NewTime=strptime('Firstseen (UTC)',"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
-| timechart count span=7d</query>
+| timechart count span=1d</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
@@ -75,7 +75,7 @@
         <option name="showTrendIndicator">1</option>
         <option name="trendColorInterpretation">inverse</option>
         <option name="trendDisplayMode">absolute</option>
-        <option name="trendInterval">-7d</option>
+        <option name="trendInterval">-1d</option>
         <option name="underLabel">New Sites</option>
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
@@ -94,7 +94,7 @@
 | eval fs=dd." ".tt 
 | eval NewTime=strptime(fs,"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
-| timechart count span=7d</query>
+| timechart count span=1d</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
@@ -120,7 +120,7 @@
           <query>| inputlookup ransomware_tracker_feed.csv
 | eval NewTime=strptime('Firstseen (UTC)',"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
-| timechart count span=7d</query>
+| timechart count span=1d</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
@@ -142,13 +142,13 @@
   </row>
   <row>
     <panel>
-      <title>URLhaus - Total Sites Identified (Last 7 Days)</title>
+      <title>URLhaus - Total Sites Identified Compared to Previous Day</title>
       <single>
         <search>
           <query>| inputlookup urlhaus_url_feed.csv
 | eval NewTime=strptime(dateadded,"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
-| timechart count span=7d</query>
+| timechart count span=1d</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
@@ -163,7 +163,7 @@
         <option name="showTrendIndicator">1</option>
         <option name="trendColorInterpretation">inverse</option>
         <option name="trendDisplayMode">absolute</option>
-        <option name="trendInterval">-7d</option>
+        <option name="trendInterval">-1d</option>
         <option name="underLabel">New Sites</option>
         <option name="unitPosition">after</option>
         <option name="useColors">1</option>
@@ -179,7 +179,7 @@
           <query>| inputlookup urlhaus_url_feed.csv
 | eval NewTime=strptime(dateadded,"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
-| timechart count span=7d</query>
+| timechart count span=1d</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
