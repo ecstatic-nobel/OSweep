@@ -1,6 +1,6 @@
 <form>
   <label>URLhaus</label>
-  <description>Gather malicious URLs that are being used for malware distribution. (Site: https://urlhaus.abuse.ch/, Rate Limit: None)</description>
+  <description>Gather malicious URLs that are being used for malware distribution. (Site: https://urlhaus.abuse.ch/browse/, Rate Limit: None)</description>
   <search id="urlhaus_base">
     <query>| urlhaus $ioc$ </query>
     <earliest>-15m</earliest>
@@ -75,7 +75,8 @@
           <query>| fillnull value="-" 
 | search NOT "provided ioc"="-" 
 | dedup id dateadded url payload "url status" threat tags "urlhaus link"
-| stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"
+| search NOT "$group_key$"="-"</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>

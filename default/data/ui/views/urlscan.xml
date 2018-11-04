@@ -99,7 +99,8 @@
           <query>| fillnull value="-" 
 | search NOT url="-"
 | dedup url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
-| stats values("$group_value$") AS "$group_value$" BY "$group_key$" 
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"
+| search NOT "name value"="-"
 | sort "$group_key$"</query>
         </search>
         <option name="count">10</option>
