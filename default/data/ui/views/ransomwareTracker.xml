@@ -89,7 +89,8 @@
       <chart>
         <search base="ransomwareTracker_base">
           <query>| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country
-| stats count BY country</query>
+| iplocation "ip address(es)"
+| stats count BY Country</query>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
@@ -105,7 +106,8 @@
           <query>| fillnull value="-" 
 | search NOT "firstseen (utc)"="-"
 | dedup "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country 
-| stats values("$group_value$") AS "$group_value$" BY "$group_key$"</query>
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"
+| search NOT "$group_key$"="-"</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>
