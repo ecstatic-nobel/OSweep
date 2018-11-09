@@ -101,20 +101,13 @@ def rename_dicts(results, provided_ioc):
             download["filesize"] = ""
             download["mimetype"] = ""
             download["sha256"]   = ""
-            ioc_dict = merge_dict(page, download)
+            ioc_dict = commons.merge_dict(page, download)
             ioc_dicts.append(ioc_dict)
         else:
             for download in files:
-                ioc_dict = merge_dict(page, download)
+                ioc_dict = commons.merge_dict(page, download)
                 ioc_dicts.append(ioc_dict)
     return ioc_dicts
-
-def merge_dict(page, download):
-    """Return a dictionary containing both page and download data."""
-    merged_dict = {}
-    merged_dict.update(commons.lower_keys(page))
-    merged_dict.update(commons.lower_keys(download))
-    return merged_dict
 
 if __name__ == "__main__":
     current_module = sys.modules[__name__]
