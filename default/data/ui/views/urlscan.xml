@@ -52,6 +52,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlscan $click.value$ 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256&amp;earliest=&amp;latest=</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -64,6 +68,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlscan $click.value$ 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256&amp;earliest=&amp;latest=</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -76,6 +84,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlscan $click.value$ 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256&amp;earliest=&amp;latest=</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -88,6 +100,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlscan $click.value$ 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256&amp;earliest=&amp;latest=</link>
+        </drilldown>
       </chart>
     </panel>
   </row>
@@ -117,7 +133,7 @@
       <table>
         <search base="urlscan_base">
           <query>| fillnull value="-" 
-| search NOT url="-"
+| search NOT url="-" 
 | dedup url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
 | table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
 | sort sha256</query>

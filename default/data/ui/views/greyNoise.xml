@@ -55,6 +55,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| greyNoise $click.value$
+| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -67,6 +71,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| greyNoise $click.value$
+| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -79,6 +87,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| greyNoise $click.value$
+| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -92,6 +104,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| greyNoise $click.value$ 
+| table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
   </row>

@@ -58,6 +58,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| ransomwareTracker $click.value$
+| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -70,6 +74,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| ransomwareTracker $click.value$
+| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -82,6 +90,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| ransomwareTracker $click.value$
+| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country&amp;earliest=$earliest$&amp;latest=$latest$</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -95,6 +107,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| ransomwareTracker $click.value$ 
+| table "firstseen (utc)" threat malware host "ip address(es)" url status registrar asn(s) country&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
   </row>

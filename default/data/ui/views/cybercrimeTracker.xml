@@ -50,8 +50,12 @@
 | stats count BY ip</query>
         </search>
         <option name="charting.chart">pie</option>
-        <option name="charting.drilldown">none</option>
+        <option name="charting.drilldown">all</option>
         <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">search?q=| cybercrimeTracker $click.value$
+| table date url ip "vt latest scan" "vt ip info" type&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -64,8 +68,12 @@
 | stats count BY type</query>
         </search>
         <option name="charting.chart">pie</option>
-        <option name="charting.drilldown">none</option>
+        <option name="charting.drilldown">all</option>
         <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">search?q=| cybercrimeTracker $click.value$
+| table date url ip "vt latest scan" "vt ip info" type&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
   </row>

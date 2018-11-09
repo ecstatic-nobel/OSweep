@@ -58,6 +58,10 @@
         <option name="charting.chart">column</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| cymon $click.value$
+| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -71,6 +75,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| cymon $click.value$
+| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -84,6 +92,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| cymon $click.value$
+| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon&amp;earliest=&amp;latest=</link>
+        </drilldown>
       </chart>
     </panel>
   </row>

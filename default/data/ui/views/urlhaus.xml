@@ -51,6 +51,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlhaus $click.value$
+| table id dateadded url payload "url status" threat tags "urlhaus link"&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -63,6 +67,10 @@
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlhaus $click.value$
+| table id dateadded url payload "url status" threat tags "urlhaus link"&amp;earliest=-15m&amp;latest=now</link>
+        </drilldown>
       </chart>
     </panel>
   </row>
