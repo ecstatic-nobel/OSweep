@@ -7,18 +7,34 @@ import os
 import sys
 import traceback
 
-import splunk.Intersplunk as InterSplunk
-
 script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
 sys.path.insert(0, script_path)
+import splunk.Intersplunk as InterSplunk
 import requests
 
+sys.path.insert(1, "/opt/splunk/etc/apps/osweep/etc/")
+import config
+
+
+def get_apikey(api):
+    """Return the API key."""
+    if api == "twitter":
+        return {
+            "access_token": config.twitter_access_token,
+            "access_token_secret": config.twitter_access_token_secret,
+            "consumer_key": config.twitter_consumer_key,
+            "consumer_secret": config.twitter_consumer_secret
+        }
 
 def create_session():
     """Create a Requests Session object."""
     session = requests.session()
     uagent = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"
     session.headers.update({"User-Agent": uagent})
+    session.proxies.update({
+        "http": config.http_proxy_url,
+        "https": config.https_proxy_url
+    })
     return session
 
 def return_results(module):
@@ -49,3 +65,10 @@ def lower_keys(target):
             key   = " ".join(words).lower()
             dictionary[key] = value
         return dictionary
+
+def merge_dict(one, two):
+    """Merge two dictionaries."""
+    merged_dict = {}
+    merged_dict.update(lower_keys(one))
+    merged_dict.update(lower_keys(two))
+    return merged_dict
