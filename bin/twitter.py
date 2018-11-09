@@ -47,15 +47,15 @@ import tweepy
 import validators
 
 import commons
-import config
 
 
 def create_session():
     """Return Twitter session."""
-    auth = tweepy.OAuthHandler(config.twitter_consumer_key,
-                               config.twitter_consumer_secret)
-    auth.set_access_token(config.twitter_access_token,
-                          config.twitter_access_token_secret)
+    keys = commons.get_apikey("twitter")
+    auth = tweepy.OAuthHandler(keys["consumer_key"],
+                               keys["consumer_secret"])
+    auth.set_access_token(keys["access_token"],
+                          keys["access_token_secret"])
     session = tweepy.API(auth)
 
     try:
