@@ -86,6 +86,9 @@ def query_tags(tags, session):
                 data_feed.append(record)
 
     session.close()
+
+    if len(data_feed) == 0:
+        return
     return data_feed
 
 def write_file(data_feed, file_path):
