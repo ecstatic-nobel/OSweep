@@ -17,12 +17,19 @@ The fix? **OSweep™**.
 - Python 2.7.14 > ($SPLUNK_HOME/bin/python)  
 
 #### Setup  
-Open a terminal and run the following commands as the user running Splunk:  
+1. Open a terminal and run the following commands as the user running Splunk:  
 ```bash
 cd /opt/splunk/etc/apps
 git clone https://github.com/leunammejii/osweep.git
 sudo -H -u $SPLUNK_USER /opt/splunk/bin/splunk restart # $SPLUNK_USER = User running Splunk
 ```
+2. Edit "config.py" and add the necessary values as strings to the config file:  
+```bash
+vim ./osweep/etc/config.py
+```
+Note: Values for the proxies should be the full URL including the port (ex. http://\<IP Adress\>:\<Port\>).  
+3. Save "config.py" and close the terminal.  
+
 
 #### Commands  
 - crtsh - https://crt.sh/  
@@ -153,17 +160,9 @@ or to search for subdomains,
 ![ThreatCrowd - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/threatcrowd_dashboard.png)  
 
 **Twitter - Dashboard**
-1. Open the terminal
-2. Navigate to "/opt/splunk/etc/apps/osweep/etc/".
-3. Edit "config.py" and add the following values as strings to the config file:
-- twitter_consumer_key        -> Consumer Key
-- twitter_consumer_secret     -> Consumer Secret
-- twitter_access_token        -> Access Token
-- twitter_access_token_secret -> Access Token Secret
-4. Save "config.py" and close the terminal.
-5. Switch to the **Twitter** dashboard in the OSweep app.
-6. Add the list of IOCs to the "Search Term (+)" textbox.
-7. Click "Submit".
+1. Switch to the **Twitter** dashboard in the OSweep app.
+2. Add the list of IOCs to the "Search Term (+)" textbox.
+3. Click "Submit".
 
 ![Twitter - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/twitter_dashboard.png)  
 
@@ -239,5 +238,6 @@ You can also pipe the results of one command into a totally different command to
 - Censys  
 - Hybrid-Analysis  
 - Malshare  
+- PulseDive  
 
 Please fork, create merge requests, and help make this better.  
