@@ -2,12 +2,12 @@
   <label>Twitter</label>
   <description>Analyze tweets to understand what others already know about particular IOCs. (Site: https://twitter.com/, Rate Limit: 180 requests/15 min)</description>
   <search id="twitter_base">
-    <query>| twitter $search_term$</query>
+    <query>| twitter $ioc$</query>
     <earliest>-15m</earliest>
     <latest>now</latest>
   </search>
   <fieldset submitButton="true">
-    <input type="text" token="search_term">
+    <input type="text" token="ioc">
       <label>Search Term (+)</label>
     </input>
   </fieldset>
