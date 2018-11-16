@@ -7,8 +7,10 @@
         <search>
           <query>| inputlookup cybercrime_tracker_feed.csv 
 | stats count</query>
-          <earliest>-24h@h</earliest>
+          <earliest>-15m</earliest>
           <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
         </search>
         <option name="colorMode">block</option>
         <option name="drilldown">none</option>
@@ -22,16 +24,62 @@
   </row>
   <row>
     <panel>
-      <title>GreyNoise - Total Scanners Identified Compared to Previous Day</title>
+      <title>GreyNosie - Last Scanner Tagged</title>
       <single>
         <search>
           <query>| inputlookup greynoise_feed.csv 
 | rex field="first_seen" "(?&lt;dd&gt;.+)T" 
 | rex field="first_seen" "T(?&lt;tt&gt;.+)Z" 
 | eval fs=dd." ".tt 
-| eval NewTime=strptime(fs,"%Y-%m-%d %H:%M:%S") 
+| fields fs
+| sort - fs
+| head 1</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>PulseDive - Last New Indicator Identified</title>
+      <single>
+        <search>
+          <query>| inputlookup pulsedive_feed.csv
+| fields "stamped at"
+| search "stamped at"="20*"
+| sort - "stamped at"
+| head 1</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>GreyNoise - Total Scanners Tagged Compared to Previous Day</title>
+      <single>
+        <search>
+          <query>| inputlookup greynoise_feed.csv 
+| eval previous_days=strftime(relative_time(time(), "-90d@d"), "%Y-%m-%d") 
+| rex field=first_seen "(?&lt;ft&gt;.+)T" 
+| where ft &gt;= previous_days 
+| eval NewTime=strptime(ft,"%Y-%m-%d") 
 | eval _time=NewTime 
-| timechart count span=1d</query>
+| timechart count span=1d useother=false usenull=false</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
@@ -53,6 +101,136 @@
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
+    <panel>
+      <title>PulseDive - Total Indicators Identified Compared to Previous Day</title>
+      <single>
+        <search>
+          <query>| inputlookup pulsedive_feed.csv
+| eval NewTime=strptime('stamped at',"%Y-%m-%d %H:%M:%S") 
+| eval _time=NewTime 
+| timechart count span=1d</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">preview</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">-1d</option>
+        <option name="underLabel">New Indicators</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>GreyNoise - Scanners Tag Total by Day</title>
+      <chart>
+        <search>
+          <query>| inputlookup greynoise_feed.csv 
+| eval previous_days=strftime(relative_time(time(), "-90d@d"), "%Y-%m-%d") 
+| rex field=first_seen "(?&lt;ft&gt;.+)T" 
+| where ft &gt;= previous_days 
+| eval NewTime=strptime(ft,"%Y-%m-%d") 
+| eval _time=NewTime 
+| timechart count BY name span=1d useother=false usenull=false</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.text">Month</option>
+        <option name="charting.axisTitleY.text">Total Scanners</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">minmax</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>PulseDive - Total Indicators by Day</title>
+      <chart>
+        <search>
+          <query>| inputlookup pulsedive_feed.csv
+| eval NewTime=strptime('stamped at',"%Y-%m-%d %H:%M:%S") 
+| eval _time=NewTime 
+| timechart count span=1d</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.text">Month</option>
+        <option name="charting.axisTitleY.text">Total Scanners</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">minmax</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Ransomware Tracker - Last New Site Identified</title>
+      <single>
+        <search>
+          <query>| inputlookup ransomware_tracker_feed.csv
+| fields "Firstseen (UTC)"
+| sort - "Firstseen (UTC)"
+| head 1</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>URLhaus - Last New Sites Identified</title>
+      <single>
+        <search>
+          <query>| inputlookup urlhaus_url_feed.csv
+| fields dateadded
+| sort - dateadded
+| head 1</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
     <panel>
       <title>Ransomware Tracker - Total Sites Identified Compared to Previous Day</title>
       <single>
@@ -82,65 +260,6 @@
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
-  </row>
-  <row>
-    <panel>
-      <title>GreyNoise - Total Scanners by Week</title>
-      <chart>
-        <search>
-          <query>| inputlookup greynoise_feed.csv 
-| rex field="first_seen" "(?&lt;dd&gt;.+)T" 
-| rex field="first_seen" "T(?&lt;tt&gt;.+)Z" 
-| eval fs=dd." ".tt 
-| eval NewTime=strptime(fs,"%Y-%m-%d %H:%M:%S") 
-| eval _time=NewTime 
-| timechart count span=1d</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
-          <refresh>5m</refresh>
-          <refreshType>delay</refreshType>
-        </search>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.text">Month</option>
-        <option name="charting.axisTitleY.text">Total Scanners</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.chart">line</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">minmax</option>
-        <option name="charting.drilldown">none</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.legend.placement">none</option>
-        <option name="refresh.display">preview</option>
-      </chart>
-    </panel>
-    <panel>
-      <title>Ransomware - Total Sites by Week</title>
-      <chart>
-        <search>
-          <query>| inputlookup ransomware_tracker_feed.csv
-| eval NewTime=strptime('Firstseen (UTC)',"%Y-%m-%d %H:%M:%S") 
-| eval _time=NewTime 
-| timechart count span=1d</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
-          <refresh>5m</refresh>
-          <refreshType>delay</refreshType>
-        </search>
-        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
-        <option name="charting.axisTitleX.text">Month</option>
-        <option name="charting.axisTitleY.text">Total Sites</option>
-        <option name="charting.axisY.scale">linear</option>
-        <option name="charting.chart">line</option>
-        <option name="charting.chart.nullValueMode">gaps</option>
-        <option name="charting.chart.showDataLabels">minmax</option>
-        <option name="charting.drilldown">none</option>
-        <option name="charting.layout.splitSeries">0</option>
-        <option name="charting.legend.placement">none</option>
-        <option name="refresh.display">preview</option>
-      </chart>
-    </panel>
-  </row>
-  <row>
     <panel>
       <title>URLhaus - Total Sites Identified Compared to Previous Day</title>
       <single>
@@ -173,7 +292,33 @@
   </row>
   <row>
     <panel>
-      <title>URLhaus - Total Sites by Week</title>
+      <title>Ransomware - Total Sites by Day</title>
+      <chart>
+        <search>
+          <query>| inputlookup ransomware_tracker_feed.csv
+| eval NewTime=strptime('Firstseen (UTC)',"%Y-%m-%d %H:%M:%S") 
+| eval _time=NewTime 
+| timechart count span=1d</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.text">Month</option>
+        <option name="charting.axisTitleY.text">Total Sites</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">minmax</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>URLhaus - Total Sites by Day</title>
       <chart>
         <search>
           <query>| inputlookup urlhaus_url_feed.csv
