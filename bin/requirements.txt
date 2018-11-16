@@ -1,8 +1,9 @@
 bs4
 HTMLParser
 PySocks
+PyYAML
 requests
 requests_oauthlib
 six
+tweepy
 validators
-
