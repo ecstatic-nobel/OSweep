@@ -1,9 +1,10 @@
 <nav search_view="search" >
-  <view name="feed_overview" default='true' />
+  <view name="feedOverview" default='true' />
   <view name="crtsh" />
   <view name="cybercrimeTracker" />
   <view name="cymon" />
   <view name="greyNoise" />
+  <view name="phishingCatcher" />
   <view name="ransomwareTracker" />
   <view name="threatCrowd" />
   <view name="twitter" />
