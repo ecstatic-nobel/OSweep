@@ -48,10 +48,14 @@ api = "https://api.greynoise.io/v1/query"
 def get_feed():
     """Return the latest report summaries from the feed."""
     session = commons.create_session()
+    api_key = commons.get_apikey("greynoise")
     tags    = query_list(session)
 
     if tags == None:
         return
+    
+    if api_key != None:
+        session.params = {"key": api_key}
     return query_tags(tags, session)
 
 def query_list(session):
