@@ -1,9 +1,12 @@
 bs4
+entropy
 HTMLParser
+pylev
 PySocks
 PyYAML
 requests
 requests_oauthlib
 six
+tld
 tweepy
 validators
