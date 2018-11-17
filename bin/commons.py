@@ -16,6 +16,17 @@ sys.path.insert(1, "/opt/splunk/etc/apps/osweep/etc/")
 import config
 
 
+def create_session():
+    """Create a Requests Session object."""
+    session = requests.session()
+    uagent = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"
+    session.headers.update({"User-Agent": uagent})
+    session.proxies.update({
+        "http": config.http_proxy_url,
+        "https": config.https_proxy_url
+    })
+    return session
+
 def get_apikey(api):
     """Return the API key."""
     if api == "greynoise":
@@ -29,32 +40,6 @@ def get_apikey(api):
             "consumer_key": config.twitter_consumer_key,
             "consumer_secret": config.twitter_consumer_secret
         }
-
-def create_session():
-    """Create a Requests Session object."""
-    session = requests.session()
-    uagent = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"
-    session.headers.update({"User-Agent": uagent})
-    session.proxies.update({
-        "http": config.http_proxy_url,
-        "https": config.https_proxy_url
-    })
-    return session
-
-def return_results(module):
-    try:
-        results, dummy_results, settings = InterSplunk.getOrganizedResults()
-
-        if isinstance(results, list) and len(results) > 0:
-            new_results = module.process_iocs(results)
-        elif len(sys.argv) > 1:
-            new_results = module.process_iocs(None)
-    except:
-        stack = traceback.format_exc()
-        new_results = InterSplunk.generateErrorResults("Error: " + str(stack))
-
-    InterSplunk.outputResults(new_results)
-    return
 
 def lower_keys(target):
     """Return a string or dictionary with the first character capitalized."""
@@ -76,3 +61,18 @@ def merge_dict(one, two):
     merged_dict.update(lower_keys(one))
     merged_dict.update(lower_keys(two))
     return merged_dict
+
+def return_results(module):
+    try:
+        results, dummy_results, settings = InterSplunk.getOrganizedResults()
+
+        if isinstance(results, list) and len(results) > 0:
+            new_results = module.process_iocs(results)
+        elif len(sys.argv) > 1:
+            new_results = module.process_iocs(None)
+    except:
+        stack = traceback.format_exc()
+        new_results = InterSplunk.generateErrorResults("Error: " + str(stack))
+
+    InterSplunk.outputResults(new_results)
+    return
