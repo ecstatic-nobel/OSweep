@@ -35,6 +35,7 @@ Note: Values for the proxies should be the full URL including the port (ex. http
 - crtsh - https://crt.sh/  
 - cybercrimeTracker - http://cybercrime-tracker.net/index.php  
 - greyNoise - https://greynoise.io/  
+- phishingCatcher - https://github.com/x0rz/phishing_catcher  
 - ransomwareTracker - https://ransomwaretracker.abuse.ch/  
 - threatcrowd - https://www.threatcrowd.org/  
 - twitter - https://twitter.com/  
@@ -45,7 +46,7 @@ Note: Values for the proxies should be the full URL including the port (ex. http
 **Feed Overview - Dashboard**  
 Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the previous day.  
 
-![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feed_overview_dashboard.png)      
+![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feedOverview_dashboard.png)      
 
 **Certificate Search - Dashboard**
 1. Switch to the **Certificate Search** dashboard in the OSweep™ app.  
@@ -127,6 +128,25 @@ or to search for subdomains,
 | dedup category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
 | table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
 | sort - "Last Updated"
+```
+
+**Phishing Catcher - Dashboard**  
+1. Switch to the **Phishing Catcher** dashboard in the OSweep™ app.  
+2. Select whether you want to monitor the logs in realtime or add a list of domains.  
+3. If Monitor Mode is "Yes":  
+    - Add a search string to the 'Base Search' textbox.  
+    - Add the field name of the field containing the domain to the "Field Name" textbox.  
+    - Select the time range to search.  
+4. If Monitor Mode is "No":  
+    - Add the list of domains to the 'Domain (+)' textbox.  
+5. Click 'Submit'.  
+
+![Phishing Catcher - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/phishingCatcher_dashboard.png)  
+
+**Phishing Catcher - Adhoc**
+```
+| phishingCatcher <DOMAINS>
+| table domain "threat level" score
 ```
 
 **Ransomare Tracker - Dashboard**
