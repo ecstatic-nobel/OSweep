@@ -141,7 +141,7 @@ or to search for subdomains,
     - Add the list of domains to the 'Domain (+)' textbox.  
 5. Click 'Submit'.  
 
-![Phishing Catcher - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/phishingCatcher_dashboard.png)  
+![Phishing Catcher - Dashboard](https://github.com/leunammejii/osweep/blob/dev/static/assets/phishingCatcher_dashboard.png)  
 
 **Phishing Catcher - Adhoc**
 ```
