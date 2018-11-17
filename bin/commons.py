@@ -18,6 +18,10 @@ import config
 
 def get_apikey(api):
     """Return the API key."""
+    if api == "greynoise":
+        return {
+            "key": config.greynoise_key
+        }
     if api == "twitter":
         return {
             "access_token": config.twitter_access_token,
