@@ -14,8 +14,8 @@ argument is the name of one field:
 Source: https://github.com/x0rz/phishing_catcher
 
 Instructions:
-1. Switch to the **Phishing Catcher** dashboard in the OSweep™ app.  
-2. Select whether you want to monitor the logs in realtime or add a list of domains.  
+1. Switch to the **Phishing Catcher** dashboard in the OSweep app.  
+2. Select whether you want to monitor the logs in realtime or add a list of domains.
 3. If Monitor Mode is "Yes":  
     - Add a search string to the 'Base Search' textbox.  
     - Add the field name of the field containing the domain to the "Field Name" textbox.  
