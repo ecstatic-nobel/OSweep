@@ -53,9 +53,7 @@ def process_iocs(results):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace("[.]", ".")
-        provided_ioc = provided_ioc.replace("[d]", ".")
-        provided_ioc = provided_ioc.replace("[D]", ".")
+        provided_ioc = commons.deobfuscate_url(provided_ioc)
 
         if validators.ipv4(provided_ioc):
             ioc_type = "ip"

@@ -49,9 +49,7 @@ def process_iocs(results):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace("[.]", ".")
-        provided_ioc = provided_ioc.replace("[d]", ".")
-        provided_ioc = provided_ioc.replace("[D]", ".")
+        provided_ioc = commons.deobfuscate_url(provided_ioc)
 
         if provided_ioc == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855":
             splunk_table.append({"no data": provided_ioc})

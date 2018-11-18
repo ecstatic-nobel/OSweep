@@ -4,6 +4,7 @@ Common functions
 """
 
 import os
+import re
 import sys
 import traceback
 
@@ -76,3 +77,15 @@ def return_results(module):
 
     InterSplunk.outputResults(new_results)
     return
+
+def deobfuscate_url(provided_ioc):
+    """Return deobfuscated URLs."""
+    pattern = re.compile("^h..p", re.IGNORECASE)
+    provided_ioc = pattern.sub("http", provided_ioc)
+
+    pattern = re.compile("\[.\]", re.IGNORECASE)
+    provided_ioc = pattern.sub(".", provided_ioc)
+
+    pattern = re.compile("^\*\.", re.IGNORECASE)
+    provided_ioc = pattern.sub("", provided_ioc)
+    return provided_ioc
