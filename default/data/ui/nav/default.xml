@@ -1,5 +1,6 @@
 <nav search_view="search" >
   <view name="feedOverview" default='true' />
+  <view name="theRoundTable" />
   <view name="crtsh" />
   <view name="cybercrimeTracker" />
   <view name="cymon" />
