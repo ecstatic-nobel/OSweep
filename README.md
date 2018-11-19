@@ -42,11 +42,19 @@ Note: Values for the proxies should be the full URL including the port (ex. http
 - urlhaus - https://urlhaus.abuse.ch/  
 - urlscan - https://urlscan.io/  
 
-#### Usage    
+#### Usage  
 **Feed Overview - Dashboard**  
 Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the previous day.  
 
-![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feedOverview_dashboard.png)      
+![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feedOverview_dashboard.png)  
+
+**The Round Table - Dashboard**  
+1. Switch to the **The Round Table** dashboard in the OSweep™ app.  
+2. Add the list of IOCs to the "IOC (+)" textbox to know which source has the most information.  
+3. Click "Submit".  
+4. After the panels have populated, click on one to be redirected to the corresponding dashboard to see the results.  
+
+![The Round Table - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/theRoundTable_dashboard.png)  
 
 **Certificate Search - Dashboard**
 1. Switch to the **Certificate Search** dashboard in the OSweep™ app.  
@@ -69,13 +77,24 @@ Three of the dashboards below use lookup tables to store the data feed from the 
 or to search for subdomains,  
 
 ```
+| crtsh subdomain <DOMAINS>
+| fillnull value="-"
+| search NOT "issuer ca id"="-"
+| dedup "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| table "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| sort - "min cert id"
+```
+
+or to search for wildcard,  
+
+```
 | crtsh wildcard <DOMAINS>
 | fillnull value="-"
 | search NOT "issuer ca id"="-"
 | dedup "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
 | table "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
 | sort - "min cert id"
-```  
+```
 
 **CyberCrime Tracker - Dashboard**
 1. Switch to the **CyberCrime Tracker** dashboard in the OSweep™ app.
@@ -92,7 +111,7 @@ or to search for subdomains,
 | search NOT date="-"
 | dedup date url ip "vt latest scan" "vt ip info" type
 | table date url ip "vt latest scan" "vt ip info" type
-```  
+```
 
 **Cymon - Dashboard**
 1. Switch to the **Cymon** dashboard in the OSweep™ app.  
@@ -141,7 +160,7 @@ or to search for subdomains,
     - Add the list of domains to the 'Domain (+)' textbox.  
 5. Click 'Submit'.  
 
-![Phishing Catcher - Dashboard](https://github.com/leunammejii/osweep/blob/dev/static/assets/phishingCatcher_dashboard.png)  
+![Phishing Catcher - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/phishingCatcher_dashboard.png)  
 
 **Phishing Catcher - Adhoc**
 ```
@@ -186,6 +205,17 @@ or to search for subdomains,
 
 ![Twitter - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/twitter_dashboard.png)  
 
+**Twitter - Adhoc**
+```
+| twitter <IOCs>
+| eval epoch=strptime(timestamp, "%+")
+| fillnull value="-" 
+| search NOT timestamp="-" 
+| dedup timestamp tweet url 
+| sort - epoch
+| table timestamp tweet url hashtags "search term"
+```
+
 **URLhaus - Dashboard**
 1. Manually download data feed (one-time only)  
 ```
@@ -196,7 +226,7 @@ or to search for subdomains,
 4. Select whether the results will be grouped and how from the dropdowns.  
 5. Click 'Submit'.  
 
-![URLhaus - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlhaus_dashboard.png) 
+![URLhaus - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlhaus_dashboard.png)  
 
 **URLhaus - Adhoc**
 ```
@@ -205,7 +235,7 @@ or to search for subdomains,
 | search NOT "provided ioc"="-"
 | dedup id dateadded url payload "url status" threat tags "urlhaus link"
 | table id dateadded url payload "url status" threat tags "urlhaus link"
-```  
+```
 
 **<span>urlscan</span>.io - Dashboard**
 1. Switch to the **<span>urlscan</span>.io** dashboard in the OSweep™ app.  
@@ -213,7 +243,7 @@ or to search for subdomains,
 3. Select whether the results will be grouped and how from the dropdowns.  
 4. Click 'Submit'.  
 
-![urlscanio - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlscan_dashboard.png) 
+![urlscanio - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlscan_dashboard.png)  
 
 **<span>urlscan</span>.io - Adhoc**
 ```
@@ -223,7 +253,7 @@ or to search for subdomains,
 | dedup url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
 | table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
 | sort sha256
-```  
+```
 
 #### Destroy  
 To remove the project completely,  run the following commands:  
