@@ -58,10 +58,9 @@
       <single>
         <search>
           <query>| inputlookup pulsedive_feed.csv 
-| eval type="feed" 
 | eval NewTime=strptime('stamp modified',"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
-| timechart count BY type span=30d</query>
+| timechart count span=30d</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
@@ -119,10 +118,9 @@
       <chart>
         <search>
           <query>| inputlookup pulsedive_feed.csv 
-| eval type="feed" 
 | eval NewTime=strptime('stamp modified',"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
-| timechart count BY type span=30d</query>
+| timechart count span=30d</query>
           <earliest>-15m</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
