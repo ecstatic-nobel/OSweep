@@ -2,7 +2,12 @@
   <label>Phishing Catcher</label>
   <description>Catch malicious phishing domain names ad-hoc or on the wire using the scoring method from x0rz's Phishing Catcher project. (Site: https://github.com/x0rz/phishing_catcher, Rate Limit: None)</description>
   <search id="base_search">
-    <query>$base_search$
+    <query>| phishingCatcher $ioc$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <search id="monitor_search">
+    <query>$monitor_search$
 | fields $field_name$
 | phishingCatcher $field_name$</query>
     <earliest>$time_range.earliest$</earliest>
@@ -28,7 +33,7 @@
     <input type="text" token="ioc" depends="$search$">
       <label>Domain (+)</label>
     </input>
-    <input type="text" token="base_search" depends="$monitor$">
+    <input type="text" token="monitor_search" depends="$monitor$">
       <label>Base Search</label>
     </input>
     <input type="text" token="field_name" depends="$monitor$">
@@ -44,13 +49,37 @@
   </fieldset>
   <row>
     <panel depends="$search$">
+      <title>Stats - Threat Level</title>
+      <chart>
+        <search base="base_search">
+          <query>| table domain "threat level" score 
+| stats count BY "threat level"</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel depends="$search$">
+      <title>Stats - Score</title>
+      <chart>
+        <search base="base_search">
+          <query>| where score &gt;= 75 
+| table domain "threat level" score 
+| stats count BY score</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$search$">
       <title>Results - Table</title>
       <table>
-        <search>
-          <query>| phishingCatcher $ioc$
-| table domain "threat level" score</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+        <search base="base_search">
+          <query>| table domain "threat level" score</query>
         </search>
         <option name="count">20</option>
         <option name="drilldown">none</option>
@@ -60,11 +89,39 @@
   </row>
   <row>
     <panel depends="$monitor$">
+      <title>Stats - Threat Level</title>
+      <chart>
+        <search base="monitor_search">
+          <query>| table domain "threat level" score 
+| stats count BY "threat level"</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel depends="$monitor$">
+      <title>Stats - Score</title>
+      <chart>
+        <search base="monitor_search">
+          <query>| where score &gt;= 75 
+| table domain "threat level" score 
+| stats count BY score</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$monitor$">
       <title>Results - Count by Action</title>
       <table>
-        <search base="base_search">
+        <search base="monitor_search">
           <query>| timechart count BY action</query>
         </search>
+        <option name="count">20</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
       </table>
@@ -74,7 +131,7 @@
     <panel depends="$monitor$">
       <title>Results - Table</title>
       <table>
-        <search base="base_search">
+        <search base="monitor_search">
           <query>| table domain "threat level" score</query>
         </search>
         <option name="count">20</option>
