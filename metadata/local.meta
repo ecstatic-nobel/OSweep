@@ -12,7 +12,7 @@ modtime = 1542391177.560747000
 
 [views/feedOverview]
 version = 7.1.3
-modtime = 1542392117.517325000
+modtime = 1542470813.459999000
 
 [views/crtsh]
 version = 7.1.3
@@ -32,7 +32,7 @@ modtime = 1541633127.839652000
 
 [views/phishingCatcher]
 version = 7.1.3
-modtime = 1542410068.036892000
+modtime = 1542570727.357737000
 
 [views/ransomwareTracker]
 version = 7.1.3
@@ -53,3 +53,7 @@ modtime = 1541632957.142890000
 [views/urlscan]
 version = 7.1.3
 modtime = 1541632692.075282000
+
+[views/theRoundTable]
+version = 7.1.3
+modtime = 1542582224.613307000
