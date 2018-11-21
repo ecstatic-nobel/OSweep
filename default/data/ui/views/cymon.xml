@@ -104,7 +104,8 @@
       <title>Results - Group by "$group_key$"</title>
       <table>
         <search base="cymon_base">
-          <query>| stats values("$group_value$") AS "$group_value$" BY "$group_key$"
+          <query>| dedup "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon 
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$" 
 | search NOT "$group_key$"="-"</query>
         </search>
         <option name="count">10</option>
@@ -120,7 +121,8 @@
       <title>Results - Table</title>
       <table>
         <search base="cymon_base">
-          <query>| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon</query>
+          <query>| dedup "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon 
+| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>
