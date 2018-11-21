@@ -55,7 +55,7 @@ def process_iocs(results):
             splunk_table.append({"no data": provided_ioc})
 
         if validators.domain(provided_ioc) or validators.ipv4(provided_ioc) or \
-           validators.sha256(provided_ioc):
+           validators.sha256(provided_ioc) or "certstream-suspicious" in provided_ioc:
             ioc_dicts = query_urlscan(session, provided_ioc)
         else:
             splunk_table.append({"invalid": provided_ioc})
