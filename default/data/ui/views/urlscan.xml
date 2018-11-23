@@ -134,9 +134,9 @@
         <search base="urlscan_base">
           <query>| fillnull value="-" 
 | search NOT url="-" 
-| dedup url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
-| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
-| sort sha256</query>
+| dedup "analysis time" url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| table "analysis time" url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| sort - "analysis time" sha256</query>
         </search>
         <option name="count">20</option>
         <option name="drilldown">none</option>
