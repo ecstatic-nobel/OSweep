@@ -21,6 +21,7 @@ The fix? **OSweep™**.
 ```bash
 cd /opt/splunk/etc/apps
 git clone https://github.com/leunammejii/osweep.git
+mv osweep-master osweep
 sudo -H -u $SPLUNK_USER /opt/splunk/bin/splunk restart # $SPLUNK_USER = User running Splunk
 ```
 2. Edit "config.py" and add the necessary values as strings to the config file:  
@@ -29,6 +30,11 @@ vim ./osweep/etc/config.py
 ```
 Note: Values for the proxies should be the full URL including the port (ex. http://\<IP Adress\>:\<Port\>).  
 3. Save "config.py" and close the terminal.  
+4. Install Pip packages:  
+```bash
+cd /opt/splunk/etc/apps/osweep/bin
+bash py_pkg_update.sh
+```
 
 
 #### Commands  
