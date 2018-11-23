@@ -31,9 +31,9 @@ def create_session():
 def get_apikey(api):
     """Return the API key."""
     if api == "greynoise":
-        return {
-            "key": config.greynoise_key
-        }
+        return config.greynoise_key
+    if api == "pulsedive":
+        return config.pulsedive_apikey
     if api == "twitter":
         return {
             "access_token": config.twitter_access_token,
