@@ -57,7 +57,7 @@
       <title>PulseDive - Total Indicators Identified Compared to Previous Day</title>
       <single>
         <search>
-          <query>| inputlookup pulsedive_feed.csv 
+          <query>| inputlookup pulsedive_feeds.csv 
 | eval NewTime=strptime('stamp modified',"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
 | timechart count span=30d</query>
@@ -117,7 +117,7 @@
       <title>PulseDive - Total Indicators by Day</title>
       <chart>
         <search>
-          <query>| inputlookup pulsedive_feed.csv 
+          <query>| inputlookup pulsedive_feeds.csv 
 | eval NewTime=strptime('stamp modified',"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
 | timechart count span=30d</query>
