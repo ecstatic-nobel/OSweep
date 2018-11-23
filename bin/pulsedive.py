@@ -3,21 +3,53 @@
 
 """
 
+import itertools
 import os
 import sys
 import time
 
 script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
 sys.path.insert(0, script_path)
+import validators
 
 import commons
-import pulsedive_names
+try:
+    import pulsedive_names
+except:
+    pass
 
 
-info_api  = "https://pulsedive.com/api/info.php"
-api_key   = commons.get_apikey("pulsedive")
-session   = commons.create_session()
-data_feed = []
+info_api   = "https://pulsedive.com/api/info.php"
+search_api = "https://pulsedive.com/api/search.php"
+api_key    = commons.get_apikey("pulsedive")
+session    = commons.create_session()
+data_feed  = []
+
+def get_names():
+    """Return the latest feed and threat names as a list."""
+    session  = commons.create_session()
+    fquery   = "?search=feed&category=all"
+    tquery   = "?category[]=general&category[]=abuse&category[]=apt&\
+               category[]=attack&category[]=botnet&category[]=crime&\
+               category[]=exploitkit&category[]=fraud&category[]=group&\
+               category[]=malware&category[]=proxy&category[]=pup&\
+               category[]=reconnaissance&category[]=spam&category[]=phishing&\
+               category[]=terrorism&category[]=vulnerability&risk[]=unknown&\
+               risk[]=low&risk[]=medium&risk[]=high&risk[]=critical&search=threat"
+    queries  = {"feeds": fquery, "threats": tquery}
+    names    = []
+
+    for key, value in queries.iteritems():
+        resp = session.get("{}{}".format(search_api, value))
+        if resp.status_code == 200 and len(resp.json()["results"]) > 0:
+            names.append("{} = [\n".format(key))
+
+            for x in resp.json()["results"]:
+                names.append('\t"{}",\n'.format(x["name"].encode("UTF-8")))
+            names.append("]\n\n")
+
+    time.sleep(4)
+    return names
 
 def get_feed():
     """Return the latest report summaries from the feed."""
@@ -35,7 +67,7 @@ def query_list(session):
     """Return a list of feed IDs."""
     feed_dicts = []
 
-    for feed in pulsedive_names.feed:
+    for feed in pulsedive_names.feeds:
         data = {
         "feed": str(feed),
         "key": api_key
@@ -47,7 +79,7 @@ def query_list(session):
 
         parse_resp = resp.json()
         feed_dict = {}
-        feed_dict["source"]         = "feed"
+        feed_dict["source"]         = "feeds"
         feed_dict["fid"]            = str(parse_resp.get("fid", ""))
         feed_dict["feed"]           = parse_resp.get("feed", "")
         feed_dict["category"]       = parse_resp.get("category", "")
@@ -110,7 +142,7 @@ def query_threats(session):
     """Return data about each threat."""
     threat_dicts = []
 
-    for threat in pulsedive_names.threat:
+    for threat in pulsedive_names.threats:
         data = {
         "threat": str(threat),
         "key": api_key
@@ -122,7 +154,7 @@ def query_threats(session):
 
         parse_resp  = resp.json()
         threat_dict = {}
-        threat_dict["source"]              = "threat"
+        threat_dict["source"]              = "threats"
         threat_dict["tid"]                 = str(parse_resp.get("tid", ""))
         threat_dict["threat"]              = parse_resp.get("threat", "")
         threat_dict["category"]            = parse_resp.get("category", "")
@@ -172,7 +204,78 @@ def write_file(data, file_path):
                 open_file.write("{}\n".format(obj_string.encode("UTF-8")))
     return
 
+def process_iocs(results):
+    """Return data formatted for Splunk from Pulsedive."""
+    if results != None:
+        provided_iocs = [y for x in results for y in x.values()]
+    else:
+        provided_iocs = sys.argv[1:]
+
+    session      = commons.create_session()
+    splunk_table = []
+
+    for provided_ioc in set(provided_iocs):
+        provided_ioc = commons.deobfuscate_url(provided_ioc)
+
+        if validators.domain(provided_ioc) or validators.ipv4(provided_ioc) or \
+           validators.url(provided_ioc):
+            ioc_dicts = query_pusledive(session, provided_ioc)
+        else:
+            splunk_table.append({"invalid": provided_ioc})
+            continue
+
+        for ioc_dict in ioc_dicts:
+            splunk_table.append(ioc_dict)
+
+    session.close()
+    return splunk_table
+
+def query_pusledive(session, provided_ioc):
+    """ """
+    if validators.domain(provided_ioc):
+        ioc_type = "domain"
+    elif validators.ipv4(provided_ioc):
+        ioc_type = "ip"
+    elif validators.url(provided_ioc):
+        ioc_type = "url"
+    data = {
+        "value": provided_ioc,
+        "type": ioc_type,
+        "risk": "unknown,none,low,medium,high,critical,retired",
+        "attribute": "",
+        "property": "",
+        "threat": "",
+        "feed": "",
+        "limit": "tenthousand",
+        "key": api_key
+    }
+    resp = session.get(search_api, params=data)
+
+    if resp.status_code == 200 and "results" in resp.json().keys() and \
+       len(resp.json()["results"]) > 0:
+        results = resp.json()["results"]
+        return rename_dicts(results, provided_ioc)
+    return [{"no data": provided_ioc}]
+
 if __name__ == "__main__":
+    if sys.argv[1].lower() == "name":
+        names       = get_names()
+        file_path   = "/opt/splunk/etc/apps/osweep/bin/pulsedive_names.py"
+        lookup_path = "/opt/splunk/etc/apps/osweep/lookups/pulsedive_names.csv"
+
+        with open(file_path, 'w') as open_file:
+            open_file.write("#!/opt/splunk/bin/python\n\n")
+            for line in names:
+                open_file.write("{}".format(line))
+
+        with open(lookup_path, 'w') as open_file:
+            open_file.write("feed,threat\n")
+            for fname, tname in itertools.izip_longest(pulsedive_names.feeds,
+                                                       pulsedive_names.threats,
+                                                       fillvalue=""):
+                open_file.write("{},{}\n".format(fname, tname))
+        exit(0)
+    
     if sys.argv[1].lower() == "feed":
         feeds, threats = get_feed()
         lookup_path    = "/opt/splunk/etc/apps/osweep/lookups"
