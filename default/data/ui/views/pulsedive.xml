@@ -1,0 +1,105 @@
+<form>
+  <label>Pulsedive</label>
+  <description>Leverages open-source threat intelligence (OSINT) feeds and user submissions to deliver actionable intelligence.</description>
+  <fieldset submitButton="true" autoRun="false">
+    <input type="link" token="group">
+      <label>Search Type</label>
+      <choice value="ioc">IOC</choice>
+      <choice value="feed">Feed</choice>
+      <choice value="threat">Threat</choice>
+      <change>
+        <condition value="ioc">
+          <set token="ioc_search"></set>
+          <unset token="feed_search"></unset>
+          <unset token="threat_search"></unset>
+        </condition>
+        <condition value="feed">
+          <unset token="ioc_search"></unset>
+          <set token="feed_search"></set>
+          <unset token="threat_search"></unset>
+        </condition>
+        <condition value="threat">
+          <unset token="ioc_search"></unset>
+          <unset token="feed_search"></unset>
+          <set token="threat_search"></set>
+        </condition>
+      </change>
+      <initialValue>ioc</initialValue>
+    </input>
+    <input type="text" token="ioc" depends="$ioc_search$">
+      <label>IOC (+)</label>
+    </input>
+    <input type="dropdown" token="feed" depends="$feed_search$">
+      <label>Feed</label>
+      <fieldForLabel>feed</fieldForLabel>
+      <fieldForValue>feed</fieldForValue>
+      <search>
+        <query>| inputlookup pulsedive_names.csv 
+| table feed
+| sort feed</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="dropdown" token="threat" depends="$threat_search$">
+      <label>Threat</label>
+      <fieldForLabel>threat</fieldForLabel>
+      <fieldForValue>threat</fieldForValue>
+      <search>
+        <query>| inputlookup pulsedive_names.csv 
+| table threat
+| sort threat</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$ioc_search$">
+      <title>Results - Table</title>
+      <table>
+        <search>
+          <query>| pulsedive $ioc$</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$feed_search$">
+      <title>Results - Feed</title>
+      <table>
+        <search>
+          <query>| inputlookup pulsedive_feeds.csv 
+| search feed="$feed$"</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$threat_search$">
+      <title>Results - Threat</title>
+      <table>
+        <search>
+          <query>| inputlookup pulsedive_threats.csv
+| search threat="$threat$"
+| makemv delim="|" news</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</form>
