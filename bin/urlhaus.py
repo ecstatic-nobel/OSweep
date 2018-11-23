@@ -25,7 +25,7 @@ Instructions:
 
 Rate Limit: None
 
-Results Limit: None
+Results Limit: 1 request/1s
 
 Notes: None
 
@@ -36,6 +36,7 @@ from collections import OrderedDict
 import os
 import re
 import sys
+import time
 
 script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
 sys.path.insert(0, script_path)
@@ -146,6 +147,8 @@ def process_iocs(results):
             ioc_dict = commons.lower_keys(ioc_dict)
             splunk_table.append(ioc_dict)
 
+        time.sleep(1)
+
     session.close()
     return splunk_table
 
@@ -199,7 +202,7 @@ def get_urls(session, provided_ioc):
     found related to the URL in question."""
     page       = 0
     uh_browser = "https://urlhaus.abuse.ch/browse.php?search="
-    ioc_dicts   = []
+    ioc_dicts  = []
 
     while True:
         browse_urlhaus(session, provided_ioc, page)
