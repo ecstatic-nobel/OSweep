@@ -34,11 +34,6 @@ modtime = 1541633127.839652000
 version = 7.1.3
 modtime = 1542570727.357737000
 
-[views/pulsedive]
-owner = admin
-version = 7.1.3
-modtime = 1542783866.324870000
-
 [views/ransomwareTracker]
 version = 7.1.3
 modtime = 1541633081.794672000
