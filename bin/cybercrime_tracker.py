@@ -114,6 +114,7 @@ def query_cct(provided_ioc, session):
 
         if len(rows) == 0:
             cct_dicts.append({"no data": provided_ioc})
+            return cct_dicts
 
         for row in rows:
             cells = row.find_all("td", limit=5)
