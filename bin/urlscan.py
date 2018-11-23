@@ -53,6 +53,7 @@ def process_iocs(results):
 
         if provided_ioc == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855":
             splunk_table.append({"no data": provided_ioc})
+            continue
 
         if validators.domain(provided_ioc) or validators.ipv4(provided_ioc) or \
            validators.sha256(provided_ioc) or "certstream-suspicious" in provided_ioc:
