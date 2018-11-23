@@ -121,8 +121,7 @@
       <title>Results - Table</title>
       <table>
         <search base="cymon_base">
-          <query>| dedup "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon 
-| table "feed id" feed title description tags timestamp ip url hostname domain md5 sha1 sha256 ssdeep "reported by" country city lat lon</query>
+          <query>| fillnull value="-"</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>
