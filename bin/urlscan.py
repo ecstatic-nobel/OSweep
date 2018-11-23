@@ -49,15 +49,14 @@ def process_iocs(results):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace("[.]", ".")
-        provided_ioc = provided_ioc.replace("[d]", ".")
-        provided_ioc = provided_ioc.replace("[D]", ".")
+        provided_ioc = commons.deobfuscate_url(provided_ioc)
 
         if provided_ioc == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855":
             splunk_table.append({"no data": provided_ioc})
+            continue
 
         if validators.domain(provided_ioc) or validators.ipv4(provided_ioc) or \
-           validators.sha256(provided_ioc):
+           validators.sha256(provided_ioc) or "certstream-suspicious" in provided_ioc:
             ioc_dicts = query_urlscan(session, provided_ioc)
         else:
             splunk_table.append({"invalid": provided_ioc})

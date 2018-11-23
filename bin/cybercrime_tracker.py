@@ -84,9 +84,7 @@ def process_iocs(results):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace("[.]", ".")
-        provided_ioc = provided_ioc.replace("[d]", ".")
-        provided_ioc = provided_ioc.replace("[D]", ".")
+        provided_ioc = commons.deobfuscate_url(provided_ioc)
 
         if validators.domain(provided_ioc) or validators.ipv4(provided_ioc):
             cct_dicts = query_cct(provided_ioc, session)
@@ -116,6 +114,7 @@ def query_cct(provided_ioc, session):
 
         if len(rows) == 0:
             cct_dicts.append({"no data": provided_ioc})
+            return cct_dicts
 
         for row in rows:
             cells = row.find_all("td", limit=5)

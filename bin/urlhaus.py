@@ -25,7 +25,7 @@ Instructions:
 
 Rate Limit: None
 
-Results Limit: None
+Results Limit: 1 request/1s
 
 Notes: None
 
@@ -36,6 +36,7 @@ from collections import OrderedDict
 import os
 import re
 import sys
+import time
 
 script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
 sys.path.insert(0, script_path)
@@ -117,12 +118,7 @@ def process_iocs(results):
     splunk_table  = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace("htxp", "http")
-        provided_ioc = provided_ioc.replace("hxtp", "http")
-        provided_ioc = provided_ioc.replace("hxxp", "http")
-        provided_ioc = provided_ioc.replace("[.]", ".")
-        provided_ioc = provided_ioc.replace("[d]", ".")
-        provided_ioc = provided_ioc.replace("[D]", ".")
+        provided_ioc = commons.deobfuscate_url(provided_ioc)
 
         if provided_ioc in empty_files:
             splunk_table.append({"invalid": provided_ioc})
@@ -150,6 +146,8 @@ def process_iocs(results):
         for ioc_dict in ioc_dicts:
             ioc_dict = commons.lower_keys(ioc_dict)
             splunk_table.append(ioc_dict)
+
+        time.sleep(1)
 
     session.close()
     return splunk_table
@@ -204,7 +202,7 @@ def get_urls(session, provided_ioc):
     found related to the URL in question."""
     page       = 0
     uh_browser = "https://urlhaus.abuse.ch/browse.php?search="
-    ioc_dicts   = []
+    ioc_dicts  = []
 
     while True:
         browse_urlhaus(session, provided_ioc, page)

@@ -1,0 +1,143 @@
+<form>
+  <label>Phishing Catcher</label>
+  <description>Catch malicious phishing domain names ad-hoc or on the wire using the scoring method from x0rz's Phishing Catcher project. (Site: https://github.com/x0rz/phishing_catcher, Rate Limit: None)</description>
+  <search id="base_search">
+    <query>| phishingCatcher $ioc$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
+  <search id="monitor_search">
+    <query>$monitor_search$
+| fields $field_name$
+| phishingCatcher $field_name$</query>
+    <earliest>$time_range.earliest$</earliest>
+    <latest>$time_range.latest$</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="link" token="monitor">
+      <label>Monitor Mode</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <change>
+        <condition value="yes">
+          <set token="monitor"></set>
+          <unset token="search"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="monitor"></unset>
+          <set token="search"></set>
+        </condition>
+      </change>
+      <default>no</default>
+    </input>
+    <input type="text" token="ioc" depends="$search$">
+      <label>Domain (+)</label>
+    </input>
+    <input type="text" token="monitor_search" depends="$monitor$">
+      <label>Base Search</label>
+    </input>
+    <input type="text" token="field_name" depends="$monitor$">
+      <label>Field Name</label>
+    </input>
+    <input type="time" token="time_range" depends="$monitor$">
+      <label>Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$search$">
+      <title>Stats - Threat Level</title>
+      <chart>
+        <search base="base_search">
+          <query>| table domain "threat level" score 
+| stats count BY "threat level"</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel depends="$search$">
+      <title>Stats - Score</title>
+      <chart>
+        <search base="base_search">
+          <query>| where score &gt;= 75 
+| table domain "threat level" score 
+| stats count BY score</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$search$">
+      <title>Results - Table</title>
+      <table>
+        <search base="base_search">
+          <query>| table domain "threat level" score</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$monitor$">
+      <title>Stats - Threat Level</title>
+      <chart>
+        <search base="monitor_search">
+          <query>| table domain "threat level" score 
+| stats count BY "threat level"</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel depends="$monitor$">
+      <title>Stats - Score</title>
+      <chart>
+        <search base="monitor_search">
+          <query>| where score &gt;= 75 
+| table domain "threat level" score 
+| stats count BY score</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$monitor$">
+      <title>Results - Count by Action</title>
+      <table>
+        <search base="monitor_search">
+          <query>| timechart count BY action</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$monitor$">
+      <title>Results - Table</title>
+      <table>
+        <search base="monitor_search">
+          <query>| table domain "threat level" score</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</form>

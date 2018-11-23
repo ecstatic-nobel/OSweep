@@ -21,6 +21,7 @@ The fix? **OSweep™**.
 ```bash
 cd /opt/splunk/etc/apps
 git clone https://github.com/leunammejii/osweep.git
+mv osweep-master osweep
 sudo -H -u $SPLUNK_USER /opt/splunk/bin/splunk restart # $SPLUNK_USER = User running Splunk
 ```
 2. Edit "config.py" and add the necessary values as strings to the config file:  
@@ -29,23 +30,37 @@ vim ./osweep/etc/config.py
 ```
 Note: Values for the proxies should be the full URL including the port (ex. http://\<IP Adress\>:\<Port\>).  
 3. Save "config.py" and close the terminal.  
+4. Install Pip packages:  
+```bash
+cd /opt/splunk/etc/apps/osweep/bin
+bash py_pkg_update.sh
+```
 
 
 #### Commands  
 - crtsh - https://crt.sh/  
 - cybercrimeTracker - http://cybercrime-tracker.net/index.php  
 - greyNoise - https://greynoise.io/  
+- phishingCatcher - https://github.com/x0rz/phishing_catcher  
 - ransomwareTracker - https://ransomwaretracker.abuse.ch/  
 - threatcrowd - https://www.threatcrowd.org/  
 - twitter - https://twitter.com/  
 - urlhaus - https://urlhaus.abuse.ch/  
 - urlscan - https://urlscan.io/  
 
-#### Usage    
+#### Usage  
 **Feed Overview - Dashboard**  
 Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the previous day.  
 
-![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feed_overview_dashboard.png)      
+![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feedOverview_dashboard.png)  
+
+**The Round Table - Dashboard**  
+1. Switch to the **The Round Table** dashboard in the OSweep™ app.  
+2. Add the list of IOCs to the "IOC (+)" textbox to know which source has the most information.  
+3. Click "Submit".  
+4. After the panels have populated, click on one to be redirected to the corresponding dashboard to see the results.  
+
+![The Round Table - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/theRoundTable_dashboard.png)  
 
 **Certificate Search - Dashboard**
 1. Switch to the **Certificate Search** dashboard in the OSweep™ app.  
@@ -68,13 +83,24 @@ Three of the dashboards below use lookup tables to store the data feed from the 
 or to search for subdomains,  
 
 ```
+| crtsh subdomain <DOMAINS>
+| fillnull value="-"
+| search NOT "issuer ca id"="-"
+| dedup "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| table "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
+| sort - "min cert id"
+```
+
+or to search for wildcard,  
+
+```
 | crtsh wildcard <DOMAINS>
 | fillnull value="-"
 | search NOT "issuer ca id"="-"
 | dedup "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
 | table "issuer ca id" "issuer name" "name value" "min cert id" "min entry timestamp" "not before" "not after"
 | sort - "min cert id"
-```  
+```
 
 **CyberCrime Tracker - Dashboard**
 1. Switch to the **CyberCrime Tracker** dashboard in the OSweep™ app.
@@ -91,7 +117,7 @@ or to search for subdomains,
 | search NOT date="-"
 | dedup date url ip "vt latest scan" "vt ip info" type
 | table date url ip "vt latest scan" "vt ip info" type
-```  
+```
 
 **Cymon - Dashboard**
 1. Switch to the **Cymon** dashboard in the OSweep™ app.  
@@ -127,6 +153,25 @@ or to search for subdomains,
 | dedup category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
 | table category confidence "last updated" name ip intention "first seen" datacenter tor "rdns parent" link org os asn rdns
 | sort - "Last Updated"
+```
+
+**Phishing Catcher - Dashboard**  
+1. Switch to the **Phishing Catcher** dashboard in the OSweep™ app.  
+2. Select whether you want to monitor the logs in realtime or add a list of domains.  
+3. If Monitor Mode is "Yes":  
+    - Add a search string to the 'Base Search' textbox.  
+    - Add the field name of the field containing the domain to the "Field Name" textbox.  
+    - Select the time range to search.  
+4. If Monitor Mode is "No":  
+    - Add the list of domains to the 'Domain (+)' textbox.  
+5. Click 'Submit'.  
+
+![Phishing Catcher - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/phishingCatcher_dashboard.png)  
+
+**Phishing Catcher - Adhoc**
+```
+| phishingCatcher <DOMAINS>
+| table domain "threat level" score
 ```
 
 **Ransomare Tracker - Dashboard**
@@ -166,6 +211,17 @@ or to search for subdomains,
 
 ![Twitter - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/twitter_dashboard.png)  
 
+**Twitter - Adhoc**
+```
+| twitter <IOCs>
+| eval epoch=strptime(timestamp, "%+")
+| fillnull value="-" 
+| search NOT timestamp="-" 
+| dedup timestamp tweet url 
+| sort - epoch
+| table timestamp tweet url hashtags "search term"
+```
+
 **URLhaus - Dashboard**
 1. Manually download data feed (one-time only)  
 ```
@@ -176,7 +232,7 @@ or to search for subdomains,
 4. Select whether the results will be grouped and how from the dropdowns.  
 5. Click 'Submit'.  
 
-![URLhaus - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlhaus_dashboard.png) 
+![URLhaus - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlhaus_dashboard.png)  
 
 **URLhaus - Adhoc**
 ```
@@ -185,7 +241,7 @@ or to search for subdomains,
 | search NOT "provided ioc"="-"
 | dedup id dateadded url payload "url status" threat tags "urlhaus link"
 | table id dateadded url payload "url status" threat tags "urlhaus link"
-```  
+```
 
 **<span>urlscan</span>.io - Dashboard**
 1. Switch to the **<span>urlscan</span>.io** dashboard in the OSweep™ app.  
@@ -193,7 +249,7 @@ or to search for subdomains,
 3. Select whether the results will be grouped and how from the dropdowns.  
 4. Click 'Submit'.  
 
-![urlscanio - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlscan_dashboard.png) 
+![urlscanio - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/urlscan_dashboard.png)  
 
 **<span>urlscan</span>.io - Adhoc**
 ```
@@ -203,7 +259,7 @@ or to search for subdomains,
 | dedup url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
 | table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
 | sort sha256
-```  
+```
 
 #### Destroy  
 To remove the project completely,  run the following commands:  

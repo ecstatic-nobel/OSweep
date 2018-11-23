@@ -93,9 +93,7 @@ def process_iocs(results):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace("[.]", ".")
-        provided_ioc = provided_ioc.replace("[d]", ".")
-        provided_ioc = provided_ioc.replace("[D]", ".")
+        provided_ioc = commons.deobfuscate_url(provided_ioc)
 
         if provided_ioc in empty_files:
             splunk_table.append({"invalid": provided_ioc})
@@ -140,7 +138,10 @@ def query_twitter(session, provided_ioc):
         return ioc_dicts
 
     encoded_ioc   = urllib.quote_plus(provided_ioc)
-    search_tweets = session.search(encoded_ioc, rpp=100, lang="en")
+    search_tweets = session.search(q=encoded_ioc,
+                                   lang="en",
+                                   result_type="mixed",
+                                   count="100")
 
     for tweet in search_tweets:
         if tweet._json["user"]["name"] == provided_ioc.replace("#", "") or \

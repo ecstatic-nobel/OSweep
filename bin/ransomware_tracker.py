@@ -36,6 +36,7 @@ Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
 from collections import OrderedDict
+import itertools
 import os
 import re
 import sys
@@ -102,28 +103,20 @@ def process_iocs(results):
     header       = data_feed[0].lower().split(",")
     open_file.close()
 
-    open_file = open("{}/ransomware_tracker_malware.csv".format(lookup_path), "r")
-    malware   = set(open_file.read().splitlines()[1:])
-    malware   = [x.lower() for x in malware]
+    open_file = open("{}/ransomware_tracker_names.csv".format(lookup_path), "r")
+    contents  = open_file.read().splitlines()[1:]
     open_file.close()
 
-    open_file = open("{}/ransomware_tracker_threats.csv".format(lookup_path), "r")
-    threats   = set(open_file.read().splitlines()[1:])
-    threats   = [x.lower() for x in threats]
-    open_file.close()
+    malwares = [x.split(",")[0].lower() for x in contents]
+    threats  = [x.split(",")[1].lower() for x in contents]
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace("htxp", "http")
-        provided_ioc = provided_ioc.replace("hxtp", "http")
-        provided_ioc = provided_ioc.replace("hxxp", "http")
-        provided_ioc = provided_ioc.replace("[.]", ".")
-        provided_ioc = provided_ioc.replace("[d]", ".")
-        provided_ioc = provided_ioc.replace("[D]", ".")
+        provided_ioc = commons.deobfuscate_url(provided_ioc)
 
         if not validators.domain(provided_ioc) and \
            not validators.ipv4(provided_ioc) and \
            not validators.url(provided_ioc) and \
-           provided_ioc.lower() not in malware and \
+           provided_ioc.lower() not in malwares and \
            provided_ioc.lower() not in threats:
            splunk_table.append({"invalid": provided_ioc})
            continue
@@ -144,27 +137,24 @@ if __name__ == "__main__":
     if sys.argv[1].lower() == "feed":
         data_feed    = get_feed()
         lookup_path  = "/opt/splunk/etc/apps/osweep/lookups"
-        file_path    = "{}/ransomware_tracker_feed.csv".format(lookup_path)
-        malware_list = "{}/ransomware_tracker_malware.csv".format(lookup_path)
-        threat_list  = "{}/ransomware_tracker_threats.csv".format(lookup_path)
+        feed_file    = "{}/ransomware_tracker_feed.csv".format(lookup_path)
+        name_file    = "{}/ransomware_tracker_names.csv".format(lookup_path)
 
-        with open(malware_list, "w") as mfile, open(threat_list, "w") as tfile:
-            mfile.write("malware\n")
-            tfile.write("threat\n")
+        with open(name_file, "w") as open_file:
+            open_file.write("malware,threat\n")
 
             malwares = []
             threats  = []
             for data in data_feed:
-                malware = data["Malware"].encode("UTF-8")
-                threat  = data["Threat"].encode("UTF-8")
+                malwares.append(data["Malware"].encode("UTF-8"))
+                threats.append(data["Threat"].encode("UTF-8"))
 
-                if malware not in malwares:
-                    mfile.write("{}\n".format(malware))
+            for malware, threat in itertools.izip_longest(set(malwares),
+                                                          set(threats),
+                                                          fillvalue=""):
+                open_file.write("{},{}\n".format(malware, threat))
 
-                if threat not in threats:
-                    tfile.write("{}\n".format(threat))
-
-        write_file(data_feed, file_path)
+        write_file(data_feed, feed_file)
         exit(0)
 
     current_module = sys.modules[__name__]

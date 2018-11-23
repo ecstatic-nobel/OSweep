@@ -1,0 +1,205 @@
+<form>
+  <label>The Round Table</label>
+  <description>Display which OSINT sites "show up" and how much they "bring to the table". Note: This dashboard does not include ThreatCrowd.</description>
+  <fieldset submitButton="true" autoRun="false">
+    <input type="text" token="ioc">
+      <label>IOC (+)</label>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Certificate Search</title>
+      <single>
+        <search>
+          <query>| crtsh $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/osweep/crtsh?form.method=domain&amp;form.group=no&amp;form.id_count=1000000&amp;form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>CyberCrime Tracker</title>
+      <single>
+        <search>
+          <query>| cybercrimeTracker $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/osweep/cybercrimeTracker?form.group=no&amp;form.group_value=url&amp;form.group_key=type&amp;form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Cymon</title>
+      <single>
+        <search>
+          <query>| cymon $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/osweep/cymon?form.group=no&amp;form.group_value=url&amp;form.group_key=md5&amp;form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>GreyNoise</title>
+      <single>
+        <search>
+          <query>| greynoise $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/osweep/greyNoise?form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Phishing Catcher (Score &gt; 75)</title>
+      <single>
+        <search>
+          <query>| phishingCatcher $ioc$ 
+| where score &gt; 75
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/osweep/phishingCatcher?form.monitor=no&amp;form.time_range.earliest=-24h%40h&amp;form.time_range.latest=now&amp;form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Ransomware Tracker</title>
+      <single>
+        <search>
+          <query>| ransomwareTracker $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/osweep/ransomwareTracker?form.group=no&amp;form.group_value=host&amp;form.group_key=ip%20address(es)&amp;form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Twitter</title>
+      <single>
+        <search>
+          <query>| twitter $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/osweep/twitter?form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>URLhaus</title>
+      <single>
+        <search>
+          <query>| urlhaus $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/osweep/urlhaus?form.group=no&amp;form.group_value=url&amp;form.group_key=payload&amp;form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>urlscan.io</title>
+      <single>
+        <search>
+          <query>| urlscan $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/osweep/urlscan?form.group=no&amp;form.group_value=url&amp;form.group_key=ip&amp;form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+</form>

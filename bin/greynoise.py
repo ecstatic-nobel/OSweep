@@ -48,10 +48,14 @@ api = "https://api.greynoise.io/v1/query"
 def get_feed():
     """Return the latest report summaries from the feed."""
     session = commons.create_session()
+    api_key = commons.get_apikey("greynoise")
     tags    = query_list(session)
 
     if tags == None:
         return
+    
+    if api_key != None:
+        session.params = {"key": api_key}
     return query_tags(tags, session)
 
 def query_list(session):
@@ -130,9 +134,7 @@ def process_iocs(results):
     open_file.close()
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = provided_ioc.replace("[.]", ".")
-        provided_ioc = provided_ioc.replace("[d]", ".")
-        provided_ioc = provided_ioc.replace("[D]", ".")
+        provided_ioc = commons.deobfuscate_url(provided_ioc)
 
         if not validators.ipv4(provided_ioc) and \
            not validators.domain(provided_ioc) and \
