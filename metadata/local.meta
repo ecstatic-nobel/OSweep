@@ -8,11 +8,11 @@ modtime = 1538446614.755746000
 
 [nav/default]
 version = 7.1.3
-modtime = 1542391177.560747000
+modtime = 1542782747.837761000
 
 [views/feedOverview]
 version = 7.1.3
-modtime = 1542470813.459999000
+modtime = 1542905019.325890000
 
 [views/crtsh]
 version = 7.1.3
@@ -24,7 +24,7 @@ modtime = 1541633319.239087000
 
 [views/cymon]
 version = 7.1.3
-modtime = 1541633174.515013000
+modtime = 1542653212.715954000
 
 [views/greyNoise]
 version = 7.1.3
@@ -33,6 +33,11 @@ modtime = 1541633127.839652000
 [views/phishingCatcher]
 version = 7.1.3
 modtime = 1542570727.357737000
+
+[views/pulsedive]
+owner = admin
+version = 7.1.3
+modtime = 1542783866.324870000
 
 [views/ransomwareTracker]
 version = 7.1.3
@@ -52,7 +57,7 @@ modtime = 1541632957.142890000
 
 [views/urlscan]
 version = 7.1.3
-modtime = 1541632692.075282000
+modtime = 1542929390.675989000
 
 [views/theRoundTable]
 version = 7.1.3
