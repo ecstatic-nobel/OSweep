@@ -170,6 +170,30 @@
         <option name="useThousandSeparators">1</option>
       </single>
     </panel>
+    <panel>
+      <title>Phishing Kit Tracker - Total Kits Found Compared to Previous Day</title>
+      <single>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| eval NewTime=strptime(DateFound, "%m/%d/%Y") 
+| eval _time=NewTime 
+| timechart count span=1d</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">preview</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1d</option>
+        <option name="underLabel">New Kits</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
   </row>
   <row>
     <panel>
@@ -196,6 +220,22 @@
         <option name="charting.layout.splitSeries">0</option>
         <option name="charting.legend.placement">none</option>
         <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Phishing Kit Tracker - Total Kits Found by Day</title>
+      <chart>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| eval NewTime=strptime(DateFound, "%m/%d/%Y") 
+| eval _time=NewTime 
+| timechart count span=1d</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
       </chart>
     </panel>
   </row>
