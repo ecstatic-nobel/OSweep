@@ -182,7 +182,7 @@ or to search for wildcard,
 ```
 2. Switch to the **Phishing Kit Tracker** dashboard in the OSweep™ app.  
 
-![Phishing Kit Tracker - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/phishingKitTracker__dashboard.png)  
+![Phishing Kit Tracker - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/phishingKitTracker_dashboard.png)  
 
 **Ransomare Tracker - Dashboard**
 1. Manually download data feed (one-time only)  
