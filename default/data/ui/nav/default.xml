@@ -6,6 +6,7 @@
   <view name="cymon" />
   <view name="greyNoise" />
   <view name="phishingCatcher" />
+  <view name="phishingKitTracker" />
   <view name="ransomwareTracker" />
   <view name="threatCrowd" />
   <view name="twitter" />
