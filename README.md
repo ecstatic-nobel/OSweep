@@ -40,6 +40,7 @@ bash py_pkg_update.sh
 #### Commands  
 - crtsh - https://crt.sh/  
 - cybercrimeTracker - http://cybercrime-tracker.net/index.php  
+- cymon - https://cymon.io/  
 - greyNoise - https://greynoise.io/  
 - phishingCatcher - https://github.com/x0rz/phishing_catcher  
 - ransomwareTracker - https://ransomwaretracker.abuse.ch/  
@@ -52,7 +53,7 @@ bash py_pkg_update.sh
 **Feed Overview - Dashboard**  
 Three of the dashboards below use lookup tables to store the data feed from the sources. This dasboard shows the current stats compared to the previous day.  
 
-![Feed Overview](https://github.com/leunammejii/osweep/blob/master/static/assets/feedOverview_dashboard.png)  
+![Feed Overview - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/feedOverview_dashboard.png)  
 
 **The Round Table - Dashboard**  
 1. Switch to the **The Round Table** dashboard in the OSweep™ app.  
@@ -173,6 +174,11 @@ or to search for wildcard,
 | phishingCatcher <DOMAINS>
 | table domain "threat level" score
 ```
+
+**Phishing Kit Tracker - Dashboard**  
+1. Switch to the **Phishing Kit Tracker** dashboard in the OSweep™ app.  
+
+![Phishing Kit Tracker - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/phishing_kit_tracker__dashboard.png)  
 
 **Ransomare Tracker - Dashboard**
 1. Manually download data feed (one-time only)  
