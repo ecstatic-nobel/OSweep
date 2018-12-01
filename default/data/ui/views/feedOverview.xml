@@ -7,8 +7,8 @@
         <search>
           <query>| inputlookup cybercrime_tracker_feed.csv 
 | stats count</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+          <earliest>0</earliest>
+          <latest></latest>
           <refresh>5m</refresh>
           <refreshType>delay</refreshType>
         </search>
@@ -32,8 +32,8 @@
 | eval NewTime=strptime(ft,"%Y-%m-%d") 
 | eval _time=NewTime 
 | timechart count span=1d</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+          <earliest>0</earliest>
+          <latest></latest>
           <refresh>5m</refresh>
           <refreshType>delay</refreshType>
         </search>
@@ -61,7 +61,7 @@
 | eval NewTime=strptime('Firstseen (UTC)',"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
 | timechart count span=1d</query>
-          <earliest>-15m</earliest>
+          <earliest>-7d@h</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
           <refreshType>delay</refreshType>
@@ -95,8 +95,8 @@
 | eval NewTime=strptime(ft,"%Y-%m-%d") 
 | eval _time=NewTime 
 | timechart count BY name span=1d useother=false usenull=false</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+          <earliest>0</earliest>
+          <latest></latest>
           <refresh>5m</refresh>
           <refreshType>delay</refreshType>
         </search>
@@ -121,7 +121,7 @@
 | eval NewTime=strptime('Firstseen (UTC)',"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
 | timechart count span=1d</query>
-          <earliest>-15m</earliest>
+          <earliest>-7d@h</earliest>
           <latest>now</latest>
           <refresh>5m</refresh>
           <refreshType>delay</refreshType>
@@ -149,8 +149,8 @@
 | eval NewTime=strptime(dateadded,"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
 | timechart count span=1d</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+          <earliest>0</earliest>
+          <latest></latest>
           <refresh>5m</refresh>
           <refreshType>delay</refreshType>
         </search>
@@ -178,8 +178,8 @@
 | eval NewTime=strptime(DateFound, "%m/%d/%Y") 
 | eval _time=NewTime 
 | timechart count span=1d</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+          <earliest>0</earliest>
+          <latest></latest>
           <refresh>5m</refresh>
           <refreshType>delay</refreshType>
         </search>
@@ -204,8 +204,8 @@
 | eval NewTime=strptime(dateadded,"%Y-%m-%d %H:%M:%S") 
 | eval _time=NewTime 
 | timechart count span=1d</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+          <earliest>0</earliest>
+          <latest></latest>
           <refresh>5m</refresh>
           <refreshType>delay</refreshType>
         </search>
@@ -230,8 +230,8 @@
 | eval NewTime=strptime(DateFound, "%m/%d/%Y") 
 | eval _time=NewTime 
 | timechart count span=1d</query>
-          <earliest>-15m</earliest>
-          <latest>now</latest>
+          <earliest>0</earliest>
+          <latest></latest>
         </search>
         <option name="charting.chart">line</option>
         <option name="charting.drilldown">none</option>
