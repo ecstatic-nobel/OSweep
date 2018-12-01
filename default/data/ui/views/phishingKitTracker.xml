@@ -1,0 +1,135 @@
+<dashboard>
+  <label>Phishing Kit Tracker</label>
+  <description>Tracking phishing kits and all things related. (Site: https://github.com/neonprimetime/PhishingKitTracker)</description>
+  <row>
+    <panel>
+      <title>Timechart</title>
+      <chart>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| eval NewTime=strptime(DateFound, "%m/%d/%Y") 
+| eval _time=NewTime 
+| table _time DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
+| timechart count span=1d</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top 20 Targets</title>
+      <chart>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| fillnull value="-" 
+| search NOT Target=- 
+| table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
+| top 20 Target showperc=false
+| sort - count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Top 20 Kit Names</title>
+      <chart>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| fillnull value="-" 
+| search NOT KitName=- 
+| table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
+| top 20 KitName showperc=false
+| sort - count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Top 20 Kit Hashes</title>
+      <chart>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| fillnull value="-" 
+| search NOT KitHash=- 
+| table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
+| top 20 KitHash showperc=false
+| sort - count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top 20 Threat Actors</title>
+      <table>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| fillnull value="-" 
+| search NOT ThreatActor=- 
+| table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
+| top 20 ThreatActor showperc=false
+| sort - count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Top 20 Threat Actor Emails</title>
+      <table>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| fillnull value="-" 
+| search NOT ThreatActorEmail=- 
+| table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
+| top 20 ThreatActorEmail showperc=false
+| sort - count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Top 20 Email Providers</title>
+      <table>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| fillnull value="-" 
+| search NOT EmailType=- 
+| table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
+| top 20 EmailType showperc=false
+| sort - count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
