@@ -15,8 +15,11 @@
           <latest>$latest$</latest>
         </search>
         <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
         <option name="charting.drilldown">none</option>
-        <option name="refresh.display">progressbar</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="refresh.display">preview</option>
       </chart>
     </panel>
   </row>
@@ -35,7 +38,7 @@
           <latest>$latest$</latest>
         </search>
         <option name="charting.chart">pie</option>
-        <option name="charting.drilldown">none</option>
+        <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
       </chart>
     </panel>
@@ -53,7 +56,7 @@
           <latest>$latest$</latest>
         </search>
         <option name="charting.chart">pie</option>
-        <option name="charting.drilldown">none</option>
+        <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
       </chart>
     </panel>
@@ -71,7 +74,7 @@
           <latest>$latest$</latest>
         </search>
         <option name="charting.chart">pie</option>
-        <option name="charting.drilldown">none</option>
+        <option name="charting.drilldown">all</option>
         <option name="refresh.display">preview</option>
       </chart>
     </panel>
@@ -91,7 +94,7 @@
           <latest>$latest$</latest>
         </search>
         <option name="count">20</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="refresh.display">preview</option>
       </table>
     </panel>
@@ -109,7 +112,7 @@
           <latest>$latest$</latest>
         </search>
         <option name="count">20</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="refresh.display">preview</option>
       </table>
     </panel>
@@ -127,7 +130,7 @@
           <latest>$latest$</latest>
         </search>
         <option name="count">20</option>
-        <option name="drilldown">none</option>
+        <option name="drilldown">cell</option>
         <option name="refresh.display">preview</option>
       </table>
     </panel>
