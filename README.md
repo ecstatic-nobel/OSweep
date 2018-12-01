@@ -36,13 +36,13 @@ cd /opt/splunk/etc/apps/osweep/bin
 bash py_pkg_update.sh
 ```
 
-
 #### Commands  
 - crtsh - https://crt.sh/  
 - cybercrimeTracker - http://cybercrime-tracker.net/index.php  
 - cymon - https://cymon.io/  
 - greyNoise - https://greynoise.io/  
 - phishingCatcher - https://github.com/x0rz/phishing_catcher  
+- phishingKitTracker - https://github.com/neonprimetime/PhishingKitTracker  
 - ransomwareTracker - https://ransomwaretracker.abuse.ch/  
 - threatcrowd - https://www.threatcrowd.org/  
 - twitter - https://twitter.com/  
@@ -176,9 +176,13 @@ or to search for wildcard,
 ```
 
 **Phishing Kit Tracker - Dashboard**  
-1. Switch to the **Phishing Kit Tracker** dashboard in the OSweep™ app.  
+1. Manually download data feed (one-time only)  
+```
+| phishingKitTracker feed
+```
+2. Switch to the **Phishing Kit Tracker** dashboard in the OSweep™ app.  
 
-![Phishing Kit Tracker - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/phishing_kit_tracker__dashboard.png)  
+![Phishing Kit Tracker - Dashboard](https://github.com/leunammejii/osweep/blob/master/static/assets/phishingKitTracker__dashboard.png)  
 
 **Ransomare Tracker - Dashboard**
 1. Manually download data feed (one-time only)  
