@@ -28,6 +28,8 @@ Notes: None
 Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
+from datetime import datetime
+from datetime import timedelta
 import os
 import sys
 
@@ -36,17 +38,22 @@ sys.path.insert(0, script_path)
 import validators
 
 import commons
+import urlscan_file_search as usfs
 
 
 def process_iocs(results):
     """Return data formatted for Splunk from urlscan.io."""
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
+    elif sys.argv[1] in usfs.queries.keys():
+        if len(sys.argv[1:]) < 3:
+            return [{"error": "3 positional args needed. {} given.".format(str(len(sys.argv[1:])))}]
+        provided_iocs = sys.argv[3:]
     else:
         provided_iocs = sys.argv[1:]
 
     session      = commons.create_session()
-    splunk_table = []
+    splunk_table = []        
 
     for provided_ioc in set(provided_iocs):
         provided_ioc = commons.deobfuscate_url(provided_ioc)
@@ -55,7 +62,9 @@ def process_iocs(results):
             splunk_table.append({"no data": provided_ioc})
             continue
 
-        if validators.domain(provided_ioc) or validators.ipv4(provided_ioc) or \
+        if provided_ioc.lower() in usfs.extensions.keys():
+            ioc_dicts = query_urlscan_file(session, provided_ioc)
+        elif validators.domain(provided_ioc) or validators.ipv4(provided_ioc) or \
            validators.sha256(provided_ioc) or "certstream-suspicious" in provided_ioc:
             ioc_dicts = query_urlscan(session, provided_ioc)
         else:
@@ -68,8 +77,64 @@ def process_iocs(results):
     session.close()
     return splunk_table
 
+def query_urlscan_file(session, provided_ioc):
+    """Return data from urlscan about a particular file type."""
+    qtype = sys.argv[1].lower()
+    ext   = provided_ioc.lower()
+    today = datetime.now()
+
+    try:
+        delta = int(sys.argv[2])
+    except ValueError as err:
+        return [{"invalid": err}]
+
+    try:
+        timespan = datetime.strftime(today - timedelta(delta),
+                                     "%a, %d %b %Y 05:00:00")
+    except ValueError as err:
+        return [{"invalid": err}]
+
+    timespan  = datetime.strptime(timespan, "%a, %d %b %Y %H:%M:%S")
+    api       = "https://urlscan.io/api/v1/search/?q={}%20AND%20filename:.{}&size=10000"
+    resp      = session.get(api.format(usfs.queries[qtype], ext))
+    ioc_dicts = []
+
+    if resp.status_code == 200 and "results" in resp.json().keys() and \
+       len(resp.json()["results"]) > 0:
+        results = resp.json()["results"]
+
+        for result in results:
+            if "files" not in result.keys():
+                continue
+
+            analysis_time = datetime.strptime(result["task"]["time"],
+                                              "%Y-%m-%dT%H:%M:%S.%fZ")
+
+            if analysis_time < timespan:
+                break
+
+            ioc_dict = {}
+
+            for payload in result["files"]:
+                if result["page"]["url"].endswith(ext) or \
+                   payload["mimeType"].startswith(usfs.extensions[ext]):
+                    ioc_dict["analysis time"] = result["task"]["time"]
+                    ioc_dict["url"]           = result["page"]["url"]
+                    ioc_dict["domain"]        = result["page"]["domain"]
+                    ioc_dict["ip"]            = result["page"]["ip"]
+                    ioc_dict["country"]       = result["page"]["country"]
+                    ioc_dict["filename"]      = payload["filename"]
+                    ioc_dict["mimetype"]      = payload["mimeType"]
+                    ioc_dict["sha256"]        = payload["sha256"]
+                    ioc_dicts.append(ioc_dict)
+    
+    if len(ioc_dicts) == 0:
+        return [{"no data": "{}, {}, {}".format(qtype, delta, ext)}]
+    return ioc_dicts
+
 def query_urlscan(session, provided_ioc):
-    """ """
+    """Return data from urlscan about the provided IOC."""
+    query_type = sys.argv[1]
     api    = "https://urlscan.io/api/v1/search/?size=10000&q="
     resp   = session.get("{}{}".format(api, provided_ioc))
 
