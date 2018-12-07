@@ -11,7 +11,7 @@ SHA256). The first argument is the name of one field:
     | fields <IOC_FIELD>
     | urlscanio <IOC_FIELD>
 
-Source: https://urlscan.io/about-api/
+Source: https://urlscan.io/about-api/, https://github.com/ninoseki/miteru
 
 Instructions:
 1. Switch to the urlscan.io dashboard in the OSweep app.
@@ -96,7 +96,7 @@ def query_urlscan_file(session, provided_ioc):
 
     timespan  = datetime.strptime(timespan, "%a, %d %b %Y %H:%M:%S")
     api       = "https://urlscan.io/api/v1/search/?q={}%20AND%20filename:.{}&size=10000"
-    resp      = session.get(api.format(usfs.queries[qtype], ext))
+    resp      = session.get(api.format(usfs.queries[qtype], ext), timeout=10)
     ioc_dicts = []
 
     if resp.status_code == 200 and "results" in resp.json().keys() and \
@@ -113,11 +113,10 @@ def query_urlscan_file(session, provided_ioc):
             if analysis_time < timespan:
                 break
 
-            ioc_dict = {}
-
             for payload in result["files"]:
                 if result["page"]["url"].endswith(ext) or \
                    payload["mimeType"].startswith(usfs.extensions[ext]):
+                    ioc_dict = {}
                     ioc_dict["analysis time"] = result["task"]["time"]
                     ioc_dict["url"]           = result["page"]["url"]
                     ioc_dict["domain"]        = result["page"]["domain"]
@@ -136,7 +135,7 @@ def query_urlscan(session, provided_ioc):
     """Return data from urlscan about the provided IOC."""
     query_type = sys.argv[1]
     api    = "https://urlscan.io/api/v1/search/?size=10000&q="
-    resp   = session.get("{}{}".format(api, provided_ioc))
+    resp   = session.get("{}{}".format(api, provided_ioc), timeout=10)
 
     if resp.status_code == 200 and "results" in resp.json().keys() and \
        len(resp.json()["results"]) > 0:
