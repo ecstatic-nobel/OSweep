@@ -1,12 +1,34 @@
-<dashboard>
+<form>
   <label>Phishing Kit Tracker</label>
   <description>Tracking phishing kits and all things related. (Site: https://github.com/neonprimetime/PhishingKitTracker)</description>
+  <fieldset submitButton="true" autoRun="true">
+    <input type="dropdown" token="ioc_type">
+      <label>IOC Type</label>
+      <choice value="DateFound">Date Found</choice>
+      <choice value="Target">Target</choice>
+      <choice value="PhishingDomain">Site Domain</choice>
+      <choice value="KitUrl">Kit URL</choice>
+      <choice value="KitName">Kit Name</choice>
+      <choice value="KitHash">Kit Hash</choice>
+      <choice value="KitMailer">Kit Mailer</choice>
+      <choice value="ThreatActor">Threat Actor</choice>
+      <choice value="ThreatActorEmail">Threat Actor Email</choice>
+      <choice value="EmailType">Email Type</choice>
+      <choice value="ReferenceLink">Reference Link</choice>
+      <initialValue>ThreatActorEmail</initialValue>
+    </input>
+    <input type="text" token="ioc">
+      <label>IOC</label>
+      <initialValue>*</initialValue>
+    </input>
+  </fieldset>
   <row>
     <panel>
       <title>Timechart</title>
       <chart>
         <search>
           <query>| inputlookup phishing_kit_tracker.csv 
+| search "$ioc_type$"="$ioc$"
 | eval NewTime=strptime(DateFound, "%m/%d/%Y") 
 | eval _time=NewTime 
 | table _time DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
@@ -31,6 +53,7 @@
           <query>| inputlookup phishing_kit_tracker.csv 
 | fillnull value="-" 
 | search NOT Target=- 
+| search "$ioc_type$"="$ioc$"
 | table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
 | top 20 Target showperc=false
 | sort - count</query>
@@ -49,6 +72,7 @@
           <query>| inputlookup phishing_kit_tracker.csv 
 | fillnull value="-" 
 | search NOT KitName=- 
+| search "$ioc_type$"="$ioc$"
 | table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
 | top 20 KitName showperc=false
 | sort - count</query>
@@ -67,6 +91,7 @@
           <query>| inputlookup phishing_kit_tracker.csv 
 | fillnull value="-" 
 | search NOT KitHash=- 
+| search "$ioc_type$"="$ioc$"
 | table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
 | top 20 KitHash showperc=false
 | sort - count</query>
@@ -87,6 +112,7 @@
           <query>| inputlookup phishing_kit_tracker.csv 
 | fillnull value="-" 
 | search NOT ThreatActor=- 
+| search "$ioc_type$"="$ioc$"
 | table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
 | top 20 ThreatActor showperc=false
 | sort - count</query>
@@ -105,6 +131,7 @@
           <query>| inputlookup phishing_kit_tracker.csv 
 | fillnull value="-" 
 | search NOT ThreatActorEmail=- 
+| search "$ioc_type$"="$ioc$"
 | table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
 | top 20 ThreatActorEmail showperc=false
 | sort - count</query>
@@ -123,6 +150,7 @@
           <query>| inputlookup phishing_kit_tracker.csv 
 | fillnull value="-" 
 | search NOT EmailType=- 
+| search "$ioc_type$"="$ioc$"
 | table DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
 | top 20 EmailType showperc=false
 | sort - count</query>
@@ -135,4 +163,4 @@
       </table>
     </panel>
   </row>
-</dashboard>
+</form>
