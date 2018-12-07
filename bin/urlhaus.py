@@ -50,7 +50,7 @@ def get_feed():
     """Return the latest report summaries from the feed."""
     api     = "https://urlhaus.abuse.ch/downloads"
     session = commons.create_session()
-    resp    = session.get("{}/csv/".format(api))
+    resp    = session.get("{}/csv/".format(api), timeout=180)
     session.close()
 
     if resp.status_code == 200 and resp.text != "":
@@ -180,7 +180,7 @@ def get_payloads(analysis_dicts, session):
         provided_ioc = analysis_dict["provided_ioc"]
         url          = analysis_dict["url"]
         urlhaus_link = analysis_dict["urlhaus_link"]
-        resp         = session.get(urlhaus_link)
+        resp         = session.get(urlhaus_link, timeout=180)
 
         if resp.status_code == 200:
             parser.reload()
@@ -236,7 +236,7 @@ def browse_urlhaus(session, provided_ioc, page):
     uh_browser = "https://urlhaus.abuse.ch/browse.php?search="
     resp       = session.get("{}{}&page={}".format(uh_browser,
                                                     provided_ioc,
-                                                    page))
+                                                    page), timeout=180)
     parser.reload()
 
     if resp.status_code == 200:

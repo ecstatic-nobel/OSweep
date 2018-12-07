@@ -80,7 +80,7 @@ def query_cymon(ioc_type, session, provided_ioc):
     """ """
     ioc_list = []
     base_url = "https://api.cymon.io/v2/ioc/search/{}/{}"
-    resp     = session.get(base_url.format(ioc_type, provided_ioc))
+    resp     = session.get(base_url.format(ioc_type, provided_ioc), timeout=180)
 
     if resp.status_code == 200 and len(resp.json()["hits"]) > 0:
         hits = resp.json()["hits"]

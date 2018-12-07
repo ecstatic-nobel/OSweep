@@ -96,7 +96,7 @@ def query_urlscan_file(session, provided_ioc):
 
     timespan  = datetime.strptime(timespan, "%a, %d %b %Y %H:%M:%S")
     api       = "https://urlscan.io/api/v1/search/?q={}%20AND%20filename:.{}&size=10000"
-    resp      = session.get(api.format(usfs.queries[qtype], ext), timeout=10)
+    resp      = session.get(api.format(usfs.queries[qtype], ext), timeout=180)
     ioc_dicts = []
 
     if resp.status_code == 200 and "results" in resp.json().keys() and \
@@ -135,7 +135,7 @@ def query_urlscan(session, provided_ioc):
     """Return data from urlscan about the provided IOC."""
     query_type = sys.argv[1]
     api    = "https://urlscan.io/api/v1/search/?size=10000&q="
-    resp   = session.get("{}{}".format(api, provided_ioc), timeout=10)
+    resp   = session.get("{}{}".format(api, provided_ioc), timeout=180)
 
     if resp.status_code == 200 and "results" in resp.json().keys() and \
        len(resp.json()["results"]) > 0:

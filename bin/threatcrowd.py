@@ -82,7 +82,7 @@ def process_iocs(results):
 def query_threatcrowd(provided_ioc, ioc_type, session):
     """Pivot off an IP or domain and return data as an dictonary."""
     ioc_dicts = []
-    resp      = session.get(api.format(ioc_type, ioc_type, provided_ioc))
+    resp      = session.get(api.format(ioc_type, ioc_type, provided_ioc), timeout=180)
 
     if resp.status_code == 200 and "permalink" in resp.json().keys() and \
        provided_ioc in resp.json()["permalink"]:

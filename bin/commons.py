@@ -14,7 +14,7 @@ import splunk.Intersplunk as InterSplunk
 import requests
 
 sys.path.insert(1, "/opt/splunk/etc/apps/osweep/etc/")
-import config
+import cfg as config
 
 
 def create_session():
