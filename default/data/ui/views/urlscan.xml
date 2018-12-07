@@ -181,7 +181,7 @@
 | search NOT "$group_value$"="-"
 | sort "$group_key$"</query>
         </search>
-        <option name="count">10</option>
+        <option name="count">20</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>
@@ -318,7 +318,7 @@
 | search NOT "$group_value$"="-"
 | sort "$group_key$"</query>
         </search>
-        <option name="count">10</option>
+        <option name="count">20</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>
