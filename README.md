@@ -13,6 +13,7 @@ So why did you get pwned? You know that if you wasted time gathering all the IOC
 The fix? **OSweep™**.  
 
 #### Prerequisites  
+- Ubuntu 18.04+ (should work on other Linux distros)  
 - Splunk 7.1.3 >  
 - Python 2.7.14 > ($SPLUNK_HOME/bin/python)  
 
