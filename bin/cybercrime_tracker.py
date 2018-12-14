@@ -44,7 +44,7 @@ def get_feed():
     """Return OSINT data feed."""
     api     = "http://cybercrime-tracker.net/all.php"
     session = commons.create_session()
-    resp    = session.get(api)
+    resp    = session.get(api, timeout=180)
     session.close()
 
     if resp.status_code == 200 and resp.text != "":
@@ -104,7 +104,7 @@ def query_cct(provided_ioc, session):
     vt_latest = "https://www.virustotal.com/latest-scan/http://{}"
     vt_ip     = "https://www.virustotal.com/en/ip-address/{}/information/"
     base_url  = api.format(provided_ioc)
-    resp      = session.get(base_url)
+    resp      = session.get(base_url, timeout=180)
     cct_dicts = []
 
     if resp.status_code == 200:

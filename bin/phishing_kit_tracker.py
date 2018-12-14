@@ -39,7 +39,7 @@ def get_feed():
 
 def check_project(session):
     """Return a list of tags."""
-    resp = session.get(csv)
+    resp = session.get(csv, timeout=180)
 
     if resp.status_code == 200 and resp.content != '':
         return resp.content.splitlines()

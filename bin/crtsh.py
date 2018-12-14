@@ -78,7 +78,7 @@ def query_crtsh(provided_ioc, session):
 
     base_url  = "https://crt.sh/?q={}&output=json"
     url       = base_url.format(provided_ioc)
-    resp      = session.get(url)
+    resp      = session.get(url, timeout=180)
     crt_dicts = []
 
     if resp.status_code == 200 and resp.content != "":

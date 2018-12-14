@@ -62,7 +62,7 @@ def get_modules():
 def request_module(session, filename):
     """Return a list of tags."""
     base_url = "https://raw.githubusercontent.com/x0rz/phishing_catcher/master{}"
-    resp     = session.get(base_url.format(filename))
+    resp     = session.get(base_url.format(filename), timeout=180)
 
     if resp.status_code == 200 and resp.content != "":
         return resp.content.splitlines()

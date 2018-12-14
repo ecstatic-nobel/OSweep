@@ -7,15 +7,6 @@ keywords:
 # for the ones found in suspicious.yaml, e.g.:
 #    'myownkeyword': 50
 #    'appleid': 0
-    'creditunion': 60
-    'fedex': 60
-    'myetherwallet': 60
-    'o365': 60
-    'outlookwebapp': 60
-    'owa': 60
-    'ups': 60
-    'usps': 60
-    'wellsfargo': 60
 
 tlds:
 # Add your own TLDs here, e.g.:

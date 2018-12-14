@@ -1,6 +1,6 @@
 <form>
   <label>URLhaus</label>
-  <description>Gather malicious URLs that are being used for malware distribution. (Site: https://urlhaus.abuse.ch/browse/, Rate Limit: 1 request/1s)</description>
+  <description>Gather malicious URLs that are being used for malware distribution. (Site: https://urlhaus.abuse.ch/browse/, Rate Limit: 1 request/2s)</description>
   <search id="urlhaus_base">
     <query>| urlhaus $ioc$ </query>
     <earliest>-15m</earliest>

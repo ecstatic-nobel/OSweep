@@ -53,7 +53,7 @@ def get_feed():
     """Return the latest report summaries from the feed."""
     api     = "https://ransomwaretracker.abuse.ch/feeds/csv/"
     session = commons.create_session()
-    resp    = session.get(api)
+    resp    = session.get(api, timeout=180)
 
     if resp.status_code == 200 and resp.text != "":
         data    = resp.text.splitlines()

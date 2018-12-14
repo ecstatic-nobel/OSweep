@@ -1,13 +1,75 @@
 <form>
   <label>urlscan.io</label>
   <description>Analyze the resources a website requests and the domains it contacts. (Site: https://urlscan.io/, Rate Limit: None)</description>
-  <search id="urlscan_base">
+  <search id="urlscan_broad">
     <query>| urlscan $ioc$</query>
     <earliest>-15m</earliest>
     <latest>now</latest>
   </search>
+  <search id="urlscan_file">
+    <query>| urlscan $query_type$ $delta$ $extension$</query>
+    <earliest>-15m</earliest>
+    <latest>now</latest>
+  </search>
   <fieldset submitButton="true">
-    <input type="text" token="ioc">
+    <input type="link" token="file">
+      <label>Filetype Search</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <change>
+        <condition value="yes">
+          <set token="file_search"></set>
+          <unset token="broad_search"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="file_search"></unset>
+          <set token="broad_search"></set>
+        </condition>
+      </change>
+      <initialValue>no</initialValue>
+    </input>
+    <input type="dropdown" token="query_type" depends="$file_search$">
+      <label>Query Type</label>
+      <choice value="automatic">Automatic</choice>
+      <choice value="certstream">Certstream</choice>
+      <choice value="manual">Manual</choice>
+      <choice value="openphish">OpenPhish</choice>
+      <choice value="phishtank">PhishTank</choice>
+      <choice value="twitter">Twitter</choice>
+      <choice value="urlhaus">URLhaus</choice>
+    </input>
+    <input type="text" token="delta" depends="$file_search$">
+      <label>Delta</label>
+    </input>
+    <input type="dropdown" token="extension" depends="$file_search$">
+      <label>Extension</label>
+      <choice value="7z">7z</choice>
+      <choice value="apk">apk</choice>
+      <choice value="bat">bat</choice>
+      <choice value="dll">dll</choice>
+      <choice value="doc">doc</choice>
+      <choice value="docx">docx</choice>
+      <choice value="exe">exe</choice>
+      <choice value="gz">gz</choice>
+      <choice value="hta">hta</choice>
+      <choice value="html">html</choice>
+      <choice value="iso">iso</choice>
+      <choice value="jar">jar</choice>
+      <choice value="json">json</choice>
+      <choice value="lnk">lnk</choice>
+      <choice value="ppt">ppt</choice>
+      <choice value="ps1">ps1</choice>
+      <choice value="py">py</choice>
+      <choice value="rar">rar</choice>
+      <choice value="sh">sh</choice>
+      <choice value="tar">tar</choice>
+      <choice value="vb">vb</choice>
+      <choice value="vbs">vbs</choice>
+      <choice value="xls">xls</choice>
+      <choice value="xlsx">xlsx</choice>
+      <choice value="zip">zip</choice>
+    </input>
+    <input type="text" token="ioc" depends="$broad_search$">
       <label>Domain, IP, SHA256 (+)</label>
     </input>
     <input type="link" token="group">
@@ -44,9 +106,9 @@
   <row>
     <panel>
       <title>Stats - Domain</title>
-      <chart>
-        <search base="urlscan_base">
-          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+      <chart depends="$file_search$">
+        <search base="urlscan_file">
+          <query>| table "analysis time" url domain ip country filename mimetype sha256 
 | stats count BY domain</query>
         </search>
         <option name="charting.chart">pie</option>
@@ -60,9 +122,9 @@
     </panel>
     <panel>
       <title>Stats - IP</title>
-      <chart>
-        <search base="urlscan_base">
-          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+      <chart depends="$file_search$">
+        <search base="urlscan_file">
+          <query>| table "analysis time" url domain ip country filename mimetype sha256 
 | stats count BY ip</query>
         </search>
         <option name="charting.chart">pie</option>
@@ -76,9 +138,9 @@
     </panel>
     <panel>
       <title>Stats - Country</title>
-      <chart>
-        <search base="urlscan_base">
-          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+      <chart depends="$file_search$">
+        <search base="urlscan_file">
+          <query>| table "analysis time" url domain ip country filename mimetype sha256 
 | stats count BY country</query>
         </search>
         <option name="charting.chart">pie</option>
@@ -92,8 +154,145 @@
     </panel>
     <panel>
       <title>Stats - SHA256</title>
+      <chart depends="$file_search$">
+        <search base="urlscan_file">
+          <query>| table "analysis time" url domain ip country filename mimetype sha256 
+| stats count BY sha256</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlscan $click.value$ 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256&amp;earliest=&amp;latest=</link>
+        </drilldown>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$file_search$,$group_panel$">
+      <title>File Results - Group by "$group_key$"</title>
+      <table>
+        <search base="urlscan_file">
+          <query>| fillnull value="-" 
+| search NOT url="-"
+| dedup "analysis time" url domain ip country filename mimetype sha256 
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$"
+| search NOT "$group_value$"="-"
+| sort "$group_key$"</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$file_search$,$table_panel$">
+      <title>File Results - Table</title>
+      <table>
+        <search base="urlscan_file">
+          <query>| fillnull value="-" 
+| search NOT url="-" 
+| dedup "analysis time" url domain ip country filename mimetype sha256 
+| table "analysis time" url domain ip country filename mimetype sha256 
+| sort - "analysis time" sha256</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$file_search$">
+      <title>Results - Invalid</title>
+      <table>
+        <search base="urlscan_file">
+          <query>| dedup invalid 
+| table invalid
+| sort invalid</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$file_search$">
+      <title>Results - No Data</title>
+      <table>
+        <search base="urlscan_file">
+          <query>| dedup "no data"
+| table "no data"
+| sort "no data"</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$broad_search$">
+      <title>Stats - Domain</title>
       <chart>
-        <search base="urlscan_base">
+        <search base="urlscan_broad">
+          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| stats count BY domain</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlscan $click.value$ 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256&amp;earliest=&amp;latest=</link>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel depends="$broad_search$">
+      <title>Stats - IP</title>
+      <chart>
+        <search base="urlscan_broad">
+          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| stats count BY ip</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlscan $click.value$ 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256&amp;earliest=&amp;latest=</link>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel depends="$broad_search$">
+      <title>Stats - Country</title>
+      <chart>
+        <search base="urlscan_broad">
+          <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
+| stats count BY country</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">preview</option>
+        <drilldown>
+          <link target="_blank">search?q=| urlscan $click.value$ 
+| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256&amp;earliest=&amp;latest=</link>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel depends="$broad_search$">
+      <title>Stats - SHA256</title>
+      <chart>
+        <search base="urlscan_broad">
           <query>| table url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
 | stats count BY sha256</query>
         </search>
@@ -108,18 +307,18 @@
     </panel>
   </row>
   <row>
-    <panel depends="$group_panel$">
+    <panel depends="$broad_search$,$group_panel$">
       <title>Results - Group by "$group_key$"</title>
       <table>
-        <search base="urlscan_base">
+        <search base="urlscan_broad">
           <query>| fillnull value="-" 
 | search NOT url="-"
 | dedup url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
 | stats values("$group_value$") AS "$group_value$" BY "$group_key$"
-| search NOT "name value"="-"
+| search NOT "$group_value$"="-"
 | sort "$group_key$"</query>
         </search>
-        <option name="count">10</option>
+        <option name="count">20</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">preview</option>
         <option name="rowNumbers">false</option>
@@ -128,10 +327,10 @@
     </panel>
   </row>
   <row>
-    <panel depends="$table_panel$">
+    <panel depends="$broad_search$,$table_panel$">
       <title>Results - Table</title>
       <table>
-        <search base="urlscan_base">
+        <search base="urlscan_broad">
           <query>| fillnull value="-" 
 | search NOT url="-" 
 | dedup "analysis time" url domain ip ptr server city country asn asnname filename filesize mimetype sha256 
@@ -147,10 +346,10 @@
     </panel>
   </row>
   <row>
-    <panel>
+    <panel depends="$broad_search$">
       <title>Results - Invalid</title>
       <table>
-        <search base="urlscan_base">
+        <search base="urlscan_broad">
           <query>| dedup invalid 
 | table invalid
 | sort invalid</query>
@@ -162,10 +361,10 @@
         <option name="wrap">true</option>
       </table>
     </panel>
-    <panel>
+    <panel depends="$broad_search$">
       <title>Results - No Data</title>
       <table>
-        <search base="urlscan_base">
+        <search base="urlscan_broad">
           <query>| dedup "no data"
 | table "no data"
 | sort "no data"</query>

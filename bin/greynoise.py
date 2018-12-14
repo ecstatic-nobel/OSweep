@@ -60,7 +60,7 @@ def get_feed():
 
 def query_list(session):
     """Return a list of tags."""
-    resp = session.get("{}/list".format(api))
+    resp = session.get("{}/list".format(api), timeout=180)
 
     if resp.status_code == 200 and "tags" in resp.json().keys():
         return resp.json()["tags"]

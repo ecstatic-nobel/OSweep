@@ -23,9 +23,9 @@ Instructions:
 4. Select whether the results will be grouped and how from the dropdowns.
 5. Click "Submit".
 
-Rate Limit: None
+Rate Limit: 1 request/2s
 
-Results Limit: 1 request/1s
+Results Limit: None
 
 Notes: None
 
@@ -50,7 +50,7 @@ def get_feed():
     """Return the latest report summaries from the feed."""
     api     = "https://urlhaus.abuse.ch/downloads"
     session = commons.create_session()
-    resp    = session.get("{}/csv/".format(api))
+    resp    = session.get("{}/csv/".format(api), timeout=180)
     session.close()
 
     if resp.status_code == 200 and resp.text != "":
@@ -147,8 +147,6 @@ def process_iocs(results):
             ioc_dict = commons.lower_keys(ioc_dict)
             splunk_table.append(ioc_dict)
 
-        time.sleep(1)
-
     session.close()
     return splunk_table
 
@@ -182,7 +180,7 @@ def get_payloads(analysis_dicts, session):
         provided_ioc = analysis_dict["provided_ioc"]
         url          = analysis_dict["url"]
         urlhaus_link = analysis_dict["urlhaus_link"]
-        resp         = session.get(urlhaus_link)
+        resp         = session.get(urlhaus_link, timeout=180)
 
         if resp.status_code == 200:
             parser.reload()
@@ -195,6 +193,8 @@ def get_payloads(analysis_dicts, session):
                 ioc_dicts.append(analysis_dict)
         elif len([x for x in ioc_dicts if provided_ioc in " ".join(x.values())]) == 0:
             ioc_dicts.append({"no data": provided_ioc})
+
+        time.sleep(2)
     return ioc_dicts
 
 def get_urls(session, provided_ioc):
@@ -228,6 +228,7 @@ def get_urls(session, provided_ioc):
             ioc_dicts.append(ioc_dict)
 
         page += 1
+        time.sleep(2)
     return ioc_dicts
 
 def browse_urlhaus(session, provided_ioc, page):
@@ -235,7 +236,7 @@ def browse_urlhaus(session, provided_ioc, page):
     uh_browser = "https://urlhaus.abuse.ch/browse.php?search="
     resp       = session.get("{}{}&page={}".format(uh_browser,
                                                     provided_ioc,
-                                                    page))
+                                                    page), timeout=180)
     parser.reload()
 
     if resp.status_code == 200:
