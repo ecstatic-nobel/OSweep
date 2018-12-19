@@ -3,6 +3,11 @@
 #
 # OSweep Configurations
 #
+# Usage  : With the exception of the value 'None', all values must be surrounded 
+#          by quotes.
+#
+# Example: greynoise_key = "YOUR_KEY_HERE"
+#
 
 # Proxies
 http_proxy_url  = None
