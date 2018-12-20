@@ -13,9 +13,24 @@ So why did you get pwned? You know that if you wasted time gathering all the IOC
 The fix? **OSweep™**.  
 
 ### Prerequisites  
-- Ubuntu 18.04+ (should work on other Linux distros)  
+Before getting started, ensure you have the following:  
+**Ubuntu 18.04+**  
 - Python 2.7.14 ($SPLUNK_HOME/bin/python)  
 - Splunk 7.1.3+  
+- Deb Packages  
+  - gcc  
+  - python-pip  
+
+**CentOS 7+**  
+- Python 2.7.14 ($SPLUNK_HOME/bin/python)  
+- Splunk 7.1.3+  
+- Yum Packages  
+  - epel-release  
+  - gcc  
+  - python-pip  
+
+**Optional Packages**  
+- Git   
 
 Click **[HERE](https://github.com/leunammejii/osweep/wiki/Setup)** to get started.  
 
