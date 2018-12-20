@@ -41,8 +41,9 @@ import os
 import re
 import sys
 
-script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
-sys.path.insert(0, script_path)
+app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+tp_modules = "{}/bin/_tp_modules".format(app_home)
+sys.path.insert(0, tp_modules)
 from HTMLParser import HTMLParser
 import validators
 
@@ -97,7 +98,7 @@ def process_iocs(results):
         provided_iocs = sys.argv[1:]
 
     splunk_table = []
-    lookup_path  = "/opt/splunk/etc/apps/osweep/lookups"
+    lookup_path  = "{}/lookups".format(app_home)
     open_file    = open("{}/ransomware_tracker_feed.csv".format(lookup_path), "r")
     data_feed    = open_file.read().splitlines()
     header       = data_feed[0].lower().split(",")
@@ -136,7 +137,7 @@ def process_iocs(results):
 if __name__ == "__main__":
     if sys.argv[1].lower() == "feed":
         data_feed    = get_feed()
-        lookup_path  = "/opt/splunk/etc/apps/osweep/lookups"
+        lookup_path  = "{}/lookups".format(app_home)
         feed_file    = "{}/ransomware_tracker_feed.csv".format(lookup_path)
         name_file    = "{}/ransomware_tracker_names.csv".format(lookup_path)
 

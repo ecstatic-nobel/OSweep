@@ -15,7 +15,7 @@ Source: https://twitter.com/
 
 Instructions:
 1. Open the terminal
-2. Navigate to "/opt/splunk/etc/apps/osweep/etc/".
+2. Navigate to "$SPLUNK_HOME/etc/apps/osweep/etc/".
 3. Edit "config.py" and add the following values as strings to the config file:
 - twitter_consumer_key        -> Consumer Key
 - twitter_consumer_secret     -> Consumer Secret
@@ -40,9 +40,9 @@ import sys
 import time
 import urllib
 
-script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
-sys.path.insert(0, script_path)
-sys.path.insert(1, "/opt/splunk/etc/apps/osweep/etc/")
+app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+tp_modules = "{}/bin/_tp_modules".format(app_home)
+sys.path.insert(0, tp_modules)
 import tweepy
 import validators
 

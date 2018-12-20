@@ -37,8 +37,9 @@ import os
 import re
 import sys
 
-script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
-sys.path.insert(0, script_path)
+app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+tp_modules = "{}/bin/_tp_modules".format(app_home)
+sys.path.insert(0, tp_modules)
 import entropy
 import pylev
 import tld
@@ -164,9 +165,8 @@ def score_domain(provided_ioc):
 if __name__ == '__main__':
     if sys.argv[1].lower() == "modules":
         suspicious, confusables = get_modules()
-        module_path = "/opt/splunk/etc/apps/osweep/bin"
-        sfile       = "{}/suspicious.yaml".format(module_path)
-        cfile       = "{}/confusables.py".format(module_path)
+        sfile = "{}/bin/suspicious.yaml".format(app_home)
+        cfile = "{}/bin/confusables.py".format(app_home)
 
         write_file(suspicious, sfile)
         write_file(confusables, cfile)

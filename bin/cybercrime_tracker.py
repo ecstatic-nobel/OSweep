@@ -32,8 +32,9 @@ import os
 import re
 import sys
 
-script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
-sys.path.insert(0, script_path)
+app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+tp_modules = "{}/bin/_tp_modules".format(app_home)
+sys.path.insert(0, tp_modules)
 from bs4 import BeautifulSoup
 import validators
 
@@ -141,7 +142,7 @@ def query_cct(provided_ioc, session):
 if __name__ == "__main__":
     if sys.argv[1].lower() == "feed":
         data_feed   = get_feed()
-        lookup_path = "/opt/splunk/etc/apps/osweep/lookups"
+        lookup_path = "{}/lookups".format(app_home)
         file_path   = "{}/cybercrime_tracker_feed.csv".format(lookup_path)
         write_file(data_feed, file_path)
         exit(0)
