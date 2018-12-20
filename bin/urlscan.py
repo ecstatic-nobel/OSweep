@@ -33,8 +33,9 @@ from datetime import timedelta
 import os
 import sys
 
-script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
-sys.path.insert(0, script_path)
+app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+tp_modules = "{}/bin/_tp_modules".format(app_home)
+sys.path.insert(0, tp_modules)
 import validators
 
 import commons

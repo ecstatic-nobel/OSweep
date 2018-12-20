@@ -8,12 +8,14 @@ import re
 import sys
 import traceback
 
-script_path = os.path.dirname(os.path.realpath(__file__)) + "/_tp_modules"
-sys.path.insert(0, script_path)
+app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+tp_modules = "{}/bin/_tp_modules".format(app_home)
+sys.path.insert(0, tp_modules)
 import splunk.Intersplunk as InterSplunk
 import requests
 
-sys.path.insert(1, "/opt/splunk/etc/apps/osweep/etc/")
+config_path = "{}/etc/".format(app_home)
+sys.path.insert(1, config_path)
 import config
 
 
