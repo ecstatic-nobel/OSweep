@@ -32,7 +32,7 @@ Before getting started, ensure you have the following:
 **Optional Packages**  
 - Git   
 
-Click **[HERE](https://github.com/leunammejii/osweep/wiki/Setup)** to get started.  
+Click **[HERE](https://github.com/ecstatic-nobel/osweep/wiki/Setup)** to get started.  
 
 ### Gallery  
  **Feed Overview - Dashboard**  
