@@ -36,43 +36,43 @@ Click **[HERE](https://github.com/ecstatic-nobel/osweep/wiki/Setup)** to get sta
 
 ### Gallery  
  **Feed Overview - Dashboard**  
-![Feed Overview - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/feedOverview_dashboard.png)  
+![Feed Overview - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/feedOverview_dashboard.png)  
 
 **The Round Table - Dashboard**  
-![The Round Table - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/theRoundTable_dashboard.png)  
+![The Round Table - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/theRoundTable_dashboard.png)  
 
 **Certificate Search - Dashboard**
-![crtsh - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/crtsh_dashboard.png)  
+![crtsh - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/crtsh_dashboard.png)  
 
 **CyberCrime Tracker - Dashboard**
-![CyberCrime Tracker - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/cybercrimeTracker_dashboard.png)  
+![CyberCrime Tracker - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/cybercrimeTracker_dashboard.png)  
 
 **Cymon - Dashboard**
-![Cymon - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/cymon_dashboard.png)  
+![Cymon - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/cymon_dashboard.png)  
 
 **GreyNoise - Dashboard**  
-![GreyNoise - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/greynoise_dashboard.png)  
+![GreyNoise - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/greynoise_dashboard.png)  
 
 **Phishing Catcher - Dashboard**  
-![Phishing Catcher - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/phishingCatcher_dashboard.png)  
+![Phishing Catcher - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/phishingCatcher_dashboard.png)  
 
 **Phishing Kit Tracker - Dashboard**  
-![Phishing Kit Tracker - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/phishingKitTracker_dashboard.png)  
+![Phishing Kit Tracker - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/phishingKitTracker_dashboard.png)  
 
 **Ransomare Tracker - Dashboard**
-![Ransomare Tracker - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/ransomwareTracker_dashboard.png)  
+![Ransomare Tracker - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/ransomwareTracker_dashboard.png)  
 
 **ThreatCrowd - Dashboard**
-![ThreatCrowd - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/threatcrowd_dashboard.png)  
+![ThreatCrowd - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/threatcrowd_dashboard.png)  
 
 **Twitter - Dashboard**
-![Twitter - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/twitter_dashboard.png)  
+![Twitter - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/twitter_dashboard.png)  
 
 **URLhaus - Dashboard**
-![URLhaus - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/urlhaus_dashboard.png)  
+![URLhaus - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/urlhaus_dashboard.png)  
 
 **<span>urlscan</span>.io - Dashboard**
-![urlscanio - Dashboard](https://raw.githubusercontent.com/leunammejii/osweep/master/static/assets/urlscan_dashboard.png)  
+![urlscanio - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/osweep/master/static/assets/urlscan_dashboard.png)  
 
 ### Dashboards Coming Soon  
 - Alienvault  
