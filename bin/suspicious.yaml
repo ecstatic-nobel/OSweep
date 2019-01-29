@@ -1,174 +1,421 @@
 keywords:
-# Generic suspicious
-    'login': 25
-    'log-in': 25
-    'sign-in': 25
-    'signin': 25
-    'account': 25
-    'verification': 25
-    'verify': 25
-    'webscr': 25
-    'password': 25
-    'credential': 25
-    'support': 25
-    'activity': 25
-    'security': 25
-    'update': 25
-    'authentication': 25
-    'authenticate': 25
-    'authorize': 25
-    'wallet': 25
+# Any changes must use the same format.
+# This section cannot be empty.
+
+# Generic
+    'account': 35
+    'activity': 40
     'alert': 25
-    'purchase': 25
-    'transaction': 25
-    'recover': 25
-    'unlock': 25
-    'confirm': 20
-    'live': 15
-    'office': 15
-    'service': 15
-    'manage': 15
-    'portal': 15
-    'invoice': 15
-    'secure': 10
-    'customer': 10
-    'client': 10
-    'bill': 10
-    'online': 10
-    'safe': 10
-    'form': 10
+    'authenticate': 60
+    'authentication': 70
+    'authorize': 45
+    'bill': 20
+    'client': 30
+    'confirm': 35
+    'credential': 50
+    'customer': 40
+    'form': 20
+    'invoice': 35
+    'live': 20
+    'loan': 20
+    'log-in': 30
+    'login': 25
+    'lottery': 35
+    'manage': 30
+    'office': 30
+    'online': 30
+    'password': 40
+    'portal': 30
+    'purchase': 40
+    'recover': 35
+    'refund': 30
+    'rezulta': 35
+    'safe': 20
+    'secure': 30
+    'security': 40
+    'service': 35
+    'sign-in': 35
+    'signin': 30
+    'support': 35
+    'tax': 15
+    'transaction': 55
+    'unlock': 30
+    'update': 30
+    'verification': 60
+    'verify': 30
+    'wallet': 30
+    'webscr': 30
 
 # Apple iCloud
-    'appleid': 70
-    'icloud': 60
-    'iforgot': 60
-    'itunes': 50
-    'apple': 30
-
-# Email
-    'office365': 50
-    'microsoft': 60
-    'windows': 30
-    'protonmail': 70
-    'tutanota': 60
-    'hotmail': 60
-    'gmail': 70
-    'outlook': 60
-    'yahoo': 60
-    'google': 60
-    'yandex': 60
-
-# Social Media
-    'twitter': 60
-    'facebook': 60
-    'tumblr': 60
-    'reddit': 60
-    'youtube': 40 # some false positives
-    'linkedin': 60
-    'instagram': 60
-    'flickr': 60
-    'whatsapp': 60
-
-# Cryptocurrency
-    'localbitcoin': 70
-    'poloniex': 60
-    'coinhive': 70
-    'bithumb': 60
-    'kraken': 50 # some false positives
-    'bitstamp': 60
-    'bittrex': 60
-    'blockchain': 70
-    'bitflyer': 60
-    'coinbase': 60
-    'hitbtc': 60
-    'lakebtc': 60
-    'bitfinex': 60
-    'bitconnect': 60
-    'coinsbank': 60
+    'apple': 25
+    'appleid': 35
+    'icloud': 30
+    'iforgot': 35
+    'itunes': 30
 
 # Bank/money
-    'paypal': 70
-    'moneygram': 60
+    'advcash': 35
+    'atb': 15
+    'ameritrade': 50
+    'bank': 20
+    'bankofamerica': 65
+    'barclays': 40
+    'bmo': 15
+    'bibox': 25
+    'bmo': 15
+    'cibc': 20
+    'citigroup': 45
+    'desjardins': 50
+    'discovercard': 60
+    'gofund': 30
+    'hsbc': 20
+    'ing': 15
+    'meridian': 40
+    'merilledge': 50
+    'moneygram': 45
+    'morganstanley': 65
+    'okpay': 25
+    'payeer': 30
+    'paypal': 30
+    'payza': 25
+    'perfectmoney': 60
+    'royalbank': 45
+    'santander': 45
+    'scotia': 30
+    'scottrade': 45
+    'skrill': 30
+    'solidtrustpay': 65
+    'wellsfargo': 50
     'westernunion': 60
-    'bankofamerica': 60
-    'wellsfargo': 60
-    'citigroup': 60
-    'santander': 60
-    'morganstanley': 60
-    'barclays': 50
-    'hsbc': 50
-    'scottrade': 60
-    'ameritrade': 60
-    'merilledge': 60
-    'bank': 15
+
+# Cryptocurrency
+    'bitconnect': 50
+    'bitfinex': 40
+    'bitflyer': 40
+    'bithumb': 35
+    'bitmex': 30
+    'bitstamp': 40
+    'bittrex': 35
+    'blockchain': 50
+    'coinbase': 40
+    'coinhive': 40
+    'coinsbank': 45
+    'entromoney': 50
+    'hitbtc': 30
+    'kraken': 30 # some false positives
+    'lakebtc': 35
+    'localbitcoin': 60
+    'poloniex': 40
+    'webmoney': 40
 
 # Ecommerce
-    'amazon': 60
-    'overstock': 60
-    'alibaba': 60
-    'aliexpress': 60
-    'leboncoin': 70
+    'amazon': 30
+    'overstock': 45
+    'alibaba': 35
+    'aliexpress': 50
+    'leboncoin': 45
+
+# Email
+    'gmail': 25
+    'google': 30
+    'hotmail': 35
+    'microsoft': 45
+    'office365': 45
+    'onedrive': 40
+    'outlook': 35
+    'protonmail': 50
+    'tutanota': 40
+    'windows': 35
+    'yahoo': 25
+    'yandex': 30
+
+# Malware
+    '16shop': 30
+    'agenttesla': 50
+    'arkei': 25
+    'azorult': 35
+    'batman': 30
+    'betabot': 35
+    'botnet': 30
+    'diamondfox': 50
+    'emotet': 30
+    'formbook': 40
+    'gaudox': 30
+    'gorynch': 35
+    'iceIX': 25
+    'kardon': 30
+    'keybase': 35
+    'kronos': 30
+    'litehttp': 40
+    'lokibot': 35
+    'megalodon': 45
+    'mirai': 25
+    'neutrino': 40
+    'pekanbaru': 45
+    'predatorthethief': 80
+    'quasar': 30
+    'rarog': 25
+    'tesla': 25
+    'ursnif': 30
+    'workhard': 40
+
+# Security
+    '1password': 45
+    'dashlane': 40
+    'lastpass': 40
+    'nordvpn': 35
+    'protonvpn': 45
+    'tunnelbear': 50
+
+# Social Media
+    'facebook': 40
+    'flickr': 30
+    'instagram': 45
+    'linkedin': 40
+    'reddit': 30
+    'tumblr': 30
+    'twitter': 35
+    'whatsapp': 40
+    'youtube': 35 # some false positives
 
 # Other
-    'netflix': 70
-    'skype': 60
-    'github': 60
-    'onedrive': 60
-    'dropbox': 60
+    'adobe': 25
+    'cabletv': 35
+    'coxcable': 40
+    'directtv': 40
+    'docusign': 40
+    'dropbox': 35
+    'ebay': 20
+    'github': 30
+    'mydish': 30
+    'netflix': 35
+    'skype': 25
+    'spotify': 35
+    'trello': 30
+    'verizon': 35
 
 # Miscellaneous & SE tricks
-    'cgi-bin': 50
-    '-com.': 20
-    '.net-': 20
-    '.org-': 20
-    '.com-': 20
-    '.net.': 20
-    '.org.': 20
-    '.com.': 20
-    '.gov-': 30
-    '.gov.': 30
-    '.gouv-': 40
-    '-gouv-': 40
-    '.gouv.': 40
-    # FR specific
-    'suivi': 50
-    'laposte': 50
+    '-com.': 15
+    '-gouv-': 20
+    '.com-': 15
+    '.com.': 15
+    '.gouv-': 20
+    '.gouv.': 20
+    '.gov-': 15
+    '.gov.': 15
+    '.net-': 15
+    '.net.': 15
+    '.org-': 15
+    '.org.': 15
+    'cgi-bin': 30
+
+# FR specific
+    'laposte': 35
+    'suivi': 25
+
+# BE specific
+    'argenta': 35
+    'belfius': 35
+    'beobank': 35
+    'bepost': 30
+    'crelan': 30
+    'europabank': 50
+    'fintro': 30
+    'fortis': 30
+    'keytrade': 40
+    'mobileviking': 60
+    'nagelmackers': 60
+    'proximus': 40
+    'rabobank': 40
+
+# Testing
+    'absabank': 40
+    'accurint': 40
+    'aetna': 25
+    'allegro': 35
+    'alliancebank': 60
+    'amarillo': 40
+    'americanairlines': 80
+    'americanexpress': 75
+    'americangreetings': 85
+    'arenanet': 40
+    'associatedbank': 70
+    'bancadiroma': 55
+    'bancaintesa': 55
+    'bancasa': 35
+    'bancodebrasil': 65
+    'bancoreal': 45
+    'bankmillennium': 70
+    'bankofkc': 40
+    'bankofthewest': 65
+    'bendigo': 35
+    'binance': 35
+    'blizzard': 40
+    'bloomspot': 45
+    'bradesco': 40
+    'buywithme': 45
+    'cahoot': 30
+    'caixa': 25
+    'caixo': 25
+    'capitalone': 50
+    'capitecbank': 55
+    'careerbuilder': 65
+    'cariparmacreditagricole': 115
+    'cartasi': 35
+    'centurylink': 55
+    'charterone': 50
+    'cielo': 25
+    'cimbbank': 40
+    'citibank': 40
+    'citizens': 40
+    'comerica': 40
+    'commonwealthbankofaustralia': 135
+    'compass': 35
+    'cooperativebank': 75
+    'craigslist': 50
+    'creditkarma': 55
+    'crown': 25
+    'creditunionaustralia': 100
+    'delta': 25
+    'deutschebank': 60
+    'dinersclub': 50
+    'discoverbank': 60
+    'discovery': 45
+    'downeysavings': 65
+    'egold': 25
+    'eppicard': 40
+    'fifththirdbank': 70
+    'firstdirect': 55
+    'firstfederalbankofcalifornia': 40
+    'firstnationalbank': 85
+    'franklin': 40
+    'groupon': 35
+    'gruppocarige': 60
+    'gtbank': 30
+    'guildwars2': 50
+    'habbo': 25
+    'halifax': 35
+    'hmrc': 20
+    'homerun': 35
+    'huntington': 50
+    'idex': 20
+    'independentbank': 75
+    'interactivebrokers': 90
+    'intesasanpaolo': 70
+    'itau': 20
+    'kauaicreditunion': 80
+    'keybank': 35
+    'kiwibank': 40
+    'lasalle': 35
+    'littlewoods': 55
+    'livingsocial': 60
+    'lloydsbank': 50
+    'localbitcoins': 65
+    'lottomatica': 55
+    'mastercard': 50
+    'mbtrading': 45
+    'metrobank': 45
+    'mycrypto': 40
+    'myetherwallet': 65
+    'mymonero': 40
+    'myspace': 35
+    'nantucketbank': 65
+    'nationalcity': 60
+    'nationwide': 50
+    'natwest': 35
+    'nedbank': 35
+    'netsuite': 40
+    'nexon': 25
+    'nordea': 30
+    'northernrock': 60
+    'orkut': 25
+    'otomoto': 35
+    'pagseguro': 45
+    'paxful': 30
+    'paypal': 30
+    'peoples': 35
+    'permanenttsb': 60
+    'pintrest': 40
+    'playdom': 35
+    'playfish': 40
+    'plumdistrict': 60
+    'pncbank': 35
+    'poste': 25
+    'rackspace': 45
+    'runescape': 45
+    'safranational': 65
+    'bankofnewyork': 65
+    'salemfive': 45
+    'salesforce': 50
+    'santanderuk': 55
+    'scotiabank': 50
+    'skyfinancial': 60
+    'smilebank': 45
+    'southafricanrevenueservice': 130
+    'standardbank': 60
+    'steam': 25
+    'stgeorgebank': 60
+    'suncorp': 35
+    'swedbank': 40
+    'tamfidelidade': 65
+    'tdcanadatrust': 65
+    'tesco': 25
+    'tibia': 25
+    'tippr': 25
+    'unicredit': 45
+    'usaa': 20
+    'usairways': 45
+    'usbank': 30
+    'visa': 20
+    'vodafone': 40
+    'volksbankenraiffeisenbanken': 135
+    'wachovia': 40
+    'walmart': 35
+    'washingtonmutual': 80
+    'westpac': 35
+    'worldofwarcraft': 75
+    'xapo': 20
+    'zynga': 25
+
+# ------------------------------------------------------------------------------
 
 tlds:
-    '.ga':
-    '.gq':
-    '.ml':
-    '.cf':
-    '.tk':
-    '.xyz':
-    '.pw':
-    '.cc':
-    '.club':
-    '.work':
-    '.top':
-    '.support':
-    '.bank':
-    '.info':
-    '.study':
-    '.click':
-    '.country':
-    '.stream':
-    '.gdn':
-    '.mom':
-    '.xin':
-    '.kim':
-    '.men':
-    '.loan':
-    '.download':
-    '.racing':
-    '.online':
-    '.center':
-    '.ren':
-    '.gb':
-    '.win':
-    '.review':
-    '.vip':
-    '.party':
-    '.tech':
-    '.science':
-    '.business':
+# Any changes must use the same format.
+# This section cannot be empty.
+    - '.bank'
+    - '.business'
+    - '.cc'
+    - '.center'
+    - '.cf'
+    - '.click'
+    - '.club'
+    - '.country'
+    - '.download'
+    - '.ga'
+    - '.gb'
+    - '.gdn'
+    - '.gq'
+    - '.info'
+    - '.kim'
+    - '.loan'
+    - '.men'
+    - '.ml'
+    - '.mom'
+    - '.online'
+    - '.party'
+    - '.pw'
+    - '.racing'
+    - '.ren'
+    - '.review'
+    - '.science'
+    - '.stream'
+    - '.study'
+    - '.support'
+    - '.tech'
+    - '.tk'
+    - '.top'
+    - '.vip'
+    - '.win'
+    - '.work'
+    - '.xin'
+    - '.xyz'
