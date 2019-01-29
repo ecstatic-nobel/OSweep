@@ -7,6 +7,7 @@
   <view name="greyNoise" />
   <view name="phishingCatcher" />
   <view name="phishingKitTracker" />
+  <view name="pastebin_dump" />
   <view name="ransomwareTracker" />
   <view name="threatCrowd" />
   <view name="twitter" />
