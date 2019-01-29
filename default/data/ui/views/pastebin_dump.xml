@@ -1,0 +1,96 @@
+<form>
+  <label>Pastebin Dump</label>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>IOC (+)</label>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Timechart</title>
+      <chart>
+        <search>
+          <query>| psbdmp search $ioc$ 
+| eval NewTime=strptime(time,"%Y-%m-%d %H:%M:%S") 
+| eval _time=NewTime 
+| timechart count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Search</title>
+      <table>
+        <search>
+          <query>| psbdmp search $ioc$ 
+| dedup time id 
+| table time id 
+| sort - time</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">5</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">preview</option>
+        <drilldown>
+          <set token="dump_link">$click.value2$</set>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Dump</title>
+      <table>
+        <search>
+          <query>| psbdmp dump $dump_link$
+| table time id tags data
+| sort - time</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - invalid</title>
+      <table>
+        <search>
+          <query>| psbdmp dump $dump_link$
+| dedup invalid
+| table invalid</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search>
+          <query>| psbdmp dump $dump_link$
+| dedup "no data"
+| table "no data"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</form>
