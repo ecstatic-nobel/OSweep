@@ -84,7 +84,8 @@ def query_crtsh(provided_ioc, session):
 
     if resp.status_code == 200 and resp.content != "":
         content      = resp.content.decode("UTF-8")
-        cert_history = json.loads("[{}]".format(content.replace("}{", "},{")))
+        cert_history = json.loads("{}".format(content.replace("}{", "},{")))
+        # cert_history = json.loads("[{}]".format(content.replace("}{", "},{")))
 
         for cert in cert_history:
             cert = commons.lower_keys(cert)
