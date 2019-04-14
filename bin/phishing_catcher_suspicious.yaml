@@ -1,4 +1,5 @@
 keywords:
+# Domains are checked and scored with the following keywords.
 # Any changes must use the same format.
 # This section cannot be empty.
 
@@ -9,6 +10,7 @@ keywords:
     'authenticate': 60
     'authentication': 70
     'authorize': 45
+    'bank': 20
     'bill': 20
     'client': 30
     'confirm': 35
@@ -33,12 +35,14 @@ keywords:
     'safe': 20
     'secure': 30
     'security': 40
+    'servehttp': 45
     'service': 35
     'sign-in': 35
     'signin': 30
     'support': 35
     'tax': 15
     'transaction': 55
+    'transfer': 40
     'unlock': 30
     'update': 30
     'verification': 60
@@ -54,41 +58,160 @@ keywords:
     'itunes': 30
 
 # Bank/money
+    'absabank': 40
+    'accurint': 40
     'advcash': 35
-    'atb': 15
+    'allegro': 35
+    'alliancebank': 60
+    'americanexpress': 75
     'ameritrade': 50
-    'bank': 20
+    'arenanet': 40
+    'associatedbank': 70
+    'atb': 15
+    'bancadiroma': 55
+    'bancaintesa': 55
+    'bancasa': 35
+    'bancodebrasil': 65
+    'bancoreal': 45
+    'bankmillennium': 70
     'bankofamerica': 65
+    'bankofkc': 40
+    'bankofthewest': 65
     'barclays': 40
+    'bendigo': 35
+    'bloomspot': 45
     'bmo': 15
-    'bibox': 25
-    'bmo': 15
+    'bnymellon': 65
+    'bradesco': 40
+    'buywithme': 45
+    'cahoot': 30
+    'caixabank': 25
+    'capitalone': 50
+    'capitecbank': 55
+    'cartasi': 35
+    'centurylink': 55
     'cibc': 20
+    'cimbbank': 40
+    'citi': 20
     'citigroup': 45
+    'citizens': 40
+    'citizensbank': 50
+    'comerica': 40
+    'commbank': 80
+    'craigslist': 50
+    'creditkarma': 55
+    'cua': 15
+    'db': 10
+    'delta': 25
     'desjardins': 50
+    'dinersclub': 50
+    'discover': 60
     'discovercard': 60
+    'discovery': 45
+    'entromoney': 50
+    'eppicard': 40
+    'fichiers': 40
+    'fifththirdbank': 70
+    'firstdirect': 55
+    'firstfedca': 40
+    'fnb': 15
+    'franklintempleton': 70
+    'gardenislandfcu': 80
+    'gatherfcu': 80
     'gofund': 30
+    'gruppocarige': 60
+    'gtbank': 30
+    'halifax': 35
+    'hmrc': 20
     'hsbc': 20
+    'huntington': 50
+    'idex': 20
+    'independentbank': 75
+    'indexexchange': 65
     'ing': 15
+    'interac': 35
+    'interactivebrokers': 90
+    'intesasanpaolo': 70
+    'itau': 20
+    'key': 15
+    'kgefcu': 80
+    'kiwibank': 40
+    'latam': 65
+    'livingsocial': 60
+    'lloydsbank': 50
+    'localbitcoins': 65
+    'lottomatica': 55
+    'mastercard': 50
+    'mbtrading': 45
     'meridian': 40
     'merilledge': 50
+    'metrobank': 45
     'moneygram': 45
     'morganstanley': 65
+    'nantucketbank': 65
+    'nationwide': 50
+    'natwest': 35
+    'nedbank': 35
+    'neteller': 40
+    'netsuite': 40
+    'nexiit': 35
+    'nordea': 30
     'okpay': 25
+    'operativebank': 65
+    'pagseguro': 45
+    'paxful': 30
     'payeer': 30
     'paypal': 30
     'payza': 25
+    'peoples': 35
     'perfectmoney': 60
+    'permanenttsb': 60
+    'pnc': 15
+    'qiwi': 20
+    'rackspace': 45
+    'raiffeisenbanken': 80
     'royalbank': 45
+    'safra': 25
+    'salemfive': 45
     'santander': 45
+    'sars': 20
     'scotia': 30
+    'scotiabank': 50
     'scottrade': 45
     'skrill': 30
+    'skyfinancial': 60
+    'smile': 25
     'solidtrustpay': 65
+    'standardbank': 60
+    'steam': 25
+    'stgeorge': 60
+    'suncorp': 35
+    'swedbank': 40
+    'tdcanadatrust': 65
+    'tesco': 25
+    'tippr': 25
+    'unicredit': 45
+    'uquid': 25
+    'usaa': 20
+    'usairways': 45
+    'usbank': 30
+    'visa': 20
+    'vodafone': 40
+    'volksbanken': 55
+    'wachovia': 40
+    'walmart': 35
+    'webmoney': 40
+    'weezzo': 30
     'wellsfargo': 50
     'westernunion': 60
+    'westpac': 35
+
+# Coffee
+    'starbucks': 45
 
 # Cryptocurrency
+    'bibox': 25
+    'binance': 35
     'bitconnect': 50
     'bitfinex': 40
     'bitflyer': 40
@@ -100,13 +223,15 @@ keywords:
     'coinbase': 40
     'coinhive': 40
     'coinsbank': 45
-    'entromoney': 50
     'hitbtc': 30
-    'kraken': 30 # some false positives
+    'kraken': 30
     'lakebtc': 35
     'localbitcoin': 60
+    'mycrypto': 40
+    'myetherwallet': 65
+    'mymonero': 40
     'poloniex': 40
-    'webmoney': 40
+    'xapo': 20
 
 # Ecommerce
     'amazon': 30
@@ -128,6 +253,23 @@ keywords:
     'windows': 35
     'yahoo': 25
     'yandex': 30
+
+# Insurance
+    'geico': 25
+    'philamlife': 50
+
+# Logistics
+    'ceva': 20
+    'dhl': 15
+    'fedex': 25
+    'kuehne': 30
+    'lbcexpress': 50
+    'maersk': 30
+    'panalpina': 45
+    'robinson': 40
+    'schenker': 40
+    'sncf': 20
+    'ups': 15
 
 # Malware
     '16shop': 30
@@ -172,25 +314,38 @@ keywords:
     'flickr': 30
     'instagram': 45
     'linkedin': 40
+    'myspace': 35
+    'orkut': 25
+    'pintrest': 40
     'reddit': 30
     'tumblr': 30
     'twitter': 35
     'whatsapp': 40
-    'youtube': 35 # some false positives
+    'youtube': 35
 
 # Other
     'adobe': 25
+    'aetna': 25
+    'americanairlines': 80
+    'americangreetings': 85
+    'baracuda': 40
     'cabletv': 35
+    'careerbuilder': 65
     'coxcable': 40
     'directtv': 40
     'docusign': 40
     'dropbox': 35
     'ebay': 20
+    'flash': 25
     'github': 30
+    'groupon': 35
     'mydish': 30
     'netflix': 35
+    'pandora': 35
+    'salesforce': 50
     'skype': 25
     'spotify': 35
+    'tibia': 25
     'trello': 30
     'verizon': 35
 
@@ -228,194 +383,78 @@ keywords:
     'proximus': 40
     'rabobank': 40
 
-# Testing
-    'absabank': 40
-    'accurint': 40
-    'aetna': 25
-    'allegro': 35
-    'alliancebank': 60
-    'amarillo': 40
-    'americanairlines': 80
-    'americanexpress': 75
-    'americangreetings': 85
-    'arenanet': 40
-    'associatedbank': 70
-    'bancadiroma': 55
-    'bancaintesa': 55
-    'bancasa': 35
-    'bancodebrasil': 65
-    'bancoreal': 45
-    'bankmillennium': 70
-    'bankofkc': 40
-    'bankofthewest': 65
-    'bendigo': 35
-    'binance': 35
-    'blizzard': 40
-    'bloomspot': 45
-    'bradesco': 40
-    'buywithme': 45
-    'cahoot': 30
-    'caixa': 25
-    'caixo': 25
-    'capitalone': 50
-    'capitecbank': 55
-    'careerbuilder': 65
-    'cariparmacreditagricole': 115
-    'cartasi': 35
-    'centurylink': 55
-    'charterone': 50
-    'cielo': 25
-    'cimbbank': 40
-    'citibank': 40
-    'citizens': 40
-    'comerica': 40
-    'commonwealthbankofaustralia': 135
-    'compass': 35
-    'cooperativebank': 75
-    'craigslist': 50
-    'creditkarma': 55
-    'crown': 25
-    'creditunionaustralia': 100
-    'delta': 25
-    'deutschebank': 60
-    'dinersclub': 50
-    'discoverbank': 60
-    'discovery': 45
-    'downeysavings': 65
-    'egold': 25
-    'eppicard': 40
-    'fifththirdbank': 70
-    'firstdirect': 55
-    'firstfederalbankofcalifornia': 40
-    'firstnationalbank': 85
-    'franklin': 40
-    'groupon': 35
-    'gruppocarige': 60
-    'gtbank': 30
-    'guildwars2': 50
-    'habbo': 25
-    'halifax': 35
-    'hmrc': 20
-    'homerun': 35
-    'huntington': 50
-    'idex': 20
-    'independentbank': 75
-    'interactivebrokers': 90
-    'intesasanpaolo': 70
-    'itau': 20
-    'kauaicreditunion': 80
-    'keybank': 35
-    'kiwibank': 40
-    'lasalle': 35
-    'littlewoods': 55
-    'livingsocial': 60
-    'lloydsbank': 50
-    'localbitcoins': 65
-    'lottomatica': 55
-    'mastercard': 50
-    'mbtrading': 45
-    'metrobank': 45
-    'mycrypto': 40
-    'myetherwallet': 65
-    'mymonero': 40
-    'myspace': 35
-    'nantucketbank': 65
-    'nationalcity': 60
-    'nationwide': 50
-    'natwest': 35
-    'nedbank': 35
-    'netsuite': 40
-    'nexon': 25
-    'nordea': 30
-    'northernrock': 60
-    'orkut': 25
-    'otomoto': 35
-    'pagseguro': 45
-    'paxful': 30
-    'paypal': 30
-    'peoples': 35
-    'permanenttsb': 60
-    'pintrest': 40
-    'playdom': 35
-    'playfish': 40
-    'plumdistrict': 60
-    'pncbank': 35
-    'poste': 25
-    'rackspace': 45
-    'runescape': 45
-    'safranational': 65
-    'bankofnewyork': 65
-    'salemfive': 45
-    'salesforce': 50
-    'santanderuk': 55
-    'scotiabank': 50
-    'skyfinancial': 60
-    'smilebank': 45
-    'southafricanrevenueservice': 130
-    'standardbank': 60
-    'steam': 25
-    'stgeorgebank': 60
-    'suncorp': 35
-    'swedbank': 40
-    'tamfidelidade': 65
-    'tdcanadatrust': 65
-    'tesco': 25
-    'tibia': 25
-    'tippr': 25
-    'unicredit': 45
-    'usaa': 20
-    'usairways': 45
-    'usbank': 30
-    'visa': 20
-    'vodafone': 40
-    'volksbankenraiffeisenbanken': 135
-    'wachovia': 40
-    'walmart': 35
-    'washingtonmutual': 80
-    'westpac': 35
-    'worldofwarcraft': 75
-    'xapo': 20
-    'zynga': 25
-
 # ------------------------------------------------------------------------------
 
 tlds:
+# Domains containing the following TLDs will have 20 added to the score.
 # Any changes must use the same format.
 # This section cannot be empty.
+    - '.app'
+    - '.au'
     - '.bank'
+    - '.biz'
+    - '.br'
     - '.business'
+    - '.ca'
     - '.cc'
-    - '.center'
     - '.cf'
+    - '.cl'
     - '.click'
     - '.club'
+    - '.co'
     - '.country'
+    - '.de'
+    - '.discount'
     - '.download'
+    - '.eu'
+    - '.fr'
     - '.ga'
     - '.gb'
     - '.gdn'
     - '.gq'
+    - '.hu'
+    - '.icu'
+    - '.id'
+    - '.il'
+    - '.in'
     - '.info'
+    - '.jp'
+    - '.ke'
     - '.kim'
+    - '.live'
+    - '.lk'
     - '.loan'
+    - '.me'
     - '.men'
     - '.ml'
     - '.mom'
+    - '.mx'
+    - '.ng'
     - '.online'
+    - '.ooo'
+    - '.page'
     - '.party'
+    - '.pe'
+    - '.pk'
     - '.pw'
     - '.racing'
     - '.ren'
     - '.review'
+    - '.ru'
     - '.science'
+    - '.services'
+    - '.site'
     - '.stream'
     - '.study'
     - '.support'
     - '.tech'
     - '.tk'
     - '.top'
+    - '.uk'
+    - '.us'
     - '.vip'
     - '.win'
     - '.work'
     - '.xin'
     - '.xyz'
+    - '.za'
