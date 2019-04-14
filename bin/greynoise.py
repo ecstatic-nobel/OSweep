@@ -36,7 +36,7 @@ from collections import OrderedDict
 import os
 import sys
 
-app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
 import validators
@@ -135,7 +135,7 @@ def process_iocs(results):
     open_file.close()
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = commons.deobfuscate_url(provided_ioc)
+        provided_ioc = commons.deobfuscate_string(provided_ioc)
 
         if not validators.ipv4(provided_ioc) and \
            not validators.domain(provided_ioc) and \

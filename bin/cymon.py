@@ -31,7 +31,7 @@ Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 import os
 import sys
 
-app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
 import validators
@@ -50,7 +50,7 @@ def process_iocs(results):
     splunk_table = []
 
     for provided_ioc in provided_iocs:
-        provided_ioc = commons.deobfuscate_url(provided_ioc)
+        provided_ioc = commons.deobfuscate_string(provided_ioc)
 
         if validators.ipv4(provided_ioc):
             ioc_type = "ip"
