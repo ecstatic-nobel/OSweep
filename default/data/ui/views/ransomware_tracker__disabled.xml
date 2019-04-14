@@ -1,5 +1,5 @@
-<form>
-  <label>Ransomware Tracker</label>
+<form theme="dark">
+  <label>Ransomware Tracker - Disabled</label>
   <description>Distinguish threats between ransomware botnet Command &amp; Control servers (C&amp;Cs), ransomware payment sites, and ransomware distribution sites. (Site: https://ransomwaretracker.abuse.ch/tracker/, Rate Limit: None)</description>
   <search id="ransomwareTracker_base">
     <query>| ransomwareTracker $ioc$</query>
