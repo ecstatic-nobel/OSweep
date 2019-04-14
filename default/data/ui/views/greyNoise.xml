@@ -1,6 +1,6 @@
 <form>
   <label>GreyNoise</label>
-  <description>Analyze data on Internet-wide scanners (benign scanners such as Shodan.io and malicious actors like SSH and telnet worms). (Site: https://viz.greynoise.io/table, Rate Limit: None)</description>
+  <description>Analyze data on Internet-wide scanners (benign scanners such as Shodan.io and malicious actors like SSH and telnet worms). (Site: https://viz.greynoise.io/table, Rate Limit: None, API Key: Optional)</description>
   <search id="greynoise_base">
     <query>| greyNoise $ioc$</query>
     <earliest>-15m</earliest>
@@ -44,6 +44,27 @@
       <initialValue>name</initialValue>
     </input>
   </fieldset>
+  <row>
+    <panel>
+      <title>Recent Activity (Last 60 Days)</title>
+      <chart>
+        <title>Note: "A valid API key enables reception of more than 500 results per query."</title>
+        <search>
+          <query>| inputlookup greynoise_feed.csv
+| eval _time=strptime(first_seen,"%Y-%m-%dT%H:%M:%SZ") 
+| where _time &gt; relative_time(now(), "-60d@d")
+| timechart count BY name span=1d useother=false usenull=false</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
   <row>
     <panel>
       <title>Stats - Category</title>
