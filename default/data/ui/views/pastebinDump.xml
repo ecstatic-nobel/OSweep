@@ -36,7 +36,7 @@
       <table>
         <search base="psbdmp_base">
           <query>| dedup time id 
-| table time id 
+| table time id provided_ioc
 | sort - time</query>
           <progress>
             <unset token="dump_link">true</unset>
