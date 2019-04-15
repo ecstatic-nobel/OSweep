@@ -33,7 +33,7 @@ import json
 import os
 import sys
 
-app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
 import validators
@@ -51,7 +51,7 @@ def process_iocs(results):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = commons.deobfuscate_url(provided_ioc)
+        provided_ioc = commons.deobfuscate_string(provided_ioc)
 
         if endpoint == "search":
             psbdmp_dicts = psbdmp_search(provided_ioc, session)
@@ -74,11 +74,12 @@ def psbdmp_search(provided_ioc, session):
     resp      = session.get(url, timeout=180)
     psd_dicts = []
 
-    if resp.status_code == 200 and resp.json()["error"] != 1:
+    if resp.status_code == 200 and resp.json()["error"] != 1 and len(resp.json()["data"]) > 0:
         data = resp.json()["data"]
 
         for result in data:
             result = commons.lower_keys(result)
+            result.update({"provided_ioc": provided_ioc})
             psd_dicts.append(result)
     else:
         psd_dicts.append({"no data": provided_ioc})
