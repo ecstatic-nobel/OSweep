@@ -1,12 +1,36 @@
 <form>
   <label>URLhaus</label>
-  <description>Gather malicious URLs that are being used for malware distribution. (Site: https://urlhaus.abuse.ch/browse/, Rate Limit: 1 request/2s)</description>
+  <description>Gather malicious URLs that are being used for malware distribution. (Site: https://urlhaus.abuse.ch/browse/, Rate Limit: None)</description>
   <search id="urlhaus_base">
     <query>| urlhaus $ioc$ </query>
     <earliest>-15m</earliest>
     <latest>now</latest>
   </search>
   <fieldset submitButton="true">
+    <input type="dropdown" token="ioc_type">
+      <label>IOC Type</label>
+      <choice value="host">Host</choice>
+      <choice value="payload">Payload</choice>
+      <choice value="url">URL</choice>
+      <change>
+        <condition value="host">
+          <set token="host_panel"></set>
+          <unset token="url_panel"></unset>
+          <unset token="payload_panel"></unset>
+        </condition>
+        <condition value="url">
+          <unset token="host_panel"></unset>
+          <set token="url_panel"></set>
+          <unset token="payload_panel"></unset>
+        </condition>
+        <condition value="payload">
+          <unset token="host_panel"></unset>
+          <unset token="url_panel"></unset>
+          <set token="payload_panel"></set>
+        </condition>
+      </change>
+      <initialValue>host</initialValue>
+    </input>
     <input type="text" token="ioc">
       <label>Domain, IP, MD5, SHA256, URL (+)</label>
     </input>
@@ -29,23 +53,53 @@
     <input type="dropdown" token="group_value" depends="$group_panel$">
       <label>Group</label>
       <choice value="url">URL</choice>
-      <choice value="payload">Payload</choice>
-      <initialValue>url</initialValue>
+      <choice value="sha256 hash (payload)">Payload</choice>
+      <initialValue>sha256 hash (payload)</initialValue>
     </input>
     <input type="dropdown" token="group_key" depends="$group_panel$">
       <label>By</label>
       <choice value="url">URL</choice>
-      <choice value="payload">Payload</choice>
-      <initialValue>payload</initialValue>
+      <choice value="sha256 hash (payload)">Payload</choice>
+      <initialValue>url</initialValue>
     </input>
   </fieldset>
+  <row>
+    <panel>
+      <single>
+        <search>
+          <query>| inputlookup urlhaus_url_feed.csv
+| eval _time=strptime(dateadded, "%Y-%m-%d %H:%M:%S") 
+| where _time &gt; relative_time(now(), "-120d@d")
+| timechart count span=1d</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">preview</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">-1d</option>
+        <option name="underLabel">New Sites</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
   <row>
     <panel>
       <title>Stats - Tags</title>
       <chart>
         <search base="urlhaus_base">
-          <query>| table id dateadded url payload "url status" threat tags "urlhaus link" 
-| eval tags=split(tags, " ")
+          <query>| table "host", "url", "url status", "date added (url)", "tags (url)", "urlhaus reference (url)"
+| eval tags=split("tags (url)", "\n")
 | stats count BY tags</query>
         </search>
         <option name="charting.chart">pie</option>
@@ -61,7 +115,7 @@
       <title>Stats - URL Status</title>
       <chart>
         <search base="urlhaus_base">
-          <query>| table id dateadded url payload "url status" threat tags "urlhaus link"
+          <query>| table "host", "url", "url status", "date added (url)", "tags (url)", "urlhaus reference (url)"
 | stats count BY "url status"</query>
         </search>
         <option name="charting.chart">pie</option>
@@ -81,8 +135,8 @@
         <title>URLs containing 'urlhaus.abuse.ch' will return "Invalid/No Data" to prevent scrapping the entire site.</title>
         <search base="urlhaus_base">
           <query>| fillnull value="-" 
-| search NOT "provided ioc"="-" 
-| dedup id dateadded url payload "url status" threat tags "urlhaus link"
+| search NOT "sha256 hash (payload)"="-"
+| dedup url "sha256 hash (payload)" "url status" "urlhaus reference (url)"
 | stats values("$group_value$") AS "$group_value$" BY "$group_key$"
 | search NOT "$group_key$"="-"</query>
         </search>
@@ -95,15 +149,53 @@
     </panel>
   </row>
   <row>
-    <panel depends="$table_panel$">
-      <title>Results - Table</title>
+    <panel depends="$table_panel$,$host_panel$">
+      <title>Results - Host Table</title>
       <table>
         <title>URLs containing 'urlhaus.abuse.ch' will return "Invalid/No Data" to prevent scrapping the entire site.</title>
         <search base="urlhaus_base">
           <query>| fillnull value="-" 
-| search NOT "provided ioc"="-" 
-| dedup id dateadded url payload "url status" threat tags "urlhaus link"
-| table id dateadded url payload "url status" threat tags "urlhaus link"</query>
+| search NOT ("provided ioc"="-" OR "provided ioc"="http*") "provided ioc"="*.*" 
+| dedup "provided ioc", "host", "firstseen (host)", "urlhaus reference (host)", "url", "url status", "date added (url)", "tags (url)", "urlhaus reference (url)"
+| table "provided ioc", "host", "firstseen (host)", "urlhaus reference (host)", "url", "url status", "date added (url)", "tags (url)", "urlhaus reference (url)"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$table_panel$,$url_panel$">
+      <title>Results - URL Table</title>
+      <table>
+        <title>URLs containing 'urlhaus.abuse.ch' will return "Invalid/No Data" to prevent scrapping the entire site.</title>
+        <search base="urlhaus_base">
+          <query>| fillnull value="-" 
+| search "provided ioc"="http*"
+| dedup "provided ioc", "host", "url", "url status", "date added (url)", "tags (url)", "urlhaus reference (url)", "filename (payload)", "content type (payload)", "response size (payload)", "md5 hash (payload)", "sha256 hash (payload)", "firstseen (payload)", "signature (payload)" 
+| table "provided ioc", "host", "url", "url status", "date added (url)", "tags (url)", "urlhaus reference (url)", "filename (payload)", "content type (payload)", "response size (payload)", "md5 hash (payload)", "sha256 hash (payload)", "firstseen (payload)", "signature (payload)"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$table_panel$,$payload_panel$">
+      <title>Results - Payload Table</title>
+      <table>
+        <title>URLs containing 'urlhaus.abuse.ch' will return "Invalid/No Data" to prevent scrapping the entire site.</title>
+        <search base="urlhaus_base">
+          <query>| fillnull value="-" 
+| search NOT ("provided ioc"="-" OR "provided ioc"="*.*") 
+| dedup "provided ioc", "content type (payload)", "file size (payload)", "md5 hash (payload)", "sha256 hash (payload)", "firstseen (payload)", "lastseen (payload)", "signature (payload)", "url", "url status", "filename (url)", "firstseen (url)", "lastseen (url)", "urlhaus reference (url)"
+| table "provided ioc", "content type (payload)", "file size (payload)", "md5 hash (payload)", "sha256 hash (payload)", "firstseen (payload)", "lastseen (payload)", "signature (payload)", "url", "url status", "filename (url)", "firstseen (url)", "lastseen (url)", "urlhaus reference (url)"</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>

@@ -7,43 +7,155 @@
     <latest>now</latest>
   </search>
   <fieldset submitButton="true">
-    <input type="text" token="ioc">
-      <label>IP, Domain, or Email (+)</label>
-    </input>
     <input type="dropdown" token="ioc_type">
       <label>IOC Type</label>
-      <choice value="ip">IP</choice>
-      <choice value="Domain">Domain</choice>
+      <choice value="domain">Domain</choice>
       <choice value="email">Email</choice>
-      <initialValue>ip</initialValue>
+      <choice value="ip">IP</choice>
+      <choice value="resource">MD5</choice>
       <change>
         <condition value="ip">
           <set token="ip_panel"></set>
-          <unset token="Domain_panel"></unset>
+          <unset token="domain_panel"></unset>
           <unset token="email_panel"></unset>
-          <unset token="av_panel"></unset>
+          <unset token="resource_panel"></unset>
         </condition>
-        <condition value="Domain">
+        <condition value="domain">
           <unset token="ip_panel"></unset>
-          <set token="Domain_panel"></set>
+          <set token="domain_panel"></set>
           <unset token="email_panel"></unset>
-          <unset token="av_panel"></unset>
+          <unset token="resource_panel"></unset>
         </condition>
         <condition value="email">
           <unset token="ip_panel"></unset>
-          <unset token="Domain_panel"></unset>
+          <unset token="domain_panel"></unset>
           <set token="email_panel"></set>
-          <unset token="av_panel"></unset>
+          <unset token="resource_panel"></unset>
         </condition>
-        <condition value="av_detect">
+        <condition value="resource">
           <unset token="ip_panel"></unset>
-          <unset token="Domain_panel"></unset>
+          <unset token="domain_panel"></unset>
           <unset token="email_panel"></unset>
-          <set token="av_panel"></set>
+          <set token="resource_panel"></set>
         </condition>
       </change>
+      <initialValue>domain</initialValue>
+    </input>
+    <input type="text" token="ioc">
+      <label>IP, Domain, Email, or MD5 (+)</label>
     </input>
   </fieldset>
+  <row>
+    <panel depends="$domain_panel$">
+      <title>Domain - Resolutions</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup "ip address" "last resolved"
+| table "ip address" "last resolved" 
+| sort - "last resolved"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$domain_panel$">
+      <title>Domain - Emails</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup emails
+| table emails
+| sort emails</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$domain_panel$">
+      <title>Domain - Hashes</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup hashes
+| table hashes 
+| sort hashes</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$domain_panel$">
+      <title>Domain - Subdomains</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup subdomains
+| table subdomains
+| sort subdomains</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$domain_panel$">
+      <title>Domain - References</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup references
+| table references 
+| sort references</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$email_panel$">
+      <title>Email - Domains</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup domains
+| table domains
+| sort domains</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$email_panel$">
+      <title>Email - References</title>
+      <table>
+        <search base="threatcrowd_base">
+          <query>| dedup references
+| table references 
+| sort references</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
   <row>
     <panel depends="$ip_panel$">
       <title>IP - Resolutions</title>
@@ -91,13 +203,13 @@
     </panel>
   </row>
   <row>
-    <panel depends="$Domain_panel$">
-      <title>Domain - Resolutions</title>
+    <panel depends="$resource_panel$">
+      <title>Resource - MD5</title>
       <table>
         <search base="threatcrowd_base">
-          <query>| dedup "ip address" "last resolved"
-| table "ip address" "last resolved" 
-| sort - "last resolved"</query>
+          <query>| dedup md5
+| table md5
+| sort - md5</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>
@@ -106,13 +218,13 @@
         <option name="wrap">true</option>
       </table>
     </panel>
-    <panel depends="$Domain_panel$">
-      <title>Domain - Emails</title>
+    <panel depends="$resource_panel$">
+      <title>Resource - SHA1</title>
       <table>
         <search base="threatcrowd_base">
-          <query>| dedup emails
-| table emails
-| sort emails</query>
+          <query>| dedup sha1
+| table sha1
+| sort sha1</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>
@@ -121,45 +233,13 @@
         <option name="wrap">true</option>
       </table>
     </panel>
-    <panel depends="$Domain_panel$">
-      <title>Domain - Hashes</title>
+    <panel depends="$resource_panel$">
+      <title>Resource - Scans</title>
       <table>
         <search base="threatcrowd_base">
-          <query>| dedup hashes
-| table hashes 
-| sort hashes</query>
-        </search>
-        <option name="count">10</option>
-        <option name="drilldown">none</option>
-        <option name="refresh.display">preview</option>
-        <option name="rowNumbers">false</option>
-        <option name="wrap">true</option>
-      </table>
-    </panel>
-  </row>
-  <row>
-    <panel depends="$Domain_panel$">
-      <title>Domain - Subdomains</title>
-      <table>
-        <search base="threatcrowd_base">
-          <query>| dedup subdomains
-| table subdomains
-| sort subdomains</query>
-        </search>
-        <option name="count">10</option>
-        <option name="drilldown">none</option>
-        <option name="refresh.display">preview</option>
-        <option name="rowNumbers">false</option>
-        <option name="wrap">true</option>
-      </table>
-    </panel>
-    <panel depends="$Domain_panel$">
-      <title>Domain - References</title>
-      <table>
-        <search base="threatcrowd_base">
-          <query>| dedup references
-| table references 
-| sort references</query>
+          <query>| dedup scans
+| table scans 
+| sort scans</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>
@@ -170,8 +250,8 @@
     </panel>
   </row>
   <row>
-    <panel depends="$email_panel$">
-      <title>Email - Domains</title>
+    <panel depends="$resource_panel$">
+      <title>Resource - Domains</title>
       <table>
         <search base="threatcrowd_base">
           <query>| dedup domains
@@ -185,13 +265,13 @@
         <option name="wrap">true</option>
       </table>
     </panel>
-    <panel depends="$email_panel$">
-      <title>Email - References</title>
+    <panel depends="$resource_panel$">
+      <title>Resource - IP Addresses</title>
       <table>
         <search base="threatcrowd_base">
-          <query>| dedup references
-| table references 
-| sort references</query>
+          <query>| dedup ips
+| table ips
+| sort ips</query>
         </search>
         <option name="count">10</option>
         <option name="drilldown">none</option>
