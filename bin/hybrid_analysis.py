@@ -1,21 +1,10 @@
 #!/opt/splunk/bin/python
 """
-Description: Use Malshare to gather hashes of potentially malicious files. The 
-script accepts a list of strings (domains, IPs, MD5, or SHA256):
-    | malshare $ioc$
+Description: 
 
-or input from the pipeline (any field where the value is a domain, IP, MD5 or 
-SHA256). The first argument is the name of one field:
-    <search>
-    | fields <IOC_FIELD>
-    | malshare <IOC_FIELD>
-
-Source: https://malshare.com/
+Source: 
 
 Instructions:
-1. Switch to the Hybrid Analysis dashboard in the OSweep app.
-2. Add the list of IOCs to the "Domain, IP, MD5, SHA256 (+)" textbox.
-4. Click "Submit".
 
 Rate Limit: None
 
