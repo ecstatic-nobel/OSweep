@@ -32,6 +32,7 @@
 | rex field=source mode=sed "s/https?:\/\///g" 
 | rex field=source mode=sed "s/\/.+//g" 
 | rename source AS domain 
+| search NOT domain="-"
 | stats count BY domain 
 | sort count</query>
         </search>
