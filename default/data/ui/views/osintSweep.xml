@@ -10,6 +10,7 @@
     <panel>
       <title>Certificate Search</title>
       <single>
+        <title>Searches for Domains</title>
         <search>
           <query>| crtsh $ioc$ 
 | search NOT ("no data"=* OR invalid=* OR error=*) 
@@ -31,6 +32,7 @@
     <panel>
       <title>CyberCrime Tracker</title>
       <single>
+        <title>Searches for Domains or IPs</title>
         <search>
           <query>| cybercrimeTracker $ioc$ 
 | search NOT ("no data"=* OR invalid=* OR error=*) 
@@ -52,6 +54,7 @@
     <panel>
       <title>Cymon</title>
       <single>
+        <title>Searches for Domains, IPs, MD5, or SHA256</title>
         <search>
           <query>| cymon $ioc$ 
 | search NOT ("no data"=* OR invalid=* OR error=*) 
@@ -75,6 +78,7 @@
     <panel>
       <title>GreyNoise</title>
       <single>
+        <title>Searches for Domains, IPs, or Scanner Names</title>
         <search>
           <query>| greynoise $ioc$ 
 | search NOT ("no data"=* OR invalid=* OR error=*) 
@@ -94,8 +98,55 @@
       </single>
     </panel>
     <panel>
+      <title>Hybrid-Analysis</title>
+      <single>
+        <title>Searches for SHA256</title>
+        <search>
+          <query>| hybridanalysis hash hash $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/OSweep/urlhaus?form.group=no&amp;form.group_value=url&amp;form.group_key=payload&amp;form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>MalShare</title>
+      <single>
+        <title>Searches for Domains, IPs, MD5, or SHA256</title>
+        <search>
+          <query>| malshare $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/OSweep/urlscan?form.group=no&amp;form.group_value=url&amp;form.group_key=ip&amp;form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
       <title>Phishing Catcher (Score &gt; 75)</title>
       <single>
+        <title>Scores Domains</title>
         <search>
           <query>| phishingCatcher $ioc$ 
 | where score &gt; 75
@@ -118,6 +169,7 @@
     <panel>
       <title>Pastebin Dump</title>
       <single>
+        <title>Searches any IOC</title>
         <search>
           <query>| psbdmp search $ioc$ 
 | search NOT ("no data"=* OR invalid=* OR error=*) 
@@ -141,6 +193,7 @@
     <panel>
       <title>Twitter</title>
       <single>
+        <title>Searches any IOC</title>
         <search>
           <query>| twitter $ioc$ 
 | search NOT ("no data"=* OR invalid=* OR error=*) 
@@ -162,6 +215,7 @@
     <panel>
       <title>URLhaus</title>
       <single>
+        <title>Searches for Domains, IPs, MD5, SHA256, or URLs</title>
         <search>
           <query>| urlhaus $ioc$ 
 | search NOT ("no data"=* OR invalid=* OR error=*) 
@@ -183,6 +237,7 @@
     <panel>
       <title>urlscan.io</title>
       <single>
+        <title>Searches for Domains, IPs, or SHA256</title>
         <search>
           <query>| urlscan $ioc$ 
 | search NOT ("no data"=* OR invalid=* OR error=*) 
