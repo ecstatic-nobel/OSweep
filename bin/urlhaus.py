@@ -38,10 +38,9 @@ import re
 import sys
 import time
 
-app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
-from HTMLParser import HTMLParser
 import validators
 
 import commons
@@ -95,31 +94,14 @@ def process_iocs(results):
     else:
         provided_iocs = sys.argv[1:]
 
-    session     = commons.create_session()
-    lookup_path = "{}/lookups".format(app_home)
-    open_file   = open("{}/urlhaus_url_feed.csv".format(lookup_path), "r")
-    contents    = open_file.read().splitlines()
-    open_file.close()
-
-    header = contents[0].split(",")
-    global data_feed
-    data_feed = []
-
-    for line in contents:
-        line = line.split(",")
-        ioc_dict = OrderedDict(zip(header, line))
-        data_feed.append(ioc_dict)
-
-    global parser
-    parser = ParserHTML()
-
+    session       = commons.create_session()
     empty_files   = ["d41d8cd98f00b204e9800998ecf8427e",
                     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"]
     urlhaus_match = re.compile(r"^h..ps?:\/\/urlhaus\.abuse\.ch")
     splunk_table  = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = commons.deobfuscate_url(provided_ioc)
+        provided_ioc = commons.deobfuscate_string(provided_ioc)
 
         if provided_ioc in empty_files:
             splunk_table.append({"invalid": provided_ioc})
@@ -129,20 +111,17 @@ def process_iocs(results):
             splunk_table.append({"invalid": provided_ioc})
             continue
 
-        if validators.url(provided_ioc) or validators.domain(provided_ioc) or \
-           validators.ipv4(provided_ioc):
-            analysis_dicts = get_analysis(provided_ioc)
-
-            if isinstance(analysis_dicts, dict):
-                splunk_table.append(analysis_dicts)
-                continue
-
-            ioc_dicts = get_payloads(analysis_dicts, session)
-        elif validators.md5(provided_ioc) or validators.sha256(provided_ioc):
-            ioc_dicts = get_urls(session, provided_ioc)
+        if validators.domain(provided_ioc) or validators.ipv4(provided_ioc):
+            ioc_type = "host"
+        elif validators.url(provided_ioc):
+            ioc_type = "url"
+        elif re.match("^[a-f\d]{32}$", provided_ioc) or re.match("^[a-f\d]{64}$", provided_ioc):
+            ioc_type = "payload"
         else:
             splunk_table.append({"invalid": provided_ioc})
             continue
+
+        ioc_dicts = query_urlhaus(session, provided_ioc, ioc_type)
         
         for ioc_dict in ioc_dicts:
             ioc_dict = commons.lower_keys(ioc_dict)
@@ -151,118 +130,110 @@ def process_iocs(results):
     session.close()
     return splunk_table
 
-def get_analysis(provided_ioc):
-    """Return a list of dicts from the URL dump that match the provided IOC."""
-    analysis_dicts = []
+def query_urlhaus(session, provided_ioc, ioc_type):
+    """ """
+    if re.match("^[a-f\d]{32}$", provided_ioc) and ioc_type == "payload":
+        data_field = "md5_hash"
+    elif re.match("^[a-f\d]{64}$", provided_ioc) and ioc_type == "payload":
+        data_field = "sha256_hash"
+    else:
+        data_field = ioc_type
 
-    if provided_ioc.endswith("/"):
-        provided_ioc = provided_ioc[:-1]
-
-    ioc_found = False
-
-    for ioc_dict in data_feed:
-        ioc_csv = ",".join(ioc_dict.values())
-
-        if provided_ioc.lower() in ioc_csv.lower():
-            ioc_found = True
-            ioc_dict["provided_ioc"] = provided_ioc
-            analysis_dicts.append(ioc_dict)
-
-    if ioc_found == False:
-        return {"no data": provided_ioc}
-    return analysis_dicts
-
-def get_payloads(analysis_dicts, session):
-    """Return a list of dicts from the URLHaus analysis page containing payloads
-    found related to the URL in question."""
+    api       = "https://urlhaus-api.abuse.ch/v1/{}/"
+    resp      = session.post(api.format(ioc_type), timeout=180, data={data_field: provided_ioc})
     ioc_dicts = []
 
-    for analysis_dict in analysis_dicts:
-        provided_ioc = analysis_dict["provided_ioc"]
-        url          = analysis_dict["url"]
-        urlhaus_link = analysis_dict["urlhaus_link"]
-        resp         = session.get(urlhaus_link, timeout=180)
+    if resp.status_code == 200 and resp.text != "":
+        resp_content = resp.json()
 
-        if resp.status_code == 200:
-            parser.reload()
-            parser.feed(resp.text)
-            parser.close()
-        
-        if len(parser.parsed_payloads) > 0:
-            for payload in parser.parsed_payloads:
-                analysis_dict["payload"] = payload
-                ioc_dicts.append(analysis_dict)
-        elif len([x for x in ioc_dicts if provided_ioc in " ".join(x.values())]) == 0:
-            ioc_dicts.append({"no data": provided_ioc})
+        if ioc_type == "host":
+            if "urls" not in resp_content.keys() or len(resp_content["urls"]) == 0:
+                ioc_dicts.append({"no data": provided_ioc})
+                return ioc_dicts
 
-        time.sleep(2)
-    return ioc_dicts
+            for url in resp_content["urls"]:
+                ioc_dict = {
+                    "provided_ioc": provided_ioc,
+                    "host": resp_content.get("host", None),
+                    "firstseen (host)": resp_content.get("firstseen", None),
+                    "urlhaus_reference (host)": resp_content.get("urlhaus_reference", None),
+                    "url": url.get("url", None),
+                    "url_status": url.get("url_status", None),
+                    "date_added (url)": url.get("date_added", None),
+                    "urlhaus_reference (url)": url.get("urlhaus_reference", None)
+                }
 
-def get_urls(session, provided_ioc):
-    """Return a list of dicts from the URLHaus Browse page containing URLs
-    found related to the URL in question."""
-    page       = 0
-    uh_browser = "https://urlhaus.abuse.ch/browse.php?search="
-    ioc_dicts  = []
+                if url["tags"] != None:
+                    ioc_dict.update({
+                        "tags (url)": ",".join(url.get("tags", None))
+                    })
 
-    while True:
-        browse_urlhaus(session, provided_ioc, page)
+                ioc_dicts.append(ioc_dict)
+        elif ioc_type == "url":
+            if "payloads" not in resp_content.keys() or len(resp_content["payloads"]) == 0:
+                ioc_dicts.append({"invalid": provided_ioc})
+                return ioc_dicts
 
-        if len(parser.parsed_urls) == 0 and page > 0:
-            break
+            for payload in resp_content["payloads"]:
+                ioc_dict = {
+                    "provided_ioc": provided_ioc,
+                    "host": resp_content.get("host", None),
+                    "url": resp_content.get("url", None),
+                    "url_status": resp_content.get("url_status", None),
+                    "date_added (url)": resp_content.get("date_added", None),
+                    "urlhaus_reference (url)": resp_content.get("urlhaus_reference", None),
+                    "filename (payload)": payload.get("filename", None),
+                    "content_type (payload)": payload.get("content_type", None),
+                    "response_size (payload)": payload.get("response_size", None),
+                    "md5_hash (payload)": payload.get("response_md5", None),
+                    "sha256_hash (payload)": payload.get("response_sha256", None),
+                    "firstseen (payload)": payload.get("firstseen", None),
+                    "signature (payload)": payload.get("signature", None)
+                }
 
-        if len(parser.parsed_urls) == 0 and page == 0:
-            ioc_dicts.append({"no data": provided_ioc})
-            break
+                if resp_content["tags"] != None:
+                    ioc_dict.update({
+                        "tags (url)": ",".join(resp_content.get("tags", None))
+                    })
 
-        for parsed_url in parser.parsed_urls:
-            ioc_dict = {}
-            ioc_dict["id"] = None
-            ioc_dict["dateadded"] = None
-            ioc_dict["url_status"] = None
-            ioc_dict["threat"] = None
-            ioc_dict["tags"] = None
-            ioc_dict["url"] = parsed_url
-            ioc_dict["payload"] = provided_ioc
-            ioc_dict["provided_ioc"] = provided_ioc
-            ioc_dict["urlhaus_link"] = "{}{}".format(uh_browser, provided_ioc)
-            ioc_dicts.append(ioc_dict)
+                if payload["virustotal"] != None:
+                    ioc_dict.update({
+                        "vt_result (payload)": payload["virustotal"].get("result", None),
+                        "vt_link (payload)": payload["virustotal"].get("link", None)
+                    })
 
-        page += 1
-        time.sleep(2)
-    return ioc_dicts
+                ioc_dicts.append(ioc_dict)
+        elif ioc_type == "payload":
+            if len(resp_content["urls"]) == 0:
+                ioc_dicts.append({"invalid": provided_ioc})
+                return ioc_dicts
 
-def browse_urlhaus(session, provided_ioc, page):
-    """Request data from the URLHaus Browse page and feed to the HTML parser."""
-    uh_browser = "https://urlhaus.abuse.ch/browse.php?search="
-    resp       = session.get("{}{}&page={}".format(uh_browser,
-                                                    provided_ioc,
-                                                    page), timeout=180)
-    parser.reload()
+            for url in resp_content["urls"]:
+                ioc_dict = {
+                    "provided_ioc": provided_ioc,
+                    "content_type (payload)": resp_content.get("content_type", None),
+                    "file_size (payload)": resp_content.get("file_size", None),
+                    "md5_hash (payload)": resp_content.get("md5_hash", None),
+                    "sha256_hash (payload)": resp_content.get("sha256_hash", None),
+                    "firstseen (payload)": resp_content.get("firstseen", None),
+                    "lastseen (payload)": resp_content.get("lastseen", None),
+                    "signature (payload)": resp_content.get("signature", None),
+                    "url": url.get("url", None),
+                    "url_status": url.get("url_status", None),
+                    "filename (url)": url.get("filename", None),
+                    "firstseen (url)": url.get("firstseen", None),
+                    "lastseen (url)": url.get("lastseen", None),
+                    "urlhaus_reference (url)": url.get("urlhaus_reference", None)
+                }
 
-    if resp.status_code == 200:
-        if "Get more information about this malware URL" in resp.text:
-            parser.feed(resp.text)
-    return
-
-class ParserHTML(HTMLParser):
-    """HTML parser class"""
-    url_match = re.compile(r"^https?:\/\/.+")
-
-    def reload(self):
-        """Empty the list of URLs and payloads."""
-        self.parsed_urls     = []
-        self.parsed_payloads = []
-        return
-
-    def handle_data(self, data):
-        """Feed source code to parser and extract URLs and hashes."""
-        if self.url_match.match(data):
-            self.parsed_urls.append(data)
-
-        if validators.sha256(data):
-            self.parsed_payloads.append(data)
-        return
+                if resp_content["virustotal"] != None:
+                    ioc_dict.update({
+                        "vt_result (payload)": resp_content["virustotal"].get("result", None),
+                        "vt_link (payload)": resp_content["virustotal"].get("link", None)
+                    })
+                ioc_dicts.append(ioc_dict)
+        return ioc_dicts
+    return [{"invalid": provided_ioc}]
 
 if __name__ == "__main__":
     if sys.argv[1].lower() == "feed":

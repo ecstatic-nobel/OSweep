@@ -1,17 +1,30 @@
 <nav search_view="search" >
-  <view name="feedOverview" default='true' />
-  <view name="theRoundTable" />
-  <view name="crtsh" />
-  <view name="cybercrimeTracker" />
-  <view name="cymon" />
-  <view name="greyNoise" />
-  <view name="phishingCatcher" />
-  <view name="phishingKitTracker" />
-  <view name="ransomwareTracker" />
-  <view name="threatCrowd" />
-  <view name="twitter" />
-  <view name="urlhaus" />
-  <view name="urlscan" />
+  <view name="osintSweep" default='true' />
+  <collection label="Certificates" >
+    <view name="crtsh" />
+  </collection>
+  <collection label="Dumps" >
+    <view name="pastebinDump" />
+  </collection>
+  <collection label="Malware" >
+    <view name="cybercrimeTracker" />
+    <view name="cymon" />
+    <view name="hybridAnalysis" />
+    <view name="malshare" />
+    <view name="threatCrowd" />
+    <view name="urlhaus" />
+    <view name="urlscan" />
+  </collection>
+  <collection label="Phishing" >
+    <view name="phishingCatcher" />
+    <view name="phishingKitTracker" />
+  </collection>
+  <collection label="Scanners" >
+    <view name="greyNoise" />
+  </collection>
+  <collection label="Social Media" >
+    <view name="twitter" />
+  </collection>
   <collection label="Misc" >
     <view name="search" />
     <view name="dashboards" />

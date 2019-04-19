@@ -24,13 +24,39 @@
   </fieldset>
   <row>
     <panel>
-      <title>Timechart</title>
+      <title></title>
+      <single>
+        <search>
+          <query>| inputlookup phishing_kit_tracker.csv 
+| eval _time=strptime(DateFound, "%m/%d/%Y") 
+| where _time &gt; relative_time(now(), "-90d@d")
+| timechart count span=1d</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">preview</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1d</option>
+        <option name="underLabel">New Kits Reported Today</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Timechart (Last 90 Days)</title>
       <chart>
         <search>
           <query>| inputlookup phishing_kit_tracker.csv 
 | search "$ioc_type$"="$ioc$"
-| eval NewTime=strptime(DateFound, "%m/%d/%Y") 
-| eval _time=NewTime 
+| eval _time=strptime(DateFound, "%m/%d/%Y") 
+| where _time &gt; relative_time(now(), "-90d@d")
 | table _time DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
 | timechart count span=1d</query>
           <earliest>$earliest$</earliest>

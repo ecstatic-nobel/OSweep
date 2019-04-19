@@ -1,0 +1,101 @@
+<form>
+  <label>Pastebin Dump</label>
+  <description>Interact with the psbdmp website to analyze and parse pastes from Pastebin. (Site: https://psbdmp.ws/, Rate Limit: None)</description>
+  <search id="psbdmp_base">
+    <query>| psbdmp search $ioc$
+| fillnull value="-"
+    </query>
+    <earliest>-24h@h</earliest>
+    <latest>now</latest>
+  </search>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>IOC (+)</label>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Timechart</title>
+      <chart>
+        <search base="psbdmp_base">
+          <query>| eval _time=strptime(time,"%Y-%m-%d %H:%M:%S") 
+| timechart count span=1d useother=false usenull=false</query>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">zero</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Search</title>
+      <table>
+        <search base="psbdmp_base">
+          <query>| dedup time id 
+| table time id provided_ioc
+| sort - time</query>
+          <progress>
+            <unset token="dump_link">true</unset>
+          </progress>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">preview</option>
+        <drilldown>
+          <set token="dump_link">$row.id$</set>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Dump</title>
+      <table>
+        <search>
+          <query>| psbdmp dump $dump_link$
+| table time id tags data
+| sort - time</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="psbdmp_base">
+          <query>| dedup invalid
+| table invalid
+| search NOT invalid="-"
+| sort invalid</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="psbdmp_base">
+          <query>| dedup "no data"
+| table "no data"
+| search NOT "no data"="-"
+| sort "no data"</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</form>

@@ -15,7 +15,7 @@ Source: https://twitter.com/
 
 Instructions:
 1. Open the terminal
-2. Navigate to "$SPLUNK_HOME/etc/apps/osweep/etc/".
+2. Navigate to "$SPLUNK_HOME/etc/apps/OSweep/etc/".
 3. Edit "config.py" and add the following values as strings to the config file:
 - twitter_consumer_key        -> Consumer Key
 - twitter_consumer_secret     -> Consumer Secret
@@ -40,7 +40,7 @@ import sys
 import time
 import urllib
 
-app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
 import tweepy
@@ -93,7 +93,7 @@ def process_iocs(results):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = commons.deobfuscate_url(provided_ioc)
+        provided_ioc = commons.deobfuscate_string(provided_ioc)
 
         if provided_ioc in empty_files:
             splunk_table.append({"invalid": provided_ioc})
@@ -119,7 +119,7 @@ def check_rate_limit(session, provided_iocs):
 
     if rate_limit["remaining"] == 0:
         reset_time          = rate_limit["reset"]
-        rate_limit["reset"] = time.strftime('%Y-%m-%d %H:%M:%S',
+        rate_limit["reset"] = time.strftime("%Y-%m-%d %H:%M:%S",
                                             time.localtime(reset_time))
         return rate_limit
 

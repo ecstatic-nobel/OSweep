@@ -37,7 +37,7 @@ import os
 import re
 import sys
 
-app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
 import entropy
@@ -46,14 +46,14 @@ import tld
 import yaml
 
 import commons
-import confusables
+import phishing_catcher_confusables as confusables
 
 
 def get_modules():
     """Return Phishing Catcher modules."""
     session     = commons.create_session()
-    suspicious  = request_module(session, "/suspicious.yaml")
-    confusables = request_module(session, "/confusables.py")
+    suspicious  = request_module(session, "/phishing_catcher_suspicious.yaml")
+    confusables = request_module(session, "/phishing_catcher_confusables.py")
     session.close()
 
     if suspicious == None or confusables == None:
@@ -78,12 +78,12 @@ def write_file(file_contents, file_path):
 
 def process_iocs(results):
     """Return data formatted for Splunk."""
-    with open("suspicious.yaml", "r") as s, open("external.yaml", "r") as e:
+    with open("phishing_catcher_suspicious.yaml", "r") as s, open("phishing_catcher_external.yaml", "r") as e:
         global suspicious
         suspicious = yaml.safe_load(s)
         external   = yaml.safe_load(e)
 
-    if external["override_suspicious.yaml"] is True:
+    if external["override_suspicious"] is True:
         suspicious = external
     else:
         if external["keywords"] is not None:
@@ -162,11 +162,11 @@ def score_domain(provided_ioc):
         score += domain.count(".") * 3
     return score   
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if sys.argv[1].lower() == "modules":
         suspicious, confusables = get_modules()
-        sfile = "{}/bin/suspicious.yaml".format(app_home)
-        cfile = "{}/bin/confusables.py".format(app_home)
+        sfile = "{}/bin/phishing_catcher_suspicious.yaml".format(app_home)
+        cfile = "{}/bin/phishing_catcher_confusables.py".format(app_home)
 
         write_file(suspicious, sfile)
         write_file(confusables, cfile)

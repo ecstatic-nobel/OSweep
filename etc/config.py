@@ -1,7 +1,7 @@
 #!/opt/splunk/bin/python
 
 #
-# OSweep Configurations
+# OSweep Configuration File
 #
 # Usage  : With the exception of the value 'None', all values must be surrounded 
 #          by quotes.
@@ -15,6 +15,12 @@ https_proxy_url = None
 
 # GreyNoise API
 greynoise_key = None
+
+# Hybrid-Analysis API
+hybrid_analysis_apikey = None
+
+# Malshare API
+malshare_apikey = None
 
 # Twitter API
 twitter_consumer_key        = None

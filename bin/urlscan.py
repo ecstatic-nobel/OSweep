@@ -33,7 +33,7 @@ from datetime import timedelta
 import os
 import sys
 
-app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
 import validators
@@ -57,7 +57,7 @@ def process_iocs(results):
     splunk_table = []        
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = commons.deobfuscate_url(provided_ioc)
+        provided_ioc = commons.deobfuscate_string(provided_ioc)
 
         if provided_ioc == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855":
             splunk_table.append({"no data": provided_ioc})

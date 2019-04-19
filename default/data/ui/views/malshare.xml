@@ -1,0 +1,105 @@
+<form>
+  <label>Malshare</label>
+  <description>Interact with Malshare to gather hashes of potentially malicious files. (Site: https://malshare.com/, Rate Limit: None, API Key: Required)</description>
+  <search id="malshare_search">
+    <query>| malshare $ioc$
+| fillnull value="-"</query>
+  </search>
+  <fieldset submitButton="true">
+    <input type="text" token="ioc">
+      <label>Domain, IP, MD5, SHA256 (+)</label>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Stats - Type</title>
+      <chart>
+        <search base="malshare_search">
+          <query>| dedup md5, sha256, type, source 
+| stats count BY type
+| sort count</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Domain</title>
+      <chart>
+        <search base="malshare_search">
+          <query>| dedup md5, sha256, type, source 
+| rex field=source mode=sed "s/https?:\/\///g" 
+| rex field=source mode=sed "s/\/.+//g" 
+| rename source AS domain 
+| stats count BY domain 
+| sort count</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - URI</title>
+      <chart>
+        <search base="malshare_search">
+          <query>| dedup md5, sha256, type, source 
+| rex field=source mode=sed "s/https?:\/\///g" 
+| rex field=source "(?&lt;uri&gt;/.+)"
+| stats count BY uri 
+| sort count</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Table</title>
+      <table>
+        <search base="malshare_search">
+          <query>| dedup added, md5, sha256, type, source 
+| table added, md5, sha256, type, source
+| convert ctime(added)
+| sort added</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="malshare_search">
+          <query>| dedup invalid
+| table invalid
+| search NOT invalid="-"
+| sort invalid</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="malshare_search">
+          <query>| dedup "no data"
+| table "no data"
+| search NOT "no data"="-"
+| sort "no data"</query>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</form>

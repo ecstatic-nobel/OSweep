@@ -1,0 +1,193 @@
+<form>
+  <label>Hybrid-Analysis</label>
+  <description>Gather data on unknown threats analyzed using a unique Hybrid Analysis technology.(Site: https://www.hybrid-analysis.com/, Rate Limit: None, API Key: Required)</description>
+  <search id="hybridanalysis_search">
+    <query>| hybridanalysis $endpoint$ $param$ $ioc$
+| fillnull value="-"
+| search NOT analysis_start_time="-"
+    </query>
+  </search>
+  <fieldset submitButton="true">
+    <input type="dropdown" token="endpoint">
+      <label>Endpoint</label>
+      <choice value="hash">Hash</choice>
+      <choice value="terms">Term</choice>
+      <change>
+        <condition value="hash">
+          <set token="hash_select"></set>
+          <unset token="term_select"></unset>
+          <set token="param">hash</set>
+        </condition>
+        <condition value="terms">
+          <unset token="hash_select"></unset>
+          <set token="term_select"></set>
+        </condition>
+      </change>
+      <initialValue>hash</initialValue>
+    </input>
+    <input type="dropdown" token="param" depends="$term_select$">
+      <label>Parameters</label>
+      <choice value="authentihash">Authentihash</choice>
+      <choice value="av_detect">AV Detect (Range 0-100)</choice>
+      <choice value="context">Context (SHA256)</choice>
+      <choice value="country">Country (ISO)</choice>
+      <choice value="domain">Domain</choice>
+      <choice value="env_id">Env ID</choice>
+      <choice value="filename">Filename</choice>
+      <choice value="filetype_desc">Filetype Description</choice>
+      <choice value="filetype">Filetype</choice>
+      <choice value="hash">Hash</choice>
+      <choice value="imp_hash">Imp Hash</choice>
+      <choice value="host">IP Address</choice>
+      <choice value="port">Port</choice>
+      <choice value="similar_to">Similar To (SHA256)</choice>
+      <choice value="ssdeep">SSDeep</choice>
+      <choice value="tag">Tag</choice>
+      <choice value="url">URL</choice>
+      <choice value="verdict">Verdict (1-5)</choice>
+      <choice value="vx_family">VX Family</choice>
+      <initialValue>hash</initialValue>
+    </input>
+    <input type="text" token="ioc">
+      <label>IOC (+)</label>
+    </input>
+    <input type="link" token="group" depends="$hash_select$">
+      <label>Group Results</label>
+      <choice value="yes">Yes</choice>
+      <choice value="no">No</choice>
+      <change>
+        <condition value="yes">
+          <set token="group_panel"></set>
+          <unset token="table_panel"></unset>
+        </condition>
+        <condition value="no">
+          <unset token="group_panel"></unset>
+          <set token="table_panel"></set>
+        </condition>
+      </change>
+      <initialValue>no</initialValue>
+    </input>
+    <input type="dropdown" token="group_value" depends="$group_panel$">
+      <label>Group</label>
+      <choice value="compromised_hosts">Compromised Hosts</choice>
+      <choice value="domains">Domains</choice>
+      <choice value="hosts">Hosts</choice>
+      <choice value="imphash">Imphash</choice>
+      <choice value="sha256">SHA256</choice>
+      <choice value="ssdeep">SSDeep</choice>
+      <choice value="submit_name">Submit Name</choice>
+      <choice value="target_url">Target URL</choice>
+      <initialValue>domains</initialValue>
+    </input>
+    <input type="dropdown" token="group_key" depends="$group_panel$">
+      <label>By</label>
+      <choice value="classification_tags">Classification Tags</choice>
+      <choice value="imphash">Imphash</choice>
+      <choice value="sha256">SHA256</choice>
+      <choice value="ssdeep">SSDeep</choice>
+      <choice value="threat_score">Threat Score</choice>
+      <choice value="verdict">Verdict</choice>
+      <initialValue>sha256</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Stats - Threat Score</title>
+      <chart>
+        <search base="hybridanalysis_search">
+          <query>| dedup sha256
+| stats count BY threat_score
+| sort count</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Stats - Verdict</title>
+      <chart>
+        <search base="hybridanalysis_search">
+          <query>| dedup sha256
+| stats count BY verdict
+| sort count</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$hash_select$,$group_panel$">
+      <title>Results - Group by "$group_key$"</title>
+      <table>
+        <search base="hybridanalysis_search">
+          <query>| dedup type target_url submit_name md5 sha256 ssdeep imphash av_detect threat_score interesting threat_level verdict domains classification_tags compromised_hosts hosts total_network_connections total_processes extracted_files processes tags 
+| stats values("$group_value$") AS "$group_value$" BY "$group_key$" 
+| search NOT "$group_value$"="-" 
+| sort "$group_key$"</query>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$hash_select$,$table_panel$">
+      <title>Results - Table</title>
+      <table>
+        <search base="hybridanalysis_search">
+          <query>| dedup type target_url submit_name md5 sha256 ssdeep imphash av_detect threat_score interesting threat_level verdict domains classification_tags compromised_hosts hosts total_network_connections total_processes extracted_files processes tags 
+| table analysis_start_time type target_url submit_name md5 sha256 ssdeep imphash av_detect threat_score interesting threat_level verdict domains classification_tags compromised_hosts hosts total_network_connections total_processes extracted_files processes tags</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$term_select$">
+      <title>Results - Table</title>
+      <table>
+        <search base="hybridanalysis_search">
+          <query>| dedup sha256, submit_name, threat_score, verdict
+| table analysis_start_time, sha256, submit_name, threat_score, verdict</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Results - Invalid</title>
+      <table>
+        <search base="hybridanalysis_search">
+          <query>| dedup invalid 
+| table invalid 
+| search NOT invalid="-"
+| sort invalid</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Results - No Data</title>
+      <table>
+        <search base="hybridanalysis_search">
+          <query>| dedup "no data" 
+| table "no data" 
+| search NOT "no data"="-"
+| sort "no data"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</form>

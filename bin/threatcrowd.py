@@ -30,10 +30,11 @@ Debugger: open("/tmp/splunk_script.txt", "a").write("{}: <MSG>\n".format(<VAR>))
 """
 
 import os
+import re
 import sys
 from time import sleep
 
-app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
 import validators
@@ -54,7 +55,8 @@ def process_iocs(results):
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
-        provided_ioc = commons.deobfuscate_url(provided_ioc)
+        provided_ioc = commons.deobfuscate_string(provided_ioc)
+        provided_ioc = provided_ioc.lower()
 
         if validators.ipv4(provided_ioc):
             ioc_type = "ip"
@@ -62,14 +64,13 @@ def process_iocs(results):
             ioc_type = "domain"
         elif validators.email(provided_ioc):
             ioc_type = "email"
-
-        if validators.ipv4(provided_ioc) or validators.domain(provided_ioc):
-            ioc_dicts = query_threatcrowd(provided_ioc, ioc_type, session)
-        elif validators.email(provided_ioc):
-            ioc_dicts = query_threatcrowd(provided_ioc, ioc_type, session)
+        elif re.match("^[a-f\d]{32}$", provided_ioc) or re.match("^[a-f\d]{64}$", provided_ioc):
+            ioc_type = "resource"
         else:
             splunk_table.append({"invalid": provided_ioc})
             continue
+
+        ioc_dicts = query_threatcrowd(provided_ioc, ioc_type, session)
 
         for ioc_dict in ioc_dicts:
             splunk_table.append(ioc_dict)
@@ -83,13 +84,20 @@ def process_iocs(results):
 def query_threatcrowd(provided_ioc, ioc_type, session):
     """Pivot off an IP or domain and return data as an dictonary."""
     ioc_dicts = []
-    resp      = session.get(api.format(ioc_type, ioc_type, provided_ioc), timeout=180)
+
+    if ioc_type == "resource":
+        resp = session.get(api.format("file", ioc_type, provided_ioc), timeout=180)
+    else:
+        resp = session.get(api.format(ioc_type, ioc_type, provided_ioc), timeout=180)
 
     if resp.status_code == 200 and "permalink" in resp.json().keys() and \
        provided_ioc in resp.json()["permalink"]:
         for key in resp.json().keys():
             if key == "votes" or key == "permalink" or key == "response_code":
                 continue
+            elif key in ("md5", "sha1"):
+                value = resp.json()[key]
+                ioc_dicts.append({key: value})
             elif key == "resolutions":
                 for res in resp.json()[key]:
                     res = commons.lower_keys(res)

@@ -7,58 +7,69 @@ version = 7.1.3
 modtime = 1538446614.755746000
 
 [nav/default]
-version = 7.1.3
-modtime = 1542782747.837761000
-
-[views/feedOverview]
-version = 7.1.3
-modtime = 1543644957.366069000
+version = 7.2.5.1
+modtime = 1555130325.679856000
 
 [views/crtsh]
-version = 7.1.3
-modtime = 1541269256.675030000
+version = 7.2.5.1
+modtime = 1554942123.726027000
 
 [views/cybercrimeTracker]
-version = 7.1.3
-modtime = 1541633319.239087000
+version = 7.2.5.1
+modtime = 1555086561.762215000
 
 [views/cymon]
-version = 7.1.3
-modtime = 1542653212.715954000
+version = 7.2.5.1
+modtime = 1554942247.280993000
 
 [views/greyNoise]
-version = 7.1.3
-modtime = 1541633127.839652000
+version = 7.2.5.1
+modtime = 1555180611.314155000
+
+[views/hybridAnalysis]
+owner = admin
+version = 7.2.5.1
+modtime = 1555179107.858323000
+
+[views/malshare]
+owner = admin
+version = 7.2.5.1
+modtime = 1555169663.299264000
+
+[views/osintSweep]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.2.5.1
+modtime = 1555097925.286221000
+
+[views/pastebinDump]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.2.5.1
+modtime = 1555174343.170233000
 
 [views/phishingCatcher]
-version = 7.1.3
-modtime = 1542570727.357737000
+version = 7.2.5.1
+modtime = 1554942333.828706000
 
 [views/phishingKitTracker]
-version = 7.1.3
-modtime = 1544072078.334652000
-
-[views/ransomwareTracker]
-version = 7.1.3
-modtime = 1541633081.794672000
+version = 7.2.5.1
+modtime = 1555086755.684276000
 
 [views/threatCrowd]
-version = 7.1.3
-modtime = 1540533670.080020000
+version = 7.2.5.1
+modtime = 1555106037.947729000
 
 [views/twitter]
-version = 7.1.3
-modtime = 1541629939.366684000
+version = 7.2.5.1
+modtime = 1554942481.030716000
 
 [views/urlhaus]
-version = 7.1.3
-modtime = 1544035960.866635000
+version = 7.2.5.1
+modtime = 1555100732.886839000
 
 [views/urlscan]
-version = 7.1.3
-modtime = 1544040359.386726000
-
-[views/theRoundTable]
-version = 7.1.3
-modtime = 1542582224.613307000
-
+version = 7.2.5.1
+modtime = 1554942325.669267000

@@ -1,6 +1,6 @@
 <form>
   <label>Twitter</label>
-  <description>Analyze tweets to understand what others already know about particular IOCs. (Site: https://twitter.com/, Rate Limit: 180 requests/15 min)</description>
+  <description>Analyze tweets to understand what others already know about particular IOCs. (Site: https://twitter.com/, Rate Limit: 180 requests/15 min, API Key: Required)</description>
   <search id="twitter_base">
     <query>| twitter $ioc$</query>
     <earliest>-15m</earliest>

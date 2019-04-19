@@ -8,7 +8,7 @@ import re
 import sys
 import traceback
 
-app_home   = "{}/etc/apps/osweep".format(os.environ['SPLUNK_HOME'])
+app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
 import splunk.Intersplunk as InterSplunk
@@ -34,6 +34,10 @@ def get_apikey(api):
     """Return the API key."""
     if api == "greynoise":
         return config.greynoise_key
+    if api == "hybrid-analysis":
+        return config.hybrid_analysis_apikey
+    if api == "malshare":
+        return config.malshare_apikey
     if api == "pulsedive":
         return config.pulsedive_apikey
     if api == "twitter":
@@ -80,7 +84,7 @@ def return_results(module):
     InterSplunk.outputResults(new_results)
     return
 
-def deobfuscate_url(provided_ioc):
+def deobfuscate_string(provided_ioc):
     """Return deobfuscated URLs."""
     pattern = re.compile("^h..p", re.IGNORECASE)
     provided_ioc = pattern.sub("http", provided_ioc)
