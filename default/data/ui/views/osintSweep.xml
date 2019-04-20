@@ -115,7 +115,7 @@
         <option name="refresh.display">preview</option>
         <option name="useColors">1</option>
         <drilldown>
-          <link target="_blank">/app/OSweep/urlhaus?form.group=no&amp;form.group_value=url&amp;form.group_key=payload&amp;form.ioc=$ioc$</link>
+          <link target="_blank">/app/OSweep/hybridAnalysis?form.group=no&amp;form.group_value=domain&amp;form.group_key=sha256&amp;form.ioc=$ioc$</link>
         </drilldown>
       </single>
     </panel>
@@ -137,12 +137,34 @@
         <option name="refresh.display">preview</option>
         <option name="useColors">1</option>
         <drilldown>
-          <link target="_blank">/app/OSweep/urlscan?form.group=no&amp;form.group_value=url&amp;form.group_key=ip&amp;form.ioc=$ioc$</link>
+          <link target="_blank">/app/OSweep/malshare?form.ioc=$ioc$</link>
         </drilldown>
       </single>
     </panel>
   </row>
   <row>
+    <panel>
+      <title>Pastebin Dump</title>
+      <single>
+        <title>Searches any IOC</title>
+        <search>
+          <query>| psbdmp search $ioc$ 
+| search NOT ("no data"=* OR invalid=* OR error=*) 
+| stats count</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0,49]</option>
+        <option name="refresh.display">preview</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/OSweep/pastebinDump?form.ioc=$ioc$</link>
+        </drilldown>
+      </single>
+    </panel>
     <panel>
       <title>Phishing Catcher (Score &gt; 75)</title>
       <single>
@@ -163,28 +185,6 @@
         <option name="useColors">1</option>
         <drilldown>
           <link target="_blank">/app/OSweep/phishingCatcher?form.monitor=no&amp;form.time_range.earliest=-24h%40h&amp;form.time_range.latest=now&amp;form.ioc=$ioc$</link>
-        </drilldown>
-      </single>
-    </panel>
-    <panel>
-      <title>Pastebin Dump</title>
-      <single>
-        <title>Searches any IOC</title>
-        <search>
-          <query>| psbdmp search $ioc$ 
-| search NOT ("no data"=* OR invalid=* OR error=*) 
-| stats count</query>
-          <earliest>$earliest$</earliest>
-          <latest>$latest$</latest>
-        </search>
-        <option name="colorMode">block</option>
-        <option name="drilldown">all</option>
-        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
-        <option name="rangeValues">[0,49]</option>
-        <option name="refresh.display">preview</option>
-        <option name="useColors">1</option>
-        <drilldown>
-          <link target="_blank">/app/OSweep/pastebinDump?form.ioc=$ioc$</link>
         </drilldown>
       </single>
     </panel>
