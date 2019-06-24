@@ -44,9 +44,6 @@ Click **[HERE](https://github.com/ecstatic-nobel/OSweep/wiki/Setup)** to get sta
 **CyberCrime Tracker - Dashboard**
 ![CyberCrime Tracker - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/OSweep/master/static/assets/cybercrimeTracker_dashboard.png)  
 
-**Cymon - Dashboard**
-![Cymon - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/OSweep/master/static/assets/cymon_dashboard.png)  
-
 **GreyNoise - Dashboard**  
 ![GreyNoise - Dashboard](https://raw.githubusercontent.com/ecstatic-nobel/OSweep/master/static/assets/greynoise_dashboard.png)  
 
