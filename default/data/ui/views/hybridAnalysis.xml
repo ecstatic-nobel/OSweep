@@ -1,6 +1,6 @@
 <form>
   <label>Hybrid-Analysis</label>
-  <description>Gather data on unknown threats analyzed using a unique Hybrid Analysis technology.(Site: https://www.hybrid-analysis.com/, Rate Limit: None, API Key: Required)</description>
+  <description>Gather data on unknown threats analyzed using a unique Hybrid Analysis technology.(Site: https://www.hybrid-analysis.com/, Rate Limit: 20/min, 200/hr, API Key: Required)</description>
   <search id="hybridanalysis_search">
     <query>| hybridanalysis $endpoint$ $param$ $ioc$
 | fillnull value="-"
@@ -96,8 +96,9 @@
       <chart>
         <search base="hybridanalysis_search">
           <query>| dedup sha256
-| stats count BY threat_score
-| sort count</query>
+| table analysis_start_time type target_url submit_name md5 sha256 ssdeep imphash av_detect threat_score interesting threat_level verdict domains classification_tags compromised_hosts hosts total_network_connections total_processes extracted_files processes tags 
+| stats count BY threat_score 
+| sort threat_score</query>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">none</option>
@@ -109,8 +110,9 @@
       <chart>
         <search base="hybridanalysis_search">
           <query>| dedup sha256
-| stats count BY verdict
-| sort count</query>
+| table analysis_start_time type target_url submit_name md5 sha256 ssdeep imphash av_detect threat_score interesting threat_level verdict domains classification_tags compromised_hosts hosts total_network_connections total_processes extracted_files processes tags 
+| stats count BY verdict 
+| sort verdict</query>
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.drilldown">none</option>
