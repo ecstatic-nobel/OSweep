@@ -1,6 +1,6 @@
 <form>
   <label>Phishing Kit Tracker</label>
-  <description>Tracking phishing kits and all things related. (Site: https://github.com/neonprimetime/PhishingKitTracker)</description>
+  <description>Tracking phishing kits and all things related. (Site: https://github.com/neonprimetime/PhishingKitTracker, Rate Limit: None)</description>
   <fieldset submitButton="true" autoRun="true">
     <input type="dropdown" token="ioc_type">
       <label>IOC Type</label>
@@ -21,16 +21,29 @@
       <label>IOC</label>
       <initialValue>*</initialValue>
     </input>
+    <input type="dropdown" token="time_constraint">
+      <label>Time Constraint</label>
+      <fieldForLabel>date</fieldForLabel>
+      <fieldForValue>date</fieldForValue>
+      <search>
+        <query>| rest/servicesNS/-/-/data/lookup-table-files 
+| fields title
+| search title="*PhishingKitTracker.csv"
+| eval date=mvindex(split(title, "_"), 0)
+| table date
+| sort - date</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
   </fieldset>
   <row>
     <panel>
       <title></title>
       <single>
         <search>
-          <query>| inputlookup phishing_kit_tracker.csv 
-| eval _time=strptime(DateFound, "%m/%d/%Y") 
-| where _time &gt; relative_time(now(), "-90d@d")
-| timechart count span=1d</query>
+          <query>| inputlookup $time_constraint$_PhishingKitTracker.csv 
+| stats count</query>
           <earliest>0</earliest>
           <latest></latest>
           <refresh>5m</refresh>
@@ -43,20 +56,19 @@
         <option name="refresh.display">preview</option>
         <option name="trendColorInterpretation">inverse</option>
         <option name="trendInterval">-1d</option>
-        <option name="underLabel">New Kits Reported Today</option>
+        <option name="underLabel">New Kits Tracked</option>
         <option name="useColors">1</option>
       </single>
     </panel>
   </row>
   <row>
     <panel>
-      <title>Timechart (Last 90 Days)</title>
+      <title>Timechart -&gt; Month of $time_constraint$</title>
       <chart>
         <search>
-          <query>| inputlookup phishing_kit_tracker.csv 
+          <query>| inputlookup $time_constraint$_PhishingKitTracker.csv 
 | search "$ioc_type$"="$ioc$"
 | eval _time=strptime(DateFound, "%m/%d/%Y") 
-| where _time &gt; relative_time(now(), "-90d@d")
 | table _time DateFound Target PhishingDomain KitName KitHash KitMailer ThreatActor ThreatActorEmail EmailType ReferenceLink 
 | timechart count span=1d</query>
           <earliest>$earliest$</earliest>
@@ -76,7 +88,7 @@
       <title>Top 20 Targets</title>
       <chart>
         <search>
-          <query>| inputlookup phishing_kit_tracker.csv 
+          <query>| inputlookup $time_constraint$_PhishingKitTracker.csv 
 | fillnull value="-" 
 | search NOT Target=- 
 | search "$ioc_type$"="$ioc$"
@@ -95,7 +107,7 @@
       <title>Top 20 Kit Names</title>
       <chart>
         <search>
-          <query>| inputlookup phishing_kit_tracker.csv 
+          <query>| inputlookup $time_constraint$_PhishingKitTracker.csv 
 | fillnull value="-" 
 | search NOT KitName=- 
 | search "$ioc_type$"="$ioc$"
@@ -114,7 +126,7 @@
       <title>Top 20 Kit Hashes</title>
       <chart>
         <search>
-          <query>| inputlookup phishing_kit_tracker.csv 
+          <query>| inputlookup $time_constraint$_PhishingKitTracker.csv 
 | fillnull value="-" 
 | search NOT KitHash=- 
 | search "$ioc_type$"="$ioc$"
@@ -135,7 +147,7 @@
       <title>Top 20 Threat Actors</title>
       <table>
         <search>
-          <query>| inputlookup phishing_kit_tracker.csv 
+          <query>| inputlookup $time_constraint$_PhishingKitTracker.csv 
 | fillnull value="-" 
 | search NOT ThreatActor=- 
 | search "$ioc_type$"="$ioc$"
@@ -154,7 +166,7 @@
       <title>Top 20 Threat Actor Emails</title>
       <table>
         <search>
-          <query>| inputlookup phishing_kit_tracker.csv 
+          <query>| inputlookup $time_constraint$_PhishingKitTracker.csv 
 | fillnull value="-" 
 | search NOT ThreatActorEmail=- 
 | search "$ioc_type$"="$ioc$"
@@ -173,7 +185,7 @@
       <title>Top 20 Email Providers</title>
       <table>
         <search>
-          <query>| inputlookup phishing_kit_tracker.csv 
+          <query>| inputlookup $time_constraint$_PhishingKitTracker.csv 
 | fillnull value="-" 
 | search NOT EmailType=- 
 | search "$ioc_type$"="$ioc$"

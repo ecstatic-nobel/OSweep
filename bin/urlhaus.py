@@ -115,8 +115,10 @@ def process_iocs(results):
             ioc_type = "host"
         elif validators.url(provided_ioc):
             ioc_type = "url"
-        elif re.match("^[a-f\d]{32}$", provided_ioc) or re.match("^[a-f\d]{64}$", provided_ioc):
-            ioc_type = "payload"
+        elif re.match("^[a-f\d]{32}$", provided_ioc):
+            ioc_type = "md5_hash"
+        elif re.match("^[a-f\d]{64}$", provided_ioc):
+            ioc_type = "sha256_hash"
         else:
             splunk_table.append({"invalid": provided_ioc})
             continue
@@ -132,15 +134,12 @@ def process_iocs(results):
 
 def query_urlhaus(session, provided_ioc, ioc_type):
     """ """
-    if re.match("^[a-f\d]{32}$", provided_ioc) and ioc_type == "payload":
-        data_field = "md5_hash"
-    elif re.match("^[a-f\d]{64}$", provided_ioc) and ioc_type == "payload":
-        data_field = "sha256_hash"
-    else:
-        data_field = ioc_type
+    uri_dir = ioc_type
+    if ioc_type in ["md5_hash", "sha256_hash"]:
+        uri_dir = "payload"    
 
-    api       = "https://urlhaus-api.abuse.ch/v1/{}/"
-    resp      = session.post(api.format(ioc_type), timeout=180, data={data_field: provided_ioc})
+    api  = "https://urlhaus-api.abuse.ch/v1/{}/"
+    resp = session.post(api.format(uri_dir), timeout=180, data={ioc_type: provided_ioc})
     ioc_dicts = []
 
     if resp.status_code == 200 and resp.text != "":
@@ -203,7 +202,7 @@ def query_urlhaus(session, provided_ioc, ioc_type):
                     })
 
                 ioc_dicts.append(ioc_dict)
-        elif ioc_type == "payload":
+        elif ioc_type in ["md5_hash", "sha256_hash"]:
             if len(resp_content["urls"]) == 0:
                 ioc_dicts.append({"invalid": provided_ioc})
                 return ioc_dicts

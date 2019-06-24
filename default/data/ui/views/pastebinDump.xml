@@ -1,6 +1,6 @@
 <form>
   <label>Pastebin Dump</label>
-  <description>Interact with the psbdmp website to analyze and parse pastes from Pastebin. (Site: https://psbdmp.ws/, Rate Limit: None)</description>
+  <description>Interact with the psbdmp website to analyze and parse pastes from Pastebin. (Site: https://psbdmp.ws/, Rate Limit: None; Site: https://pastebin.com/raw/, Rate Limit: None)</description>
   <search id="psbdmp_base">
     <query>| psbdmp search $ioc$
 | fillnull value="-"
@@ -18,12 +18,13 @@
       <title>Timechart</title>
       <chart>
         <search base="psbdmp_base">
-          <query>| eval _time=strptime(time,"%Y-%m-%d %H:%M:%S") 
+          <query>| eval _time=strptime(time,"%Y-%m-%d %H:%M") 
 | timechart count span=1d useother=false usenull=false</query>
         </search>
-        <option name="charting.chart">line</option>
+        <option name="charting.chart">column</option>
         <option name="charting.chart.nullValueMode">zero</option>
         <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.stackMode">default</option>
         <option name="charting.drilldown">none</option>
         <option name="charting.layout.splitSeries">0</option>
         <option name="refresh.display">preview</option>
@@ -57,8 +58,8 @@
       <table>
         <search>
           <query>| psbdmp dump $dump_link$
-| table time id tags data
-| sort - time</query>
+| table id data
+| sort - id</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
         </search>

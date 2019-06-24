@@ -25,7 +25,7 @@ import validators
 import commons
 
 
-api = "https://www.hybrid-analysis.com/api/v2/search/{}".lower()
+api = "https://{}/api/v2/search/{}".lower()
 
 def process_iocs(results):
     """Return data formatted for Splunk from Hybrid-Analysis."""
@@ -64,15 +64,16 @@ def process_iocs(results):
             param = sys.argv[2]
             provided_iocs = sys.argv[3:]
 
-    session = commons.create_session()
-    api_key = commons.get_apikey("hybrid-analysis")
+    session    = commons.create_session()
+    api_domain = commons.get_apidomain("hybrid-analysis")
+    api_key    = commons.get_apikey("hybrid-analysis")
     splunk_table = []
 
     for provided_ioc in set(provided_iocs):
         provided_ioc = commons.deobfuscate_string(provided_ioc)
         provided_ioc = provided_ioc.lower()
 
-        ioc_dicts = query_hybridanalysis(endpoint, param, provided_ioc, api_key, session)
+        ioc_dicts = query_hybridanalysis(endpoint, param, provided_ioc, api_domain, api_key, session)
 
         for ioc_dict in ioc_dicts:
             splunk_table.append(ioc_dict)
@@ -80,7 +81,7 @@ def process_iocs(results):
     session.close()
     return splunk_table
 
-def query_hybridanalysis(endpoint, param, provided_ioc, api_key, session):
+def query_hybridanalysis(endpoint, param, provided_ioc, api_domain, api_key, session):
     """ """
     ioc_dicts = []
 
@@ -89,7 +90,7 @@ def query_hybridanalysis(endpoint, param, provided_ioc, api_key, session):
         "Accept":"application/json", 
         "User-Agent":"Falcon Sandbox"
     })
-    resp = session.post(api.format(endpoint), data={param:provided_ioc}, timeout=180)
+    resp = session.post(api.format(api_domain, endpoint), data={param:provided_ioc}, timeout=180)
 
     if resp.status_code == 200 and resp.content != '':
         results = resp.json()

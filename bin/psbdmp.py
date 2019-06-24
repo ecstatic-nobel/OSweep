@@ -87,13 +87,19 @@ def psbdmp_search(provided_ioc, session):
 
 def psbdmp_dump(provided_ioc, session):
     """ """
-    base_url  = "https://psbdmp.ws/api/dump/get/{}"
+    # psbdmp.ws does not have an endpoint to the archive
+    # base_url  = "https://psbdmp.ws/api/dump/get/{}"
+    base_url  = "https://pastebin.com/raw/{}"
     url       = base_url.format(provided_ioc)
     resp      = session.get(url, timeout=180)
     psd_dicts = []
 
-    if resp.status_code == 200 and resp.json()["error"] != 1:
-        dump = resp.json()
+    # psbdmp.ws does not have an endpoint to the archive
+    # if resp.status_code == 200 and resp.json()["error"] != 1:
+    #     dump = resp.json()
+    #     psd_dicts.append(dump)
+    if resp.status_code == 200 and resp.content != "":
+        dump = {"id":provided_ioc, "data":resp.content}
         psd_dicts.append(dump)
     else:
         psd_dicts.append({"no data": provided_ioc})

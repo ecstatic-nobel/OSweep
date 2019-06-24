@@ -73,6 +73,10 @@ def process_iocs(results):
             continue
 
         for ioc_dict in ioc_dicts:
+            if "ip" not in ioc_dict:
+                splunk_table.append({"no data": provided_ioc})
+                continue
+
             splunk_table.append(ioc_dict)
 
     session.close()
@@ -135,8 +139,8 @@ def query_urlscan_file(session, provided_ioc):
 def query_urlscan(session, provided_ioc):
     """Return data from urlscan about the provided IOC."""
     query_type = sys.argv[1]
-    api    = "https://urlscan.io/api/v1/search/?size=10000&q="
-    resp   = session.get("{}{}".format(api, provided_ioc), timeout=180)
+    api  = "https://urlscan.io/api/v1/search/?size=10000&q={}"
+    resp = session.get(api.format(provided_ioc), timeout=180)
 
     if resp.status_code == 200 and "results" in resp.json().keys() and \
        len(resp.json()["results"]) > 0:

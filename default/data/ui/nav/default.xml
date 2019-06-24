@@ -8,7 +8,6 @@
   </collection>
   <collection label="Malware" >
     <view name="cybercrimeTracker" />
-    <view name="cymon" />
     <view name="hybridAnalysis" />
     <view name="malshare" />
     <view name="threatCrowd" />
