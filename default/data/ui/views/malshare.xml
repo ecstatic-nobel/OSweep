@@ -1,5 +1,5 @@
 <form>
-  <label>Malshare</label>
+  <label>MalShare</label>
   <description>Interact with Malshare to gather hashes of potentially malicious files. (Site: https://malshare.com/, Rate Limit: None, API Key: Required)</description>
   <search id="malshare_search">
     <query>| malshare $ioc$
@@ -16,6 +16,7 @@
       <chart>
         <search base="malshare_search">
           <query>| dedup md5, sha256, type, source 
+| table added, md5, sha256, type, source
 | stats count BY type
 | sort count</query>
         </search>
@@ -33,6 +34,7 @@
 | rex field=source mode=sed "s/\/.+//g" 
 | rename source AS domain 
 | search NOT domain="-"
+| table added, md5, sha256, type, source, domain
 | stats count BY domain 
 | sort count</query>
         </search>
@@ -48,6 +50,7 @@
           <query>| dedup md5, sha256, type, source 
 | rex field=source mode=sed "s/https?:\/\///g" 
 | rex field=source "(?&lt;uri&gt;/.+)"
+| table added, md5, sha256, type, source, uri
 | stats count BY uri 
 | sort count</query>
         </search>
