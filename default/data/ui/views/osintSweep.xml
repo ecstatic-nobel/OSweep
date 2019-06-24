@@ -1,6 +1,6 @@
 <form>
   <label>OSINT Sweep</label>
-  <description>Display which OSINT sites contain the most relevant information. Note: This dashboard does not include ThreatCrowd.</description>
+  <description>Display which OSINT sites contain the most relevant information. Note: This dashboard does not include Phishing Kit Tracker or ThreatCrowd.</description>
   <fieldset submitButton="true" autoRun="false">
     <input type="text" token="ioc">
       <label>IOC (+)</label>
@@ -48,28 +48,6 @@
         <option name="useColors">1</option>
         <drilldown>
           <link target="_blank">/app/OSweep/cybercrimeTracker?form.group=no&amp;form.group_value=url&amp;form.group_key=type&amp;form.ioc=$ioc$</link>
-        </drilldown>
-      </single>
-    </panel>
-    <panel>
-      <title>Cymon</title>
-      <single>
-        <title>Searches for Domains, IPs, MD5, or SHA256</title>
-        <search>
-          <query>| cymon $ioc$ 
-| search NOT ("no data"=* OR invalid=* OR error=*) 
-| stats count</query>
-          <earliest>$earliest$</earliest>
-          <latest>$latest$</latest>
-        </search>
-        <option name="colorMode">block</option>
-        <option name="drilldown">all</option>
-        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
-        <option name="rangeValues">[0,49]</option>
-        <option name="refresh.display">preview</option>
-        <option name="useColors">1</option>
-        <drilldown>
-          <link target="_blank">/app/OSweep/cymon?form.group=no&amp;form.group_value=url&amp;form.group_key=md5&amp;form.ioc=$ioc$</link>
         </drilldown>
       </single>
     </panel>
