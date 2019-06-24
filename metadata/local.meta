@@ -18,10 +18,6 @@ modtime = 1554942123.726027000
 version = 7.2.5.1
 modtime = 1555086561.762215000
 
-[views/cymon]
-version = 7.2.5.1
-modtime = 1554942247.280993000
-
 [views/greyNoise]
 version = 7.2.5.1
 modtime = 1555180611.314155000
@@ -29,26 +25,26 @@ modtime = 1555180611.314155000
 [views/hybridAnalysis]
 owner = admin
 version = 7.2.5.1
-modtime = 1555179107.858323000
+modtime = 1555851942.503277000
 
 [views/malshare]
 owner = admin
 version = 7.2.5.1
-modtime = 1555169663.299264000
+modtime = 1561253119.115116000
 
 [views/osintSweep]
 access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 7.2.5.1
-modtime = 1555097925.286221000
+modtime = 1561262490.923972000
 
 [views/pastebinDump]
 access = read : [ * ], write : [ admin, power ]
 export = none
 owner = admin
 version = 7.2.5.1
-modtime = 1555174343.170233000
+modtime = 1560465686.683622000
 
 [views/phishingCatcher]
 version = 7.2.5.1
@@ -56,7 +52,7 @@ modtime = 1554942333.828706000
 
 [views/phishingKitTracker]
 version = 7.2.5.1
-modtime = 1555086755.684276000
+modtime = 1561262253.961570000
 
 [views/threatCrowd]
 version = 7.2.5.1
