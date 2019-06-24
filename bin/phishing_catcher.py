@@ -78,19 +78,9 @@ def write_file(file_contents, file_path):
 
 def process_iocs(results):
     """Return data formatted for Splunk."""
-    with open("phishing_catcher_suspicious.yaml", "r") as s, open("phishing_catcher_external.yaml", "r") as e:
+    with open("phishing_catcher_suspicious.yaml", "r") as s:
         global suspicious
         suspicious = yaml.safe_load(s)
-        external   = yaml.safe_load(e)
-
-    if external["override_suspicious"] is True:
-        suspicious = external
-    else:
-        if external["keywords"] is not None:
-            suspicious["keywords"].update(external["keywords"])
-
-        if external["tlds"] is not None:
-            suspicious["tlds"].update(external["tlds"])
 
     if results != None:
         provided_iocs = [y for x in results for y in x.values()]
