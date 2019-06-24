@@ -17,7 +17,8 @@ https_proxy_url = None
 greynoise_key = None
 
 # Hybrid-Analysis API
-hybrid_analysis_apikey = None
+hybrid_analysis_api_domain = "www.hybrid-analysis.com"
+hybrid_analysis_apikey     = None
 
 # Malshare API
 malshare_apikey = None

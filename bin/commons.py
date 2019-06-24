@@ -30,6 +30,11 @@ def create_session():
     })
     return session
 
+def get_apidomain(api):
+    """Return the API domain."""
+    if api == "hybrid-analysis":
+        return config.hybrid_analysis_api_domain
+
 def get_apikey(api):
     """Return the API key."""
     if api == "greynoise":
