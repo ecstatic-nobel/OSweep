@@ -40,7 +40,7 @@ import sys
 app_home   = "{}/etc/apps/OSweep".format(os.environ['SPLUNK_HOME'])
 tp_modules = "{}/bin/_tp_modules".format(app_home)
 sys.path.insert(0, tp_modules)
-import entropy
+import math
 import pylev
 import tld
 import yaml
@@ -59,6 +59,12 @@ def get_modules():
     if suspicious == None or confusables == None:
         return
     return suspicious, confusables
+
+def entropy(string):
+    """Calculates the Shannon entropy of a string"""
+    prob = [ float(string.count(c)) / len(string) for c in dict.fromkeys(list(string)) ]
+    entropy = - sum([ p * math.log(p) / math.log(2.0) for p in prob ])
+    return entropy
 
 def request_module(session, filename):
     """Return a list of tags."""
@@ -125,7 +131,7 @@ def score_domain(provided_ioc):
     except Exception:
         domain = provided_ioc
 
-    score += int(round(entropy.shannon_entropy(domain)*50))
+    score += int(round(entropy(domain)*10))
     domain = confusables.unconfuse(domain)
     words_in_domain = re.split("\W+", domain)
 
